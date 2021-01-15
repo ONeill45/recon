@@ -1,0 +1,15 @@
+version: "3.3"
+
+services:
+  recon-app:
+    ports:
+      - 3000:3000
+    build:
+      context: app
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+    # env_file:
+    #   - .env
