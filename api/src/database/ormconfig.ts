@@ -1,4 +1,7 @@
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import * as dotenv from "dotenv";
+
+dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 
 const loadEnvironmentVariable = (key: string): string  => {
   // const throwErr = process.env['NODE_ENV'] === 'typeorm';
@@ -20,12 +23,12 @@ const ormConfig: PostgresConnectionOptions = {
   type: 'postgres',
   url: `postgresql://${username}:${password}@${host}:5433/${database}`,
   ssl: sslCertPath ? { ca: sslCertPath, rejectUnauthorized: false } : false,
-  entities: [__dirname + '/../entities/index{.ts,.js}'],
+  entities: [__dirname + '/../models/index{.ts,.js}'],
   synchronize: false,
   migrationsRun: false,
   logging: ['schema', 'error'],
   logger: 'advanced-console',
-  schema: 'core',
+  schema: 'public',
   migrations: [__dirname + '/migrations/**/*{.ts,.js}'],
   cli: {
     migrationsDir: 'src/database/migrations',

@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -w src --ext ts --exec ts-node src/index.ts",
+    "start": "NODE_ENV=dev nodemon -w dist --exec node dist/index.js",
+    "build": "tsc",
+    "watch": "tsc-watch",
+    "watch:build": "tsc-watch --onSuccess \"npm run build\"",
     "typeorm": "NODE_ENV=typeorm node ./node_modules/typeorm/cli.js --config dist/database/ormconfig.js",
     "migration:create": "npm run typeorm migration:create -- -n",
     "migration:generate": "npm run typeorm migration:generate -- -n",
@@ -23,12 +26,14 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.13.0",
     "@typescript-eslint/parser": "^4.13.0",
+    "class-validator": "^0.13.1",
     "eslint": "^7.17.0",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-prettier": "^3.3.1",
     "nodemon": "^2.0.7",
     "prettier": "^2.2.1",
     "ts-node": "^9.1.1",
+    "tsc-watch": "^4.2.9",
     "typescript": "^4.1.3"
   }
 }
