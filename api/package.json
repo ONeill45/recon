@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon -w src --ext ts --exec ts-node src/index.ts"
+    "start": "nodemon -w src --ext ts --exec ts-node src/index.ts",
+    "typeorm": "NODE_ENV=typeorm node ./node_modules/typeorm/cli.js --config dist/database/ormconfig.js",
+    "migration:create": "npm run typeorm migration:create -- -n",
+    "migration:generate": "npm run typeorm migration:generate -- -n",
+    "migration:run": "npm run typeorm migration:run",
+    "migration:revert": "npm run typeorm migration:revert"
   },
   "author": "",
   "dependencies": {
@@ -14,5 +19,16 @@
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
     "typeorm": "^0.2.30"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.13.0",
+    "@typescript-eslint/parser": "^4.13.0",
+    "eslint": "^7.17.0",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-prettier": "^3.3.1",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.1.3"
   }
 }

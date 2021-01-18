@@ -1,15 +1,15 @@
 import "reflect-metadata";
-import { createConnection } from "typeorm";
 import { ApolloServer } from "apollo-server";
 import { buildSchema } from "type-graphql";
 
 import { BookResolver } from "./resolvers/BookResolver";
+import { connect } from "./database";
 
 async function main() {
-  await createConnection();
+  await connect();
   const schema = await buildSchema({ resolvers: [BookResolver] });
   const server = new ApolloServer({ schema });
-  await server.listen(4000);
+  await server.listen(5000);
   console.log("Server has started!");
 }
 
