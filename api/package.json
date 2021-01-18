@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "NODE_ENV=dev nodemon -w dist --exec node dist/index.js",
+    "start": "NODE_ENV=dev npm run build && nodemon -w dist --exec node dist/index.js",
     "build": "tsc",
     "watch": "tsc-watch",
     "watch:build": "tsc-watch --onSuccess \"npm run build\"",
