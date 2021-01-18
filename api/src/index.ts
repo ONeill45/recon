@@ -9,7 +9,7 @@ async function main() {
   await connect();
   const schema = await buildSchema({ resolvers: [ResourceResolver] });
   const server = new ApolloServer({ schema });
-  await server.listen(5000);
+  await server.listen(process.env.PORT);
   console.log("Server has started!");
 }
 
