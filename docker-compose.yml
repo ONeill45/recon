@@ -29,8 +29,6 @@ services:
     restart: always
     depends_on:
       - db
-    links:
-      - db
   recon-app:
     ports:
       - 3000:3000
@@ -43,8 +41,6 @@ services:
       - /usr/src/app/.next
     restart: always
     depends_on:
-      - recon-api
-    links:
       - recon-api
 volumes:
   db-data:
