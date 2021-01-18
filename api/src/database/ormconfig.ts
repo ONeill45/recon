@@ -1,10 +1,6 @@
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import * as dotenv from "dotenv";
-
-dotenv.config({ path: `./.env.${process.env.NODE_ENV}` });
 
 const loadEnvironmentVariable = (key: string): string  => {
-  // const throwErr = process.env['NODE_ENV'] === 'typeorm';
   const envVariable = process.env[key];
 
   if (!envVariable)
