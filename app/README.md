@@ -1,3 +1,12 @@
 # Frontend Readme
 
-## Stuff will eventually go here
+This app is built with [NextJS](https://nextjs.org/docs)
+
+**How to use:**
+
+```
+$ npm install
+$ npm run start
+```
+
+The app can be accessed at http://localhost:3000

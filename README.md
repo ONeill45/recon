@@ -12,6 +12,7 @@ Full stack application for managing projects and resources.
 
 - React(Next JS)
 - Typescript
+- GraphQL
 - Apollo Client
 - Emotion
 
