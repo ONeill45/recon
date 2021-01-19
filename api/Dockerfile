@@ -1,7 +1,5 @@
 FROM node:alpine
 
-ENV PORT 5000
-
 WORKDIR /usr/src/api
 
 # Copy package.json and package-lock.json
