@@ -1,4 +1,6 @@
-# TypeGraphQL & TypeORM Example
+# Backend Readme
+
+## TypeGraphQL & TypeORM Example
 
 How To Build a GraphQL API with TypeGraphQL and TypeORM. Read the [article](https://blog.logrocket.com/how-build-graphql-api-typegraphql-typeorm/).
 
@@ -8,3 +10,7 @@ How To Build a GraphQL API with TypeGraphQL and TypeORM. Read the [article](http
 $ npm install
 $ npm run start
 ```
+
+## GraphQL playground
+
+The GraphQL playground can be accessed at http://localhost:5000
