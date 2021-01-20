@@ -22,7 +22,7 @@ jobs:
       
   - task: Docker@2
     inputs:
-      containerRegistry: "Ascendum ACR'
+      containerRegistry: 'Ascendum ACR'
       repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
       command: 'buildAndPush'
       Dockerfile: 'api/Dockerfile'
