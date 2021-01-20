@@ -6,7 +6,7 @@ This app is built with [NextJS](https://nextjs.org/docs)
 
 ```
 $ npm install
-$ npm run start
+$ npm run dev
 ```
 
 The app can be accessed at http://localhost:3000
