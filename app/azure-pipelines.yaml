@@ -23,7 +23,7 @@ jobs:
   - task: Docker@2
     inputs:
       containerRegistry: 'Ascendum ACR'
-      repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_$(imageName)
+      repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-app
       command: 'buildAndPush'
       Dockerfile: 'app/Dockerfile'
       tags: |
