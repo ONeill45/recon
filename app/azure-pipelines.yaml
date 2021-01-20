@@ -17,12 +17,12 @@ jobs:
   steps:
   - task: Docker@2
     inputs:
-      containerRegistry: $(azureContainerRegistry)
+      containerRegistry: 'Ascendum ACR'
       command: 'login'
       
   - task: Docker@2
     inputs:
-      containerRegistry: $(azureContainerRegistry)
+      containerRegistry: "Ascendum ACR'
       repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_$(imageName)
       command: 'buildAndPush'
       Dockerfile: 'app/Dockerfile'
@@ -30,6 +30,6 @@ jobs:
         $(Build.SourceVersion)
   - task: Docker@2
     inputs:
-      containerRegistry: $(azureContainerRegistry)
+      containerRegistry: 'Ascendum ACR'
       command: 'logout'
       
