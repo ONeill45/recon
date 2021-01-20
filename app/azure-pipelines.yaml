@@ -4,12 +4,10 @@ trigger:
   branches:
     include:
     - devops/ado-pipelines
+    - main
   paths:
     include:
       - app/*
-
-pool:
-  vmImage: 'ubuntu-latest'
 
 jobs:
 - job: Build_Push_Artifacts
