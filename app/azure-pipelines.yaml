@@ -1,0 +1,35 @@
+Azure CI pipeline 
+
+trigger:
+  branches:
+    include:
+    - devops/ado-pipelines
+  paths:
+    include:
+      - app/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- job: Build_Push_Artifacts
+   
+  steps:
+  - task: Docker@2
+    inputs:
+      containerRegistry: $(azureContainerRegistry)
+      command: 'login'
+      
+  - task: Docker@2
+    inputs:
+      containerRegistry: $(azureContainerRegistry)
+      repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_$(imageName)
+      command: 'buildAndPush'
+      Dockerfile: 'app/Dockerfile'
+      tags: |
+        $(Build.SourceVersion)
+  - task: Docker@2
+    inputs:
+      containerRegistry: $(azureContainerRegistry)
+      command: 'logout'
+      
