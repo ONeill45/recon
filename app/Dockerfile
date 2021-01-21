@@ -14,6 +14,10 @@ COPY . ./
 
 # Building app
 RUN npm run build
+
+#run tests
+RUN npm run test
+
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
