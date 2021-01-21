@@ -1,32 +1,31 @@
-#Azure CI pipeline 
+#Azure CI pipeline
 
 trigger:
   branches:
     include:
-    - devops/ado-pipelines
-    - main
+      - main
   paths:
     include:
       - api/*
 
 jobs:
-- job: Build_Push_Artifacts
-   
-  steps:
-  - task: Docker@2
-    inputs:
-      containerRegistry: 'Ascendum ACR'
-      command: 'login'
-      
-  - task: Docker@2
-    inputs:
-      containerRegistry: 'Ascendum ACR'
-      repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
-      command: 'buildAndPush'
-      Dockerfile: 'api/Dockerfile'
-      tags: |
-        $(Build.SourceVersion)
-  - task: Docker@2
-    inputs:
-      containerRegistry: 'Ascendum ACR'
-      command: 'logout'
+  - job: Build_Push_Artifacts
+
+    steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: "Ascendum ACR"
+          command: "login"
+
+      - task: Docker@2
+        inputs:
+          containerRegistry: "Ascendum ACR"
+          repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
+          command: "buildAndPush"
+          Dockerfile: "api/Dockerfile"
+          tags: |
+            $(Build.SourceVersion)
+      - task: Docker@2
+        inputs:
+          containerRegistry: "Ascendum ACR"
+          command: "logout"
