@@ -1,0 +1,10 @@
+.navButton {
+  background-color: orange;
+  border: none;
+  padding: 0 12px;
+  font-weight: bold;
+}
+
+.navButton:hover {
+  color: white;
+}

@@ -1,0 +1,22 @@
+.main {
+  height: 60px;
+  background-color: orange;
+}
+
+.fullNav {
+  display: flex;
+}
+
+.collapsedNav {
+  height: 100%;
+  padding-left: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.navButtons {
+  padding-left: 20px;
+  display: flex;
+  justify-content: flex-start;
+}
