@@ -8,3 +8,19 @@
 .navButton:hover {
   color: white;
 }
+
+.navButtons {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.navButtons.column {
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.navButtons.row {
+  flex-direction: row;
+  padding-left: 20px;
+}
