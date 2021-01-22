@@ -9,6 +9,9 @@ RUN npm ci
 # Copying source files
 COPY . ./
 
+#run tests
+RUN npm run test
+
 EXPOSE 5000
 
 CMD ["npm", "run", "start"]
