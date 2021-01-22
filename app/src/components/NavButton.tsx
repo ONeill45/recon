@@ -8,8 +8,14 @@ type navButtonProps = {
 
 export const NavButton = ({ title, route }: navButtonProps) => {
   const router = useRouter()
+
+  const selected = router.pathname === route ? styles.selected : ''
+
   return (
-    <button className={styles.navButton} onClick={() => router.push(route)}>
+    <button
+      className={`${styles.navButton} ${selected}`}
+      onClick={() => router.push(route)}
+    >
       {title}
     </button>
   )

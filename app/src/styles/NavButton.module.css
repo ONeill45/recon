@@ -6,8 +6,12 @@
   background-color: transparent;
 }
 
-.navButton:hover {
+.navButton.selected {
   color: white;
+}
+
+.navButton:hover {
+  background-color: darkorange;
 }
 
 .navButtons {
