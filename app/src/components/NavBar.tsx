@@ -5,10 +5,7 @@ import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 
 export const NavBar = () => {
-  const windowIsDefined = typeof window !== 'undefined'
-  const [collapsed, setCollapsed] = React.useState(
-    windowIsDefined ? (window.innerWidth < 768 ? true : false) : false,
-  )
+  const [collapsed, setCollapsed] = React.useState(false)
   const [displaySideMenu, setDisplaySideMenu] = React.useState(false)
 
   const buttonProperties = [
@@ -31,6 +28,7 @@ export const NavBar = () => {
   ]
 
   React.useEffect(() => {
+    setCollapsed(window.innerWidth < 768 ? true : false)
     const mediaQuery = window.matchMedia('(max-width: 768px)')
     mediaQuery.addEventListener('change', (e) => {
       const collapsed = e.matches
