@@ -1,15 +1,15 @@
 module.exports = {
-  preset: "ts-jest",
-  testEnvironment: "node",
+  preset: 'ts-jest',
+  testEnvironment: 'node',
   clearMocks: true,
   collectCoverage: true,
-  rootDir: "..",
-  collectCoverageFrom: ["src/**/*.{ts,js}"],
-  coverageDirectory: "test/coverage",
-  moduleFileExtensions: ["js", "ts", "json"],
-  testMatch: ["**/test/?(*.)(spec|test).ts"],
+  rootDir: '..',
+  collectCoverageFrom: ['src/**/*.{ts,js}'],
+  coverageDirectory: 'test/coverage',
+  moduleFileExtensions: ['js', 'ts', 'json'],
+  testMatch: ['**/test/?(*.)(spec|test).ts'],
   transform: {
-    ".(ts)": "ts-jest",
+    '.(ts)': 'ts-jest',
   },
   verbose: true,
 };
