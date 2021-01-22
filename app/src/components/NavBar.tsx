@@ -1,14 +1,14 @@
 import React from 'react'
 import styles from '../styles/NavBar.module.css'
 import Image from 'next/image'
-import { NavButton, NavButtons } from './'
+import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 
 export const NavBar = () => {
-  const [collapsed, setCollapsed] = React.useState(false)
-  // const [mQuery, setMQuery] = React.useState<any>({
-  //   matches: window.innerWidth > 768 ? true : false,
-  // });
+  const windowIsDefined = typeof window !== 'undefined'
+  const [collapsed, setCollapsed] = React.useState(
+    windowIsDefined ? (window.innerWidth < 768 ? true : false) : false,
+  )
   const [displaySideMenu, setDisplaySideMenu] = React.useState(false)
 
   const buttonProperties = [
