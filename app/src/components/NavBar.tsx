@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from '../styles/NavBar.module.css'
 import Image from 'next/image'
 import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 
 export const NavBar = () => {
-  const [collapsed, setCollapsed] = React.useState(false)
-  const [displaySideMenu, setDisplaySideMenu] = React.useState(false)
+  const [collapsed, setCollapsed] = useState(false)
+  const [displaySideMenu, setDisplaySideMenu] = useState(false)
 
   const buttonProperties = [
     {
@@ -27,7 +27,7 @@ export const NavBar = () => {
     },
   ]
 
-  React.useEffect(() => {
+  useEffect(() => {
     setCollapsed(window.innerWidth < 768 ? true : false)
     const mediaQuery = window.matchMedia('(max-width: 768px)')
     mediaQuery.addEventListener('change', (e) => {
