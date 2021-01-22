@@ -14,3 +14,11 @@
   justify-content: flex-start;
   align-items: center;
 }
+
+.sideNavContainer {
+  width: 25%;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: orange;
+}

@@ -60,7 +60,7 @@ export const NavBar = () => {
         )}
       </div>
       {displaySideMenu ? (
-        <div style={{ width: '50%' }}>
+        <div className={styles.sideNavContainer}>
           <NavButtons
             buttonProperties={buttonProperties}
             displayType="column"
