@@ -3,7 +3,7 @@ import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { Button, FullPageSpinner, Spinner } from '../components'
 
-export default function Home() {
+const Home = () => {
   const [showSpinner, setShowSpinner] = useState(false)
 
   return (
@@ -40,3 +40,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home
