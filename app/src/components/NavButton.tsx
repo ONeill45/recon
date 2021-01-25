@@ -1,22 +1,43 @@
+import styled from '@emotion/styled'
 import { useRouter } from 'next/router'
-import styles from '../styles/NavButton.module.css'
+import { DisplayType } from '../interfaces'
 
 type navButtonProps = {
   title: string
   route: string
+  displayType: DisplayType
 }
 
-export const NavButton = ({ title, route }: navButtonProps) => {
+type buttonProps = {
+  selected: boolean
+  displayType: DisplayType
+}
+
+const Button = styled.button<buttonProps>`
+  border: none;
+  padding: ${(props) =>
+    props.displayType === DisplayType.COLUMN ? '12px' : '0 12px'};
+  font-weight: bold;
+  opacity: 100%;
+  background-color: transparent;
+  color: ${(props) => (props.selected ? 'white' : 'black')};
+  &:hover {
+    background-color: darkorange;
+  }
+`
+
+export const NavButton = ({ title, route, displayType }: navButtonProps) => {
   const router = useRouter()
 
-  const selected = router.pathname === route ? styles.selected : ''
+  const selected = router.pathname === route
 
   return (
-    <button
-      className={`${styles.navButton} ${selected}`}
+    <Button
+      selected={selected}
       onClick={() => router.push(route)}
+      displayType={displayType}
     >
       {title}
-    </button>
+    </Button>
   )
 }

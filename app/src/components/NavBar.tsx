@@ -1,8 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import styles from '../styles/NavBar.module.css'
+import styled from '@emotion/styled'
 import Image from 'next/image'
 import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
+import { DisplayType } from '../interfaces'
+
+const MainDiv = styled.div`
+  height: 60px;
+  background-color: orange;
+`
+const FullNavDiv = styled.div`
+  display: flex;
+`
+const CollapsedNavDiv = styled.div`
+  height: 100%;
+  padding-left: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+`
+
+const SideNavDiv = styled.div`
+  width: 25%;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  background-color: orange;
+`
 
 export const NavBar = () => {
   const [collapsed, setCollapsed] = useState(false)
@@ -47,25 +71,28 @@ export const NavBar = () => {
 
   return (
     <>
-      <div className={styles.main}>
+      <MainDiv>
         {collapsed ? (
-          <div className={styles.collapsedNav}>
+          <CollapsedNavDiv>
             <GiHamburgerMenu size="40px" onClick={handleHamburgerClick} />
-          </div>
+          </CollapsedNavDiv>
         ) : (
-          <div className={styles.fullNav}>
+          <FullNavDiv>
             <Image src="/images/recon-192x192.png" height="60" width="60" />
-            <NavButtons buttonProperties={buttonProperties} displayType="row" />
-          </div>
+            <NavButtons
+              buttonProperties={buttonProperties}
+              displayType={DisplayType.ROW}
+            />
+          </FullNavDiv>
         )}
-      </div>
+      </MainDiv>
       {displaySideMenu ? (
-        <div className={styles.sideNavContainer}>
+        <SideNavDiv>
           <NavButtons
             buttonProperties={buttonProperties}
-            displayType="column"
+            displayType={DisplayType.COLUMN}
           />
-        </div>
+        </SideNavDiv>
       ) : (
         <></>
       )}
