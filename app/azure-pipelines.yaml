@@ -1,0 +1,31 @@
+#Azure CI pipeline
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - app/*
+
+jobs:
+  - job: Build_Push_Artifacts
+
+    steps:
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'Ascendum ACR'
+          command: 'login'
+
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'Ascendum ACR'
+          repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-app
+          command: 'buildAndPush'
+          Dockerfile: 'app/Dockerfile'
+          tags: |
+            $(Build.SourceVersion)
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'Ascendum ACR'
+          command: 'logout'
