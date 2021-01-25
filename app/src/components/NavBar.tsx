@@ -10,11 +10,6 @@ type displayProps = {
   displayed: boolean
 }
 
-const MainDiv = styled.div`
-  height: 60px;
-  background-color: orange;
-`
-
 const isDisplayed = ({ displayed }: displayProps) => {
   if (displayed)
     return css`
@@ -24,6 +19,11 @@ const isDisplayed = ({ displayed }: displayProps) => {
     display: none;
   `
 }
+
+const MainDiv = styled.div`
+  height: 60px;
+  background-color: orange;
+`
 
 const FullNavDiv = styled.div<displayProps>`
   ${isDisplayed};
