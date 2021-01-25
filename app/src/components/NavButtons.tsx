@@ -4,7 +4,7 @@ import { NavButton } from '../components'
 import { DisplayType } from '../interfaces'
 
 type navButtonProps = {
-  buttonProperties: { title: string; link: string }[]
+  buttonProperties: { title: string; route: string }[]
   displayType: DisplayType
 }
 
@@ -47,7 +47,7 @@ export const NavButtons = ({
           <NavButton
             key={buttonProperty.title}
             title={buttonProperty.title}
-            route={buttonProperty.link}
+            route={buttonProperty.route}
             displayType={displayType}
           />
         )

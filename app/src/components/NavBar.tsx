@@ -46,19 +46,19 @@ export const NavBar = () => {
   const buttonProperties = [
     {
       title: 'Home',
-      link: '/',
+      route: '/',
     },
     {
       title: 'Clients',
-      link: '/clients',
+      route: '/clients',
     },
     {
       title: 'Projects',
-      link: '/projects',
+      route: '/projects',
     },
     {
       title: 'Resources',
-      link: '/resources',
+      route: '/resources',
     },
   ]
 
@@ -76,15 +76,16 @@ export const NavBar = () => {
       mediaQuery.removeEventListener('change', (e) => setCollapsed(e.matches))
   }, [])
 
-  const handleHamburgerClick = () => {
-    setDisplaySideMenu(!displaySideMenu)
-  }
-
   return (
     <>
       <MainDiv>
         <CollapsedNavDiv displayed={collapsed}>
-          <GiHamburgerMenu size="40px" onClick={handleHamburgerClick} />
+          <GiHamburgerMenu
+            size="40px"
+            onClick={() => {
+              setDisplaySideMenu(!displaySideMenu)
+            }}
+          />
         </CollapsedNavDiv>
         <FullNavDiv displayed={!collapsed}>
           <Image src="/images/recon-192x192.png" height="60" width="60" />
