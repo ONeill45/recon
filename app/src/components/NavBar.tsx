@@ -10,15 +10,9 @@ type displayProps = {
   displayed: boolean
 }
 
-const isDisplayed = ({ displayed }: displayProps) => {
-  if (displayed)
-    return css`
-      display: flex;
-    `
-  return css`
-    display: none;
-  `
-}
+const isDisplayed = ({ displayed }: displayProps) => css`
+  display: ${displayed ? 'flex' : 'none'};
+`
 
 const MainDiv = styled.div`
   height: 60px;
