@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:15.6.0-alpine
 
 WORKDIR /usr/src/api
 
@@ -8,6 +8,9 @@ RUN npm ci
 
 # Copying source files
 COPY . ./
+
+#run tests
+RUN npm run test
 
 EXPOSE 5000
 

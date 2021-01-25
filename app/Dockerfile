@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:15.6.0-alpine
 
 ENV PORT 3000
 
@@ -14,6 +14,10 @@ COPY . ./
 
 # Building app
 RUN npm run build
+
+#run tests
+RUN npm run test
+
 EXPOSE 3000
 
 CMD ["npm", "run", "dev"]
