@@ -1,5 +1,5 @@
-/** @jsxImportSource @emotion/react */
-import { keyframes } from '@emotion/react'
+/** @jsx jsx */
+import { jsx, keyframes } from '@emotion/react'
 import styled from '@emotion/styled'
 import { FaSpinner } from 'react-icons/fa'
 
