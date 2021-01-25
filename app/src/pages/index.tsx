@@ -1,18 +1,29 @@
 import React from 'react'
-import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { Button, FullPageSpinner, Spinner } from '../components'
 
-export default function Home() {
+// export const getServerSideProps = async () => {
+//   const user = undefined
+//   console.log('server render plz')
+//   if (!user) {
+//     return {
+//       redirect: {
+//         destination: '/login',
+//         permanent: false,
+//       },
+//     }
+//   }
+
+//   return {
+//     props: {},
+//   }
+// }
+
+const Home = () => {
   const [showSpinner, setShowSpinner] = React.useState(false)
 
   return (
     <div className={styles.container}>
-      <Head>
-        <title>Recon</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <main className={styles.main}>
         <h1 className={styles.title}>Welcome to Recon!</h1>
 
@@ -40,3 +51,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home
