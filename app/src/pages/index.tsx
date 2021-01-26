@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { Button, FullPageSpinner, Spinner } from '../components'
 
-export default function Home() {
-  const [showSpinner, setShowSpinner] = React.useState(false)
+const Home = () => {
+  const [showSpinner, setShowSpinner] = useState(false)
 
   return (
     <div className={styles.container}>
@@ -40,3 +40,5 @@ export default function Home() {
     </div>
   )
 }
+
+export default Home
