@@ -40,8 +40,8 @@ export const SideNavDiv = styled.div<displayProps>`
 `
 
 export const NavBar = () => {
-  const [collapsed, setCollapsed] = React.useState(false)
-  const [displaySideMenu, setDisplaySideMenu] = React.useState(false)
+  const [collapsed, setCollapsed] = useState(false)
+  const [displaySideMenu, setDisplaySideMenu] = useState(false)
 
   const buttonProperties = [
     {

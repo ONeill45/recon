@@ -1,7 +1,15 @@
+import React from 'react'
+import { act } from 'react-dom/test-utils'
+import { GiHamburgerMenu } from 'react-icons/gi'
 import { mount, shallow } from 'enzyme'
 import { matchers } from '@emotion/jest'
-import { CollapsedNavDiv, FullNavDiv, NavBar } from '../../src/components'
-import React from 'react'
+
+import {
+  CollapsedNavDiv,
+  FullNavDiv,
+  NavBar,
+  SideNavDiv,
+} from '../../src/components'
 
 expect.extend(matchers)
 
@@ -15,6 +23,14 @@ useRouter.mockImplementation(() => ({
 }))
 
 describe('<NavBar />', () => {
+  beforeEach(() => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 1024,
+    })
+  })
+
   it('should match snapshot', () => {
     const wrapper = renderWrapper()
     expect(wrapper).toMatchSnapshot()
@@ -34,7 +50,6 @@ describe('<NavBar />', () => {
       configurable: true,
       value: 200,
     })
-    global.dispatchEvent(new Event('resize'))
     const wrapper = mount(<NavBar />)
 
     expect(wrapper.exists()).toEqual(true)
@@ -42,19 +57,40 @@ describe('<NavBar />', () => {
     expect(wrapper.find(FullNavDiv).prop('displayed')).toEqual(false)
   })
 
-  // it('setOpenIndex sets the open index state properly', () => {
-  //   const wrapper = shallow(<NavBar />)
-  //   expect(wrapper.state('collapsed')).toBe(false)
-  // })
+  it('should collapse nav bar when screen is resized below threshold', () => {
+    const wrapper = mount(<NavBar />)
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 200,
+    })
+    act(() => {
+      global.dispatchEvent(new Event('resize'))
+    })
+    wrapper.update()
 
-  // it('should render itself', () => {
-  //   reactMock.useState = setHookState({
-  //     collapsed: true,
-  //     displaySideMenu: true,
-  //   })
-  //   const wrapper = shallow(<NavBar />)
-  //   expect(wrapper.exists()).toEqual(true)
-  //   expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(true)
-  //   expect(wrapper.prop('children')).toEqual('blah')
-  // })
+    expect(wrapper.exists()).toEqual(true)
+    expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(true)
+    expect(wrapper.find(FullNavDiv).prop('displayed')).toEqual(false)
+  })
+
+  it('simulates click events', () => {
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 200,
+    })
+    const wrapper = mount(<NavBar />)
+    wrapper.find(GiHamburgerMenu).simulate('click')
+
+    expect(wrapper.find(SideNavDiv).prop('displayed')).toEqual(true)
+  })
+
+  it('should call useEffect cleanup function when component is unmounted', () => {
+    const wrapper = mount(<NavBar />)
+
+    wrapper.unmount()
+
+    expect(wrapper.exists()).toEqual(false)
+  })
 })
