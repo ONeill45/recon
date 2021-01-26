@@ -1,26 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styles from '../styles/Home.module.css'
 import { Button, FullPageSpinner, Spinner } from '../components'
 
-// export const getServerSideProps = async () => {
-//   const user = undefined
-//   console.log('server render plz')
-//   if (!user) {
-//     return {
-//       redirect: {
-//         destination: '/login',
-//         permanent: false,
-//       },
-//     }
-//   }
-
-//   return {
-//     props: {},
-//   }
-// }
-
 const Home = () => {
-  const [showSpinner, setShowSpinner] = React.useState(false)
+  const [showSpinner, setShowSpinner] = useState(false)
 
   return (
     <div className={styles.container}>

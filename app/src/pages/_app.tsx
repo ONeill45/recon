@@ -4,6 +4,8 @@ import { AppProps } from 'next/app'
 import { createContext, FC, useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
+import { NavBar } from '../components'
+
 const AuthContext = createContext({})
 
 const AuthProvider: FC = ({ children }) => {
@@ -58,7 +60,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AuthProvider>
-        {/* <NavBar /> */}
+        <NavBar />
         <Component {...pageProps} />
       </AuthProvider>
     </>
