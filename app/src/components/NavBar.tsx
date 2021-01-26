@@ -19,10 +19,10 @@ const MainDiv = styled.div`
   background-color: orange;
 `
 
-const FullNavDiv = styled.div<displayProps>`
+export const FullNavDiv = styled.div<displayProps>`
   ${isDisplayed};
 `
-const CollapsedNavDiv = styled.div<displayProps>`
+export const CollapsedNavDiv = styled.div<displayProps>`
   ${isDisplayed};
   height: 100%;
   padding-left: 5px;
@@ -40,8 +40,8 @@ const SideNavDiv = styled.div<displayProps>`
 `
 
 export const NavBar = () => {
-  const [collapsed, setCollapsed] = useState(false)
-  const [displaySideMenu, setDisplaySideMenu] = useState(false)
+  const [collapsed, setCollapsed] = React.useState(false)
+  const [displaySideMenu, setDisplaySideMenu] = React.useState(false)
 
   const buttonProperties = [
     {
