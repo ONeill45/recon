@@ -7,10 +7,12 @@ expect.extend(matchers)
 
 const renderWrapper = () => shallow(<NavBar />)
 
-const reactMock = require('react')
-
-const setHookState = (newState: {}) =>
-  jest.fn().mockImplementation((state: {}) => [newState, (newState: {}) => {}])
+const useRouter = jest.spyOn(require('next/router'), 'useRouter')
+const pushHandler = jest.fn()
+useRouter.mockImplementation(() => ({
+  pathname: '/home',
+  push: pushHandler,
+}))
 
 describe('<NavBar />', () => {
   it('should match snapshot', () => {
@@ -18,17 +20,8 @@ describe('<NavBar />', () => {
     expect(wrapper).toMatchSnapshot()
   })
 
-  // it('simulates click events', () => {
-  //   jest.spyOn(React, 'useEffect').mockImplementation((f) => f())
-  //   const wrapper = renderWrapper()
-  //   wrapper.find().simulate('click')
-  //   const handler = jest.fn()
-
-  //   expect(handler).toHaveBeenCalledTimes(1)
-  // })
-
   it('should show the full nav bar by default', () => {
-    const wrapper = shallow(<NavBar />)
+    const wrapper = mount(<NavBar />)
 
     expect(wrapper.exists()).toEqual(true)
     expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(false)
@@ -36,44 +29,18 @@ describe('<NavBar />', () => {
   })
 
   it('should show the collapsed nav when screen is too small for full nav', () => {
-    const realUseState = React.useState
-    const testFunction = jest.fn()
-    // Stub the initial state
-    const stubInitialState = [true, testFunction]
-    // Mock useState before rendering your component
-    jest
-      .spyOn(React, 'useState')
-      .mockImplementation(() => realUseState(stubInitialState))
-
-    // window.matchMedia = jest.fn().mockImplementation(() => {
-    //   return {
-    //     matches: false,
-    //     media: '',
-    //     onchange: null,
-    //     addListener: jest.fn(),
-    //     removeListener: jest.fn(),
-    //   }
-    // })
-    // global.dispatchEvent(new Event('resize'))
-    const wrapper = shallow(<NavBar />)
+    Object.defineProperty(window, 'innerWidth', {
+      writable: true,
+      configurable: true,
+      value: 200,
+    })
+    global.dispatchEvent(new Event('resize'))
+    const wrapper = mount(<NavBar />)
 
     expect(wrapper.exists()).toEqual(true)
-    expect(testFunction).toHaveBeenCalledTimes(1)
-    // expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(true)
-    // expect(wrapper.find(FullNavDiv).prop('displayed')).toEqual(false)
+    expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(true)
+    expect(wrapper.find(FullNavDiv).prop('displayed')).toEqual(false)
   })
-
-  // it('should update state on click', () => {
-  //   const setCollapsed = jest.fn()
-  //   mount(<NavBar />)
-  //   const handleClick = jest.spyOn(React, 'useState')
-  //   handleClick.mockImplementation((collapsed: any) => [
-  //     collapsed,
-  //     setCollapsed,
-  //   ])
-
-  //   expect(setCollapsed).toBeTruthy()
-  // })
 
   // it('setOpenIndex sets the open index state properly', () => {
   //   const wrapper = shallow(<NavBar />)

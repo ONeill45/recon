@@ -14,7 +14,7 @@ const isDisplayed = ({ displayed }: displayProps) => css`
   display: ${displayed ? 'flex' : 'none'};
 `
 
-const MainDiv = styled.div`
+export const MainDiv = styled.div`
   height: 60px;
   background-color: orange;
 `
@@ -30,7 +30,7 @@ export const CollapsedNavDiv = styled.div<displayProps>`
   align-items: center;
 `
 
-const SideNavDiv = styled.div<displayProps>`
+export const SideNavDiv = styled.div<displayProps>`
   ${isDisplayed};
   width: 25%;
   position: fixed;
@@ -63,17 +63,18 @@ export const NavBar = () => {
   ]
 
   useEffect(() => {
-    setCollapsed(window.innerWidth < 768 ? true : false)
-    const mediaQuery = window.matchMedia('(max-width: 768px)')
-    mediaQuery.addEventListener('change', (e) => {
-      const collapsed = e.matches
+    const handleResize = () => {
+      const collapsed = window.innerWidth < 768 ? true : false
       setCollapsed(collapsed)
 
       if (!collapsed) setDisplaySideMenu(false)
-    })
+    }
 
-    return () =>
-      mediaQuery.removeEventListener('change', (e) => setCollapsed(e.matches))
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   return (
