@@ -24,7 +24,7 @@ const authProvider = new MsalAuthProvider(
   {
     auth: {
       authority: 'https://login.microsoftonline.com/common',
-      clientId: '0f2c6253-3928-4fea-b131-bf6ef8f69e9c',
+      clientId: '0f2c6253-3928-4fea-b131-bf6ef8f69e9c', // need real value
       postLogoutRedirectUri: window.location.origin,
       redirectUri: window.location.origin,
       validateAuthority: true,
