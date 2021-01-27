@@ -1,6 +1,6 @@
-import { createConnection, getConnection } from 'typeorm';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import ormConfig from './ormconfig';
+import { createConnection, getConnection } from 'typeorm'
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
+import ormConfig from './ormconfig'
 
 export {
   Connection,
@@ -9,21 +9,20 @@ export {
   In,
   Not,
   Repository,
-} from 'typeorm';
+} from 'typeorm'
 
 export const disconnect = async (): Promise<void> => {
-  await getConnection().close();
-};
+  await getConnection().close()
+}
 
-export const connect = async (
-) => {
+export const connect = async () => {
   const connectionOptions: PostgresConnectionOptions = {
     ...ormConfig,
     logging: false,
     subscribers: [],
-  };
+  }
 
   return {
     connection: await createConnection(connectionOptions),
-  };
-};
+  }
+}
