@@ -1,5 +1,6 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
+import { useAuthContext } from 'src/utils/context'
 import { NavButton } from '../components'
 import { DisplayType } from '../interfaces'
 
@@ -40,18 +41,21 @@ export const NavButtons = ({
   buttonProperties,
   displayType,
 }: navButtonProps) => {
+  const { user } = useAuthContext()
   return (
-    <NavButtonsDiv displayType={displayType}>
-      {buttonProperties.map((buttonProperty) => {
-        return (
-          <NavButton
-            key={buttonProperty.title}
-            title={buttonProperty.title}
-            route={buttonProperty.route}
-            displayType={displayType}
-          />
-        )
-      })}
-    </NavButtonsDiv>
+    user && (
+      <NavButtonsDiv displayType={displayType}>
+        {buttonProperties.map((buttonProperty) => {
+          return (
+            <NavButton
+              key={buttonProperty.title}
+              title={buttonProperty.title}
+              route={buttonProperty.route}
+              displayType={displayType}
+            />
+          )
+        })}
+      </NavButtonsDiv>
+    )
   )
 }

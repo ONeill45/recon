@@ -7,35 +7,49 @@ import React, {
 } from 'react'
 import { useRouter } from 'next/router'
 
-const AuthContext = createContext({})
+type AuthContextType = {
+  user: string | null
+  setUser: (user: string | null) => void
+}
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  setUser: () => {},
+})
 
 export const AuthProvider: FC = ({ children }) => {
-  const { pathname, events } = useRouter()
+  const { pathname, events, push } = useRouter()
   const [user, setUser] = useState<string | null>(null)
-
+  console.log('rendering', pathname)
   const getUser = async () => {
     try {
-      // implement actual logic :)
-      const token = await Promise.resolve('test')
-      setUser(token)
+      const token = localStorage.getItem('user')
+      if (token) setUser(token)
     } catch (err) {
       console.error(err)
     }
   }
 
   useEffect(() => {
-    getUser()
+    console.log('pathname useEffect:', pathname)
+    // check for token expiration?
+    if (!user) {
+      getUser()
+    }
   }, [pathname])
 
   useEffect(() => {
     const handleRouteChange = (url: string) => {
+      console.log(pathname, 'handling route change')
       if (url !== '/login' && !user) {
-        window.location.href = '/login'
+        console.log('url', url)
+        push('/login')
       }
     }
 
-    if (pathname !== '/login' && user) {
-      window.location.href = '/login'
+    if (pathname !== '/login' && !user) {
+      console.log('user useEffect:', user, pathname)
+      push('/login')
     }
 
     events.on('routeChangeStart', handleRouteChange)

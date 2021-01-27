@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { DisplayType } from '../interfaces'
+import { useAuthContext } from 'src/utils/context'
 
 type displayProps = {
   displayed: boolean
@@ -42,6 +43,7 @@ const SideNavDiv = styled.div<displayProps>`
 export const NavBar = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [displaySideMenu, setDisplaySideMenu] = useState(false)
+  const { setUser } = useAuthContext()
 
   const buttonProperties = [
     {
@@ -61,6 +63,11 @@ export const NavBar = () => {
       route: '/resources',
     },
   ]
+
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem('user')
+  }
 
   useEffect(() => {
     setCollapsed(window.innerWidth < 768 ? true : false)
@@ -89,17 +96,24 @@ export const NavBar = () => {
         </CollapsedNavDiv>
         <FullNavDiv displayed={!collapsed}>
           <Image src="/images/recon-192x192.png" height="60" width="60" />
-          <NavButtons
-            buttonProperties={buttonProperties}
-            displayType={DisplayType.ROW}
-          />
+          {
+            // @ts-ignore
+            <NavButtons
+              buttonProperties={buttonProperties}
+              displayType={DisplayType.ROW}
+            />
+          }
+          <button onClick={logout}>Log Out :D</button>
         </FullNavDiv>
       </MainDiv>
       <SideNavDiv displayed={displaySideMenu}>
-        <NavButtons
-          buttonProperties={buttonProperties}
-          displayType={DisplayType.COLUMN}
-        />
+        {
+          // @ts-ignore
+          <NavButtons
+            buttonProperties={buttonProperties}
+            displayType={DisplayType.COLUMN}
+          />
+        }
       </SideNavDiv>
     </>
   )
