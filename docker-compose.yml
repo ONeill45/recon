@@ -25,7 +25,7 @@ services:
       - ./api:/usr/src/api
       - /usr/src/api/node_modules
     env_file:
-      - api/.env
+      - api/.env.docker
     restart: always
     depends_on:
       - db
