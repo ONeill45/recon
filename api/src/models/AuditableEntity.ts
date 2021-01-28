@@ -1,34 +1,8 @@
-import { Field } from 'type-graphql'
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  UpdateDateColumn,
-} from 'typeorm'
-
-export abstract class AuditableEntity extends BaseEntity {
-  @Field(() => Date)
-  @CreateDateColumn({ name: 'created_date' })
+export abstract class AuditableEntity {
   createdDate: Date
-
-  @Field(() => String)
-  @Column({ name: 'created_by' })
   createdBy: string
-
-  @Field(() => Date)
-  @UpdateDateColumn({ name: 'updated_date' })
   updatedDate: Date
-
-  @Field(() => String)
-  @Column({ name: 'updated_by' })
   updatedBy: string
-
-  @Field(() => Date)
-  @DeleteDateColumn({ name: 'deleted_date' })
-  deletedDate: string
-
-  @Field(() => String)
-  @Column({ name: 'updated_by' })
-  deletedBy: string
+  deletedDate: string | null
+  deletedBy: string | null
 }
