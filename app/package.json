@@ -11,6 +11,7 @@
     "test": "jest -c test/jest.config.js"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.10.0",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
     "msal": "^1.4.4",
