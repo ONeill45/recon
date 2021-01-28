@@ -5,7 +5,9 @@ import Image from 'next/image'
 import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { DisplayType } from '../interfaces'
-import { useAuthContext } from 'src/utils/context'
+import { useMsal } from '@azure/msal-react'
+import { AuthenticatedTemplate } from '@azure/msal-react'
+import UserSelect from './UserSelect'
 
 type displayProps = {
   displayed: boolean
@@ -31,7 +33,7 @@ const CollapsedNavDiv = styled.div<displayProps>`
   align-items: center;
 `
 
-const SideNavDiv = styled.div<displayProps>`
+export const SideNavDiv = styled.div<displayProps>`
   ${isDisplayed};
   width: 25%;
   position: fixed;
@@ -43,7 +45,9 @@ const SideNavDiv = styled.div<displayProps>`
 export const NavBar = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [displaySideMenu, setDisplaySideMenu] = useState(false)
-  const { setUser } = useAuthContext()
+  const msal = useMsal()
+
+  console.log(msal)
 
   const buttonProperties = [
     {
@@ -63,11 +67,6 @@ export const NavBar = () => {
       route: '/resources',
     },
   ]
-
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem('user')
-  }
 
   useEffect(() => {
     setCollapsed(window.innerWidth < 768 ? true : false)
@@ -96,24 +95,20 @@ export const NavBar = () => {
         </CollapsedNavDiv>
         <FullNavDiv displayed={!collapsed}>
           <Image src="/images/recon-192x192.png" height="60" width="60" />
-          {
-            // @ts-ignore
-            <NavButtons
-              buttonProperties={buttonProperties}
-              displayType={DisplayType.ROW}
-            />
-          }
-          <button onClick={logout}>Log Out :D</button>
+          <NavButtons
+            buttonProperties={buttonProperties}
+            displayType={DisplayType.ROW}
+          />
+          <AuthenticatedTemplate>
+            <UserSelect />
+          </AuthenticatedTemplate>
         </FullNavDiv>
       </MainDiv>
       <SideNavDiv displayed={displaySideMenu}>
-        {
-          // @ts-ignore
-          <NavButtons
-            buttonProperties={buttonProperties}
-            displayType={DisplayType.COLUMN}
-          />
-        }
+        <NavButtons
+          buttonProperties={buttonProperties}
+          displayType={DisplayType.COLUMN}
+        />
       </SideNavDiv>
     </>
   )

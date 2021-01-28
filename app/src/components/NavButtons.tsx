@@ -1,8 +1,11 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { useAuthContext } from 'src/utils/context'
 import { NavButton } from '../components'
 import { DisplayType } from '../interfaces'
+import {
+  AuthenticatedTemplate,
+  UnauthenticatedTemplate,
+} from '@azure/msal-react'
 
 type navButtonProps = {
   buttonProperties: { title: string; route: string }[]
@@ -40,22 +43,17 @@ const NavButtonsDiv = styled.div<navButtonDivProps>`
 export const NavButtons = ({
   buttonProperties,
   displayType,
-}: navButtonProps) => {
-  const { user } = useAuthContext()
-  return (
-    user && (
-      <NavButtonsDiv displayType={displayType}>
-        {buttonProperties.map((buttonProperty) => {
-          return (
-            <NavButton
-              key={buttonProperty.title}
-              title={buttonProperty.title}
-              route={buttonProperty.route}
-              displayType={displayType}
-            />
-          )
-        })}
-      </NavButtonsDiv>
-    )
-  )
-}
+}: navButtonProps) => (
+  <AuthenticatedTemplate>
+    <NavButtonsDiv displayType={displayType}>
+      {buttonProperties.map((buttonProperty) => (
+        <NavButton
+          key={buttonProperty.title}
+          title={buttonProperty.title}
+          route={buttonProperty.route}
+          displayType={displayType}
+        />
+      ))}
+    </NavButtonsDiv>
+  </AuthenticatedTemplate>
+)
