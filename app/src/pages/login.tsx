@@ -13,7 +13,7 @@ const LoginDiv = styled.div({
 
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
 export const loginRequest = {
-  scopes: [],
+  scopes: ['User.Read'],
   prompt: 'select_account',
 }
 

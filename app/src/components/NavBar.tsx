@@ -13,6 +13,7 @@ import { useClickOutside } from '../utils/hooks'
 
 type displayProps = {
   displayed: boolean
+  direction?: string
 }
 
 const isDisplayed = ({ displayed }: displayProps) => css`
@@ -43,7 +44,7 @@ export const SideNavDiv = styled.div<displayProps>`
   width: 25%;
   position: fixed;
   top: 60px;
-  left: 0;
+  ${(props) => (props.direction ? `${props.direction}: 0` : '')};
   background-color: orange;
 `
 
@@ -111,7 +112,7 @@ export const NavBar = () => {
           <UserSelect />
         </AuthenticatedTemplate>
       </MainDiv>
-      <SideNavDiv displayed={displaySideMenu} ref={menuRef}>
+      <SideNavDiv displayed={displaySideMenu} ref={menuRef} direction="left">
         <NavButtons
           buttonProperties={buttonProperties}
           displayType={DisplayType.COLUMN}
