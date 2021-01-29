@@ -1,16 +1,15 @@
 import { Resolver, Query, Mutation, Arg } from 'type-graphql'
 import { Resource } from '../models'
 import { CreateResourceInput, UpdateResourceInput } from '../inputs'
-
 @Resolver()
 export class ResourceResolver {
   @Query(() => [Resource])
-  resources() {
+  async resources() {
     return Resource.find()
   }
 
-  @Query(() => Resource)
-  resource(@Arg('id') id: string) {
+  @Query(() => Resource, { nullable: true })
+  async resource(@Arg('id') id: string): Promise<Resource | null> {
     return Resource.findOne({ where: { id } })
   }
 
@@ -27,7 +26,7 @@ export class ResourceResolver {
     @Arg('data') data: UpdateResourceInput,
   ) {
     const resource = await Resource.findOne({ where: { id } })
-    if (!resource) throw new Error('Resource not found!')
+    if (!resource) throw new Error(`Resource ${id} not found!`)
     Object.assign(resource, data)
     await resource.save()
     return resource
@@ -36,8 +35,8 @@ export class ResourceResolver {
   @Mutation(() => Boolean)
   async deleteResource(@Arg('id') id: string) {
     const resource = await Resource.findOne({ where: { id } })
-    if (!resource) throw new Error('Resource not found!')
-    await resource.remove()
+    if (!resource) throw new Error(`Resource ${id} not found!`)
+    await resource.softRemove()
     return true
   }
 }

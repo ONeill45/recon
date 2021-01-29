@@ -5,12 +5,15 @@ import { buildSchema } from 'type-graphql'
 import { connect } from './database'
 import { ClientResolver, ResourceResolver } from './resolvers'
 
-async function main() {
-  await connect()
-  const schema = await buildSchema({
+export const createSchema = async () =>
+  buildSchema({
     resolvers: [ClientResolver, ResourceResolver],
   })
-  const server = new ApolloServer({ schema })
+
+async function main() {
+  await connect()
+
+  const server = new ApolloServer({ schema: await createSchema() })
   await server.listen(process.env.PORT)
   console.log('Server has started!')
 }

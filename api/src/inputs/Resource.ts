@@ -16,6 +16,12 @@ export class CreateResourceInput {
 
   @Field()
   startDate: Date
+
+  @Field()
+  createdBy: string
+
+  @Field()
+  updatedBy: string
 }
 
 @InputType()
@@ -37,4 +43,7 @@ export class UpdateResourceInput {
 
   @Field({ nullable: true })
   terminationDate?: Date
+
+  @Field()
+  updatedBy: string
 }

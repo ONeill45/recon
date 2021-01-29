@@ -24,19 +24,15 @@ export class Client extends BaseEntity implements AuditableEntity {
   @Column()
   description: string
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ name: 'logo_url', nullable: true })
-  preferredName: string
-
-  @Field(() => String)
-  @Column()
-  title: string
+  logoUrl: string
 
   @Field(() => Date)
   @Column({ name: 'start_date' })
   startDate: Date
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   @Column({ name: 'end_date', nullable: true })
   endDate: Date | null
 

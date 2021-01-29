@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export abstract class AuditableEntity {
   createdDate: Date
   createdBy: string

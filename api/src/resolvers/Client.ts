@@ -5,6 +5,6 @@ import { Client } from '../models'
 export class ClientResolver {
   @Query(() => [Client])
   clients() {
-    return Client.findAndCount()
+    return Client.find()
   }
 }

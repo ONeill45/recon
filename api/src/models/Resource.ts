@@ -27,7 +27,7 @@ export class Resource extends BaseEntity implements AuditableEntity {
 
   @Field(() => String)
   @Column({ name: 'preferred_name', nullable: true })
-  preferredName: string
+  preferredName: string | null
 
   @Field(() => String)
   @Column()
@@ -37,7 +37,7 @@ export class Resource extends BaseEntity implements AuditableEntity {
   @Column({ name: 'start_date' })
   startDate: Date
 
-  @Field(() => Date)
+  @Field(() => Date, { nullable: true })
   @Column({ name: 'termination_date', nullable: true })
   terminationDate: Date | null
 
