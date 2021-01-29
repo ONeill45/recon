@@ -2,14 +2,12 @@ import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { NavButton } from '../components'
 import { DisplayType } from '../interfaces'
-import {
-  AuthenticatedTemplate,
-  UnauthenticatedTemplate,
-} from '@azure/msal-react'
+import { AuthenticatedTemplate } from '@azure/msal-react'
 
 type navButtonProps = {
   buttonProperties: { title: string; route: string }[]
   displayType: DisplayType
+  onClick?: Function
 }
 
 type navButtonDivProps = {

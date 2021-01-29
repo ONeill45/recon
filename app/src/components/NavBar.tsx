@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react'
+/** @jsx jsx */
+import React, { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
-import { css } from '@emotion/react'
+import { css, jsx } from '@emotion/react'
 import Image from 'next/image'
 import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { DisplayType } from '../interfaces'
-import { useMsal } from '@azure/msal-react'
 import { AuthenticatedTemplate } from '@azure/msal-react'
+
+import { DisplayType } from '../interfaces'
 import UserSelect from './UserSelect'
+import { useClickOutside } from '../utils/hooks'
 
 type displayProps = {
   displayed: boolean
@@ -20,6 +22,9 @@ const isDisplayed = ({ displayed }: displayProps) => css`
 const MainDiv = styled.div`
   height: 60px;
   background-color: orange;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 const FullNavDiv = styled.div<displayProps>`
@@ -45,9 +50,10 @@ export const SideNavDiv = styled.div<displayProps>`
 export const NavBar = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [displaySideMenu, setDisplaySideMenu] = useState(false)
-  const msal = useMsal()
 
-  console.log(msal)
+  const menuRef = useRef(null)
+  const buttonId = 'hamburgerButton'
+  useClickOutside(menuRef, () => setDisplaySideMenu(false), [buttonId])
 
   const buttonProperties = [
     {
@@ -87,6 +93,7 @@ export const NavBar = () => {
       <MainDiv>
         <CollapsedNavDiv displayed={collapsed}>
           <GiHamburgerMenu
+            id={buttonId}
             size="40px"
             onClick={() => {
               setDisplaySideMenu(!displaySideMenu)
@@ -99,12 +106,12 @@ export const NavBar = () => {
             buttonProperties={buttonProperties}
             displayType={DisplayType.ROW}
           />
-          <AuthenticatedTemplate>
-            <UserSelect />
-          </AuthenticatedTemplate>
         </FullNavDiv>
+        <AuthenticatedTemplate>
+          <UserSelect />
+        </AuthenticatedTemplate>
       </MainDiv>
-      <SideNavDiv displayed={displaySideMenu}>
+      <SideNavDiv displayed={displaySideMenu} ref={menuRef}>
         <NavButtons
           buttonProperties={buttonProperties}
           displayType={DisplayType.COLUMN}

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react'
 import { useAuthContext } from 'src/utils/context'
 import { useRouter } from 'next/router'
-import { useIsAuthenticated, useMsal } from '@azure/msal-react'
-import AzureAuthenticationButton from '../components/AzureAuthenticationButton'
+import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
 
 const LoginDiv = styled.div({
@@ -15,6 +14,7 @@ const LoginDiv = styled.div({
 // Add here scopes for id token to be used at MS Identity Platform endpoints.
 export const loginRequest = {
   scopes: [],
+  prompt: 'select_account',
 }
 
 const Login = () => {
