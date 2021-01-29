@@ -1,58 +1,68 @@
 import styled from '@emotion/styled'
 import { useState } from 'react'
-import { FiFilter } from 'react-icons/fi'
 import { css } from '@emotion/react'
+import { FiFilter } from 'react-icons/fi'
 
-import { FilterOption, SearchBar } from './'
+import { FilterCategory, SearchBar } from './'
 
 type displayProps = {
   displayed: boolean
 }
 
-const isDisplayed = ({ displayed }: displayProps) => css`
-  display: ${displayed ? 'block' : 'none'};
+export const SideFilterPanelDiv = styled.div`
+  width: 20px;
+  background-color: orange;
+  border-right: 1px solid black;
+  align-items: center;
+`
+const SideFilterPanelContentDiv = styled.div`
+  text-align: center;
 `
 
-const ExpandedFilterPanel = styled.div<displayProps>`
+const FiltersTextDiv = styled.div`
+  transform: rotate(90deg);
+`
+
+const isDisplayed = ({ displayed }: displayProps) => css`
+  display: ${displayed ? 'flex' : 'none'};
+`
+
+export const ExpandedFilterPanelDiv = styled.div<displayProps>`
   ${isDisplayed};
   width: 250px;
   background-color: orange;
+  flex-direction: column;
 `
+
+const filterCategoryProperties = [
+  {
+    title: 'Clients',
+  },
+  {
+    title: 'Projects',
+  },
+  {
+    title: 'Resources',
+  },
+]
 
 export const FilterPanel = () => {
   const [expanded, setExpanded] = useState(false)
 
   return (
     <>
-      <div
-        style={{
-          width: '20px',
-          backgroundColor: 'orange',
-          borderRight: '1px solid black',
-          alignItems: 'center',
-        }}
-        onClick={() => setExpanded(!expanded)}
-      >
-        <div style={{ textAlign: 'center' }}>
+      <SideFilterPanelDiv onClick={() => setExpanded(!expanded)}>
+        <SideFilterPanelContentDiv style={{ textAlign: 'center' }}>
           <FiFilter />
-          <div style={{ transform: 'rotate(90deg)' }}>Filters</div>
-        </div>
-      </div>
-      <ExpandedFilterPanel displayed={expanded}>
-        <div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-            }}
-          >
-            <SearchBar />
-            <FilterOption title={'Clients'} />
-            <FilterOption title={'Projects'} />
-            <FilterOption title={'Resources'} />
-          </div>
-        </div>
-      </ExpandedFilterPanel>
+          <FiltersTextDiv>Filters</FiltersTextDiv>
+        </SideFilterPanelContentDiv>
+      </SideFilterPanelDiv>
+      <ExpandedFilterPanelDiv displayed={expanded}>
+        <SearchBar />
+        {filterCategoryProperties.map((property) => {
+          return <FilterCategory key={property.title} title={property.title} />
+        })}
+      </ExpandedFilterPanelDiv>
     </>
   )
 }

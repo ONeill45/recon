@@ -1,5 +1,5 @@
 export * from './Button'
-export * from './FilterOption'
+export * from './FilterCategory'
 export * from './FilterPanel'
 export * from './NavBar'
 export * from './NavButton'
