@@ -1,6 +1,9 @@
+/** @jsx jsx */
 import React, { useRef, useState, useEffect } from 'react'
 import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
+import { css, jsx } from '@emotion/react'
+import { FaUserCircle } from 'react-icons/fa'
 
 import { useAccessToken, useClickOutside, useMsAccount } from '../utils/hooks'
 import { SideNavDiv } from './'
@@ -76,7 +79,17 @@ const UserSelect = () => {
     <>
       <UserSelectDiv id={divId} onClick={toggleShow}>
         <GreetingDiv id={greetingId}>Hi {firstName}</GreetingDiv>
-        <ThumbnailImage id={imageId} src={thumbnailSrc} />
+        {thumbnailSrc ? (
+          <ThumbnailImage id={imageId} src={thumbnailSrc} />
+        ) : (
+          <FaUserCircle
+            css={css`
+              width: 48px;
+              height: 48px;
+            `}
+            id={imageId}
+          />
+        )}
       </UserSelectDiv>
 
       <SideNavDiv displayed={show} ref={selectRef} direction="right">

@@ -25,12 +25,9 @@ export const useAccessToken = () => {
 
   useEffect(() => {
     let isMounted = true
-    // need expires at?
     if (account && !accessToken) {
       getAccessToken(instance, account).then((token) => {
         if (!isMounted) return
-        console.log('getting token')
-        console.log(token)
         setAccessToken(token)
       })
     }
