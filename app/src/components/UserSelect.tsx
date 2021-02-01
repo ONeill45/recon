@@ -1,70 +1,67 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { useMsal, useAccount } from '@azure/msal-react'
+import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
-import Image from 'next/image'
-import { useClickOutside } from '../utils/hooks'
+
+import { useAccessToken, useClickOutside, useMsAccount } from '../utils/hooks'
 import { SideNavDiv } from './'
 import { Button } from './Button'
-
-export const graphConfig = {
-  graphMeEndpoint: 'https://graph.microsoft.com/v1.0/me/photos/48x48/$value',
-}
-
-const callMsGraph = async (accessToken: string) => {
-  const headers = {
-    Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'image/jpeg',
-  }
-  const options = {
-    method: 'GET',
-    headers: headers,
-  }
-  const response = await fetch(graphConfig.graphMeEndpoint, options)
-  const blob = await response.blob()
-  return URL.createObjectURL(blob)
-}
+import { callMsGraph, MsGraphEndpoints } from '../utils/functions'
 
 const UserSelectDiv = styled.div({
   cursor: 'pointer',
   fontWeight: 'bold',
-  paddingRight: '15px',
+  paddingRight: '10px',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
-  width: '150px',
 })
+
+const GreetingDiv = styled.div`
+  padding-right: 10px;
+`
 
 const NoBulletUl = styled.ul({
   listStyle: 'none',
 })
+
+const ThumbnailImage = styled.img`
+  border-radius: 24px;
+  width: 48px;
+`
 
 const UserSelect = () => {
   const [show, setShow] = useState(false)
   const [thumbnailSrc, setThumbnailSrc] = useState<string>('')
   const selectRef = useRef(null)
 
-  const { accounts, instance } = useMsal()
-  const account = useAccount(accounts[0] || {})
+  const { instance } = useMsal()
+  const account = useMsAccount()
+  const accessToken = useAccessToken()
 
-  useEffect(async () => {
-    const tokenResponse = await instance.acquireTokenSilent({
-      scopes: ['User.Read'],
-      // @ts-ignore
-      account: account,
-    })
-    const msGraphResponse = await callMsGraph(tokenResponse.accessToken)
-    console.log(msGraphResponse)
-    setThumbnailSrc(msGraphResponse || '')
-  }, [instance])
+  useEffect(() => {
+    const getMsAccountThumbnail = async () => {
+      if (accessToken) {
+        const msGraphResponse = await callMsGraph(
+          MsGraphEndpoints.USER_THUMBNAIL,
+          accessToken,
+          'blob',
+        )
+        setThumbnailSrc(msGraphResponse || '')
+      }
+    }
+    getMsAccountThumbnail()
+  }, [accessToken])
 
-  const buttonId = 'userSelectButton'
-  useClickOutside(selectRef, () => setShow(false), [buttonId])
+  const divId = 'userSelectButton',
+    greetingId = 'userSelectGreeting',
+    imageId = 'userSelectImage'
+  useClickOutside(selectRef, () => setShow(false), [divId, greetingId, imageId])
   const toggleShow = () => {
     setShow(!show)
   }
-  // @ts-ignore
-  const { homeAccountId, name } = accounts[0]
+
+  const { homeAccountId, name } = account || {}
   const firstName = name?.split(' ')[0]
+
   const logout = () => {
     if (homeAccountId) {
       const accountKeys = Object.keys(localStorage).filter((key) =>
@@ -74,11 +71,12 @@ const UserSelect = () => {
       location.reload()
     } else instance.logout()
   }
+
   return (
     <>
-      <UserSelectDiv id={buttonId} onClick={toggleShow}>
-        <div>Hi {firstName}</div>
-        <img src={thumbnailSrc} />
+      <UserSelectDiv id={divId} onClick={toggleShow}>
+        <GreetingDiv id={greetingId}>Hi {firstName}</GreetingDiv>
+        <ThumbnailImage id={imageId} src={thumbnailSrc} />
       </UserSelectDiv>
 
       <SideNavDiv displayed={show} ref={selectRef} direction="right">

@@ -21,3 +21,5 @@ export const useClickOutside = (
     }
   }, [ref])
 }
+
+export * from './msal'

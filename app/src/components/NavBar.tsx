@@ -52,9 +52,11 @@ export const NavBar = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [displaySideMenu, setDisplaySideMenu] = useState(false)
 
-  const menuRef = useRef(null)
-  const buttonId = 'hamburgerButton'
-  useClickOutside(menuRef, () => setDisplaySideMenu(false), [buttonId])
+  const menuRef = useRef(null),
+    buttonId = 'hamburgerButton',
+    menuDiv = 'hamburgerDiv'
+
+  useClickOutside(menuRef, () => setDisplaySideMenu(false), [buttonId, menuDiv])
 
   const buttonProperties = [
     {
@@ -92,7 +94,7 @@ export const NavBar = () => {
   return (
     <>
       <MainDiv>
-        <CollapsedNavDiv displayed={collapsed}>
+        <CollapsedNavDiv id={menuDiv} displayed={collapsed}>
           <GiHamburgerMenu
             id={buttonId}
             size="40px"

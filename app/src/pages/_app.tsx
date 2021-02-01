@@ -7,24 +7,31 @@ import {
   AuthenticatedTemplate,
   UnauthenticatedTemplate,
 } from '@azure/msal-react'
-import { NavBar } from '../components'
-import Login from './login'
 
-// Config object to be passed to Msal on creation
-export const msalConfig: Configuration = {
+import { Login, NavBar } from '../components'
+import { loadEnvironmentVariable } from '../utils/functions'
+
+const getMsalConfig = (): Configuration => ({
   auth: {
-    clientId: '8570b3ce-8294-4dba-9048-3f1f9f2eb7ad',
-    authority:
-      'https://login.microsoftonline.com/7f7697bc-3ee2-48f2-9d35-7cb75bddd74b',
+    clientId: loadEnvironmentVariable(
+      process.env.NEXT_PUBLIC_AZURE_CLIENT_ID,
+      'NEXT_PUBLIC_AZURE_CLIENT_ID',
+    ),
+    authority: `https://login.microsoftonline.com/${loadEnvironmentVariable(
+      process.env.NEXT_PUBLIC_AZURE_TENANT_ID,
+      'NEXT_PUBLIC_AZURE_TENANT_ID',
+    )}`,
     redirectUri: 'http://localhost:3000/',
     postLogoutRedirectUri: 'http://localhost:3000/',
   },
   cache: {
     cacheLocation: 'localStorage',
   },
-}
+})
+
 const App = ({ Component, pageProps }: AppProps) => {
-  const msalInstance = new PublicClientApplication(msalConfig)
+  const msalInstance = new PublicClientApplication(getMsalConfig())
+
   return (
     <>
       <Head>
