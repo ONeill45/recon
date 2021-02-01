@@ -7,9 +7,9 @@ import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { AuthenticatedTemplate } from '@azure/msal-react'
 
-import { DisplayType } from '../interfaces'
-import UserSelect from './UserSelect'
-import { useClickOutside } from '../utils/hooks'
+import { DisplayType } from 'interfaces'
+import { UserSelect } from 'components'
+import { useClickOutside } from 'utils/hooks'
 
 type displayProps = {
   displayed: boolean

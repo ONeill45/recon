@@ -28,7 +28,7 @@ const ThumbnailImage = styled.img`
   width: 48px;
 `
 
-const UserSelect = () => {
+export const UserSelect = () => {
   const [show, setShow] = useState(false)
   const [thumbnailSrc, setThumbnailSrc] = useState<string>('')
   const selectRef = useRef(null)
@@ -91,4 +91,3 @@ const UserSelect = () => {
     </>
   )
 }
-export default UserSelect

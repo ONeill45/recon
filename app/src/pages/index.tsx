@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styles from '../styles/Home.module.css'
-import { Button, FullPageSpinner, Spinner } from '../components'
+import { Button, FullPageSpinner, Spinner } from 'components'
 
 const Home = () => {
   const [showSpinner, setShowSpinner] = useState(false)

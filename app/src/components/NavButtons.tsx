@@ -1,7 +1,7 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
-import { NavButton } from '../components'
-import { DisplayType } from '../interfaces'
+import { NavButton } from 'components'
+import { DisplayType } from 'interfaces'
 import { AuthenticatedTemplate } from '@azure/msal-react'
 
 type navButtonProps = {

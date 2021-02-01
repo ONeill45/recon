@@ -3,7 +3,7 @@ import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
 
 import styles from '../styles/Home.module.css'
-import { Button } from './Button'
+import { Button } from 'components'
 
 const LoginDiv = styled.div`
   text-align: center;

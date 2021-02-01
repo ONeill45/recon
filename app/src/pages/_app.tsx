@@ -8,8 +8,8 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react'
 
-import { Login, NavBar } from '../components'
-import { loadEnvironmentVariable } from '../utils/functions'
+import { Login, NavBar } from 'components'
+import { loadEnvironmentVariable } from 'utils/functions'
 
 const getMsalConfig = (): Configuration => ({
   auth: {

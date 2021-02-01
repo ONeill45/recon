@@ -1,7 +1,7 @@
 import { shallow } from 'enzyme'
 import { matchers } from '@emotion/jest'
-import { NavButtons, NavButton } from '../../src/components'
-import { DisplayType } from '../../src/interfaces'
+import { NavButtons, NavButton } from 'components'
+import { DisplayType } from 'interfaces'
 
 expect.extend(matchers)
 
@@ -53,25 +53,43 @@ describe('<NavButtons />', () => {
     const wrapper = renderWrapper(buttonProperties, displayType)
 
     expect(wrapper.find(NavButton).length).toEqual(4)
-    expect(wrapper.prop('displayType')).toEqual('row')
-    expect(wrapper).toHaveStyleRule('flex-direction', 'row')
-    expect(wrapper).toHaveStyleRule('padding-left', '20px')
+    expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('row')
+    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+      'flex-direction',
+      'row',
+    )
+    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+      'padding-left',
+      '20px',
+    )
   })
 
   it('should render NavButtons in column', () => {
     const wrapper = renderWrapper(buttonProperties, DisplayType.COLUMN)
 
     expect(wrapper.find(NavButton).length).toEqual(4)
-    expect(wrapper.prop('displayType')).toEqual('column')
-    expect(wrapper).toHaveStyleRule('flex-direction', 'column')
-    expect(wrapper).toHaveStyleRule('align-items', 'flex-start')
-    expect(wrapper).toHaveStyleRule('width', '100%')
+    expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('column')
+    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+      'flex-direction',
+      'column',
+    )
+    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+      'align-items',
+      'flex-start',
+    )
+    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule('width', '100%')
   })
 
   it('should fail if displayType is invalid', () => {
     const wrapper = renderWrapper(buttonProperties, 'bad' as DisplayType)
-    expect(wrapper.prop('displayType')).toEqual('bad')
-    expect(wrapper).not.toHaveStyleRule('flex-direction', 'column')
-    expect(wrapper).not.toHaveStyleRule('flex-direction', 'row')
+    expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('bad')
+    expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
+      'flex-direction',
+      'column',
+    )
+    expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
+      'flex-direction',
+      'row',
+    )
   })
 })

@@ -17,7 +17,7 @@
     "resolveJsonModule": true,
     "strictNullChecks": true,
     "noUnusedLocals": true,
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
