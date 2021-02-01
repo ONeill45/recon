@@ -2,10 +2,9 @@ import React, { useRef, useState, useEffect } from 'react'
 import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
 
-import { useAccessToken, useClickOutside, useMsAccount } from '../utils/hooks'
-import { SideNavDiv } from './'
-import { Button } from './Button'
-import { callMsGraph, MsGraphEndpoints } from '../utils/functions'
+import { useAccessToken, useClickOutside, useMsAccount } from 'utils/hooks'
+import { Button, SideNavDiv } from 'components'
+import { callMsGraph, MsGraphEndpoints } from 'utils/functions'
 
 const UserSelectDiv = styled.div({
   cursor: 'pointer',
@@ -40,11 +39,13 @@ export const UserSelect = () => {
   useEffect(() => {
     const getMsAccountThumbnail = async () => {
       if (accessToken) {
+        console.log('calling callMsGraph')
         const msGraphResponse = await callMsGraph(
           MsGraphEndpoints.USER_THUMBNAIL,
           accessToken,
           'blob',
         )
+        console.log('msGraphRespnose', msGraphResponse)
         setThumbnailSrc(msGraphResponse || '')
       }
     }
