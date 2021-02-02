@@ -1,4 +1,4 @@
-import { ClientCard } from 'src/components'
+import { ClientCard, ClientCards } from 'src/components'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
@@ -24,15 +24,7 @@ type Client = {
   endDate: Date
 }
 
-type ClientsProps = {
-  clients: Client[]
-}
-
 const Clients = () => {
-  // console.log('clients', data)
-  // const data = {
-  //   something: 'here',
-  // }
   const [clients, setClients] = useState<Client[]>([])
 
   useEffect(() => {
@@ -40,38 +32,13 @@ const Clients = () => {
       const { data } = await axios.post('http://localhost:5000', {
         query: GET_ALL_CLIENTS,
       })
-      // const apollo = new ApolloClient({
-      //   uri: 'https://localhost:5000/graphql',
-      //   cache: new InMemoryCache(),
-      // })
-
-      // const data = await apollo.query<{
-      //   clients: Client[]
-      // }>({
-      //   query: GET_ALL_CLIENTS,
-      // })
       setClients(data.data.clients)
     }
 
     getClients()
   }, [])
 
-  return (
-    <>
-      {clients.map((client) => {
-        return <ClientCard client={client}></ClientCard>
-      })}
-
-      <div>{JSON.stringify(clients)}</div>
-    </>
-  )
+  return <ClientCards clients={clients}></ClientCards>
 }
 
-// export async function getStaticProps() {
-//   return {
-//     props: {
-//       clients: data,
-//     },
-//   }
-// }
 export default Clients
