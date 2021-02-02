@@ -1,14 +1,11 @@
-import { mount } from 'enzyme'
-// import { matchers } from '@emotion/jest'
+import { render, waitFor } from '@testing-library/react'
 import faker from 'faker'
 
 import { UserSelect } from 'components'
 
-// expect.extend(matchers)
-
 const mockAccount = {
   username: faker.internet.email(),
-  name: `${faker.name.firstName()} ${faker.name.lastName()}`,
+  name: `David ${faker.name.lastName()}`,
 }
 
 const mockAccessToken = faker.random.alphaNumeric(20)
@@ -23,31 +20,36 @@ useMsal.mockImplementation(() => ({
   accounts: [mockAccount],
 }))
 
+import { useMsAccount, useAccessToken } from 'utils/hooks'
 jest.mock('utils/hooks/msal', () => ({
   useMsAccount: jest.fn(() => mockAccount),
   useAccessToken: jest.fn(() => mockAccessToken),
 }))
+const mockedUseMsAccount = useMsAccount as jest.MockedFunction<
+  typeof useMsAccount
+>
+const mockedUseAccessToken = useAccessToken as jest.MockedFunction<
+  typeof useAccessToken
+>
 
 jest.mock('utils/functions/msal', () => ({
+  MsGraphEndpoints: { USER_THUMBNAIL: 'https://test.com' },
   callMsGraph: jest.fn().mockResolvedValue('http://localhost:3000/blah'),
 }))
 
-const renderComponent = () => mount(<UserSelect />)
-
 describe('<UserSelect />', () => {
-  it('should not render UserSelectDiv before pulling user thumbnail', () => {
-    const component = renderComponent()
-    console.log(component.debug())
-    expect(component.find('UserSelectDiv').length).toBe(0)
+  it('should not render UserSelectDiv if user is unauthenticated', async () => {
+    mockedUseMsAccount.mockImplementationOnce(() => null)
+    mockedUseAccessToken.mockImplementationOnce(() => undefined)
+
+    const { queryByText } = render(<UserSelect />)
+    await waitFor(() => Promise.resolve())
+    expect(queryByText('Hi David')).toBeNull()
   })
 
-  it('should render UserSelectDiv after pulling user thumbnail', () => {
-    const component = renderComponent()
-    console.log(component.debug())
-    expect(component.find('UserSelectDiv').length).toBe(1)
+  it('should render the UserSelectDiv if user is authenticated', async () => {
+    const { queryByText } = render(<UserSelect />)
+    await waitFor(() => Promise.resolve())
+    expect(queryByText('Hi David')).not.toBeNull()
   })
-
-  // it('should render SideNavDiv on UserSelectDiv click', () => {
-
-  // })
 })

@@ -39,13 +39,11 @@ export const UserSelect = () => {
   useEffect(() => {
     const getMsAccountThumbnail = async () => {
       if (accessToken) {
-        console.log('calling callMsGraph')
         const msGraphResponse = await callMsGraph(
           MsGraphEndpoints.USER_THUMBNAIL,
           accessToken,
           'blob',
         )
-        console.log('msGraphRespnose', msGraphResponse)
         setThumbnailSrc(msGraphResponse || '')
       }
     }
@@ -61,7 +59,7 @@ export const UserSelect = () => {
   }
 
   const { homeAccountId, name } = account || {}
-  const firstName = name?.split(' ')[0]
+  const greeting = `Hi ${name?.split(' ')[0]}`
 
   const logout = () => {
     if (homeAccountId) {
@@ -77,7 +75,7 @@ export const UserSelect = () => {
     <>
       {thumbnailSrc ? (
         <UserSelectDiv id={divId} onClick={toggleShow}>
-          <GreetingDiv id={greetingId}>Hi {firstName}</GreetingDiv>
+          <GreetingDiv id={greetingId}>{greeting}</GreetingDiv>
           <ThumbnailImage id={imageId} src={thumbnailSrc} />
         </UserSelectDiv>
       ) : null}
