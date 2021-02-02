@@ -2,7 +2,7 @@ import styled from '@emotion/styled'
 import { useState } from 'react'
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
 
-type filterCategoryrops = {
+type filterCategoryProps = {
   title: string
 }
 
@@ -17,7 +17,7 @@ export const FilterCategoryContentDiv = styled.div`
   flex-direction: column;
 `
 
-export const FilterCategory = ({ title }: filterCategoryrops) => {
+export const FilterCategory = ({ title }: filterCategoryProps) => {
   const [expanded, setExpanded] = useState(false)
   return (
     <>
