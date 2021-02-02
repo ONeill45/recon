@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
+import { useRouter } from 'next/router'
 
 import { useAccessToken, useClickOutside, useMsAccount } from 'utils/hooks'
 import { Button, SideNavDiv } from 'components'
@@ -31,6 +32,7 @@ export const UserSelect = () => {
   const [show, setShow] = useState(false)
   const [thumbnailSrc, setThumbnailSrc] = useState<string>('')
   const selectRef = useRef(null)
+  const router = useRouter()
 
   const { instance } = useMsal()
   const account = useMsAccount()
@@ -63,11 +65,12 @@ export const UserSelect = () => {
 
   const logout = () => {
     if (homeAccountId) {
+      console.log(homeAccountId)
       const accountKeys = Object.keys(localStorage).filter((key) =>
         key.startsWith(homeAccountId),
       )
       accountKeys.forEach((key) => localStorage.removeItem(key))
-      location.reload()
+      router.reload()
     } else instance.logout()
   }
 
@@ -80,7 +83,12 @@ export const UserSelect = () => {
         </UserSelectDiv>
       ) : null}
 
-      <SideNavDiv displayed={show} ref={selectRef} direction="right">
+      <SideNavDiv
+        data-testid="UserSelectMenu"
+        displayed={show}
+        ref={selectRef}
+        direction="right"
+      >
         <NoBulletUl>
           <li>
             <Button onClick={logout}>Log Out</Button>
