@@ -52,7 +52,7 @@ export const FilterPanel = () => {
   return (
     <>
       <SideFilterPanelDiv onClick={() => setExpanded(!expanded)}>
-        <SideFilterPanelContentDiv style={{ textAlign: 'center' }}>
+        <SideFilterPanelContentDiv>
           <FiFilter />
           <FiltersTextDiv>Filters</FiltersTextDiv>
         </SideFilterPanelContentDiv>
