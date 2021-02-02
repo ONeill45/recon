@@ -1,4 +1,4 @@
-import { ClientCard, ClientCards } from 'src/components'
+import { ClientCards } from 'src/components'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 
