@@ -37,6 +37,7 @@ export const SideNavDiv = styled.div<displayProps>`
   top: 60px;
   left: 0;
   background-color: orange;
+  z-index: 1;
 `
 
 export const NavBar = () => {
