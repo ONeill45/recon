@@ -1,4 +1,5 @@
 export * from './Button'
+export * from './ClientCard'
 export * from './NavBar'
 export * from './NavButton'
 export * from './NavButtons'
