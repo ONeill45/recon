@@ -1,14 +1,6 @@
 import styled from '@emotion/styled'
+import { Client } from 'src/interfaces'
 import { ClientCard } from './ClientCard'
-
-type Client = {
-  id: string
-  clientName: string
-  description: string
-  logoUrl: string
-  startDate: Date
-  endDate: Date
-}
 
 type ClientCardsProps = {
   clients: Client[]

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { formatDistance, isFuture, isPast } from 'date-fns'
+import { Client } from 'src/interfaces'
 
 const CardDiv = styled.div`
   display: flex;
@@ -15,7 +16,7 @@ const CardDiv = styled.div`
   margin: 16px;
 `
 
-const ClientDetailsDiv = styled.div`
+const CardDetailsDiv = styled.div`
   display: flex;
   flex-direction: column;
   padding: 12px;
@@ -23,18 +24,18 @@ const ClientDetailsDiv = styled.div`
   justify-content: center;
   text-align: center;
 `
-const ClientNameDiv = styled.div`
+const CardNameDiv = styled.div`
   font-size: 16px;
   font-weight: bold;
   padding: 4px;
 `
 
-const ClientDescriptionDiv = styled.div`
+const CardDescriptionDiv = styled.div`
   font-size: 12px;
   padding: 4px;
 `
 
-const ClientDurationDiv = styled.div`
+const CardDurationDiv = styled.div`
   font-size: 12px;
   padding: 4px;
   color: grey;
@@ -55,15 +56,6 @@ const LogoImg = styled.img`
   height: auto;
   width: 60px;
 `
-
-type Client = {
-  id: string
-  clientName: string
-  description: string
-  logoUrl: string
-  startDate: Date
-  endDate: Date
-}
 
 type ClientCardProps = {
   client: Client
@@ -101,11 +93,11 @@ export const ClientCard = ({ client }: ClientCardProps) => {
       <LogoDiv>
         <LogoImg src={logoUrl} />
       </LogoDiv>
-      <ClientDetailsDiv>
-        <ClientNameDiv>{clientName}</ClientNameDiv>
-        <ClientDescriptionDiv>{description}</ClientDescriptionDiv>
-        <ClientDurationDiv>{duration}</ClientDurationDiv>
-      </ClientDetailsDiv>
+      <CardDetailsDiv>
+        <CardNameDiv>{clientName}</CardNameDiv>
+        <CardDescriptionDiv>{description}</CardDescriptionDiv>
+        <CardDurationDiv>{duration}</CardDurationDiv>
+      </CardDetailsDiv>
     </CardDiv>
   )
 }

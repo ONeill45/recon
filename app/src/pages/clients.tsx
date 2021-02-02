@@ -1,6 +1,7 @@
 import { ClientCards } from 'src/components'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { Client } from 'src/interfaces'
 
 const GET_ALL_CLIENTS = `
   {
@@ -14,15 +15,6 @@ const GET_ALL_CLIENTS = `
     }
   }
 `
-
-type Client = {
-  id: string
-  clientName: string
-  description: string
-  logoUrl: string
-  startDate: Date
-  endDate: Date
-}
 
 const Clients = () => {
   const [clients, setClients] = useState<Client[]>([])
