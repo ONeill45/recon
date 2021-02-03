@@ -9,7 +9,7 @@ export const callMsGraph = async (
 ) => {
   const headers = {
     Authorization: `Bearer ${accessToken}`,
-    'Content-Type': responseType === 'json' ? 'application/json' : 'image/jpeg',
+    'Content-Type': responseType === 'blob' ? 'image/jpeg' : 'application/json',
   }
   const options = {
     method: 'GET',
