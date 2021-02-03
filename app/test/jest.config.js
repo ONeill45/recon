@@ -3,6 +3,7 @@ module.exports = {
   rootDir: '..',
   collectCoverageFrom: ['src/**/*.{ts,js,tsx}'],
   coverageDirectory: 'test/coverage',
+  coveragePathIgnorePatterns: ['/src/pages/_app.tsx'],
   testPathIgnorePatterns: ['/node_modules/', '/.next/'],
   preset: 'ts-jest',
   transform: {

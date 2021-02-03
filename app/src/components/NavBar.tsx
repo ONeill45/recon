@@ -20,7 +20,7 @@ const isDisplayed = ({ displayed }: displayProps) => css`
   display: ${displayed ? 'flex' : 'none'};
 `
 
-const MainDiv = styled.div`
+export const MainDiv = styled.div`
   height: 60px;
   background-color: orange;
   display: flex;
@@ -28,10 +28,10 @@ const MainDiv = styled.div`
   align-items: center;
 `
 
-const FullNavDiv = styled.div<displayProps>`
+export const FullNavDiv = styled.div<displayProps>`
   ${isDisplayed};
 `
-const CollapsedNavDiv = styled.div<displayProps>`
+export const CollapsedNavDiv = styled.div<displayProps>`
   ${isDisplayed};
   height: 100%;
   padding-left: 5px;
@@ -46,6 +46,7 @@ export const SideNavDiv = styled.div<displayProps>`
   top: 60px;
   ${(props) => (props.direction ? `${props.direction}: 0` : '')};
   background-color: orange;
+  z-index: 1;
 `
 
 export const NavBar = () => {
@@ -78,17 +79,18 @@ export const NavBar = () => {
   ]
 
   useEffect(() => {
-    setCollapsed(window.innerWidth < 768 ? true : false)
-    const mediaQuery = window.matchMedia('(max-width: 768px)')
-    mediaQuery.addEventListener('change', (e) => {
-      const collapsed = e.matches
+    const handleResize = () => {
+      const collapsed = window.innerWidth < 768 ? true : false
       setCollapsed(collapsed)
 
       if (!collapsed) setDisplaySideMenu(false)
-    })
+    }
 
-    return () =>
-      mediaQuery.removeEventListener('change', (e) => setCollapsed(e.matches))
+    handleResize()
+
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   return (
