@@ -11,12 +11,10 @@ const CardsDiv = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
 `
-export const ClientCards = ({ clients }: ClientCardsProps) => {
-  return (
-    <CardsDiv>
-      {clients.map((client) => {
-        return <ClientCard key={client.id} client={client}></ClientCard>
-      })}
-    </CardsDiv>
-  )
-}
+export const ClientCards = ({ clients }: ClientCardsProps) => (
+  <CardsDiv>
+    {clients.map((client) => {
+      return <ClientCard key={client.id} client={client}></ClientCard>
+    })}
+  </CardsDiv>
+)
