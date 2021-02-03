@@ -18,7 +18,7 @@
     "migration:generate": "npm run typeorm migration:generate -- -n",
     "migration:run:local": "npm run typeorm:local migration:run",
     "migration:run:docker": "npm run typeorm:docker migration:run",
-    "migration:revert": "npm run typeorm migration:revert",
+    "migration:revert": "npm run typeorm:local migration:revert",
     "lint-fix": "eslint --fix src/**/* test/**/*"
   },
   "author": "",

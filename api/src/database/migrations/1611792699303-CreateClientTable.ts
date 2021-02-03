@@ -5,7 +5,7 @@ export class CreateClientTable1611792699303 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
-      'CREATE TABLE "public"."client" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "client_name" character varying NOT NULL, "description" character varying NOT NULL, "logo_url" character varying, "title" character varying NOT NULL, "start_date" TIMESTAMP NOT NULL, "end_date" TIMESTAMP, "created_date" TIMESTAMP NOT NULL DEFAULT now(), "created_by" character varying NOT NULL, "updated_date" TIMESTAMP NOT NULL DEFAULT now(), "updated_by" character varying NOT NULL, "deleted_date" TIMESTAMP, "deleted_by" character varying, CONSTRAINT "PK_1d7f977dce904d4ffd68ce226bb" PRIMARY KEY ("id"))',
+      'CREATE TABLE "public"."client" ("id" uuid NOT NULL DEFAULT uuid_generate_v4(), "client_name" character varying NOT NULL, "description" character varying NOT NULL, "logo_url" character varying, "start_date" TIMESTAMP NOT NULL, "end_date" TIMESTAMP, "created_date" TIMESTAMP NOT NULL DEFAULT now(), "created_by" character varying NOT NULL, "updated_date" TIMESTAMP NOT NULL DEFAULT now(), "updated_by" character varying NOT NULL, "deleted_date" TIMESTAMP, "deleted_by" character varying, CONSTRAINT "PK_1d7f977dce904d4ffd68ce226bb" PRIMARY KEY ("id"))',
     )
     await queryRunner.query(
       'ALTER TABLE "public"."resource" ADD "created_date" TIMESTAMP NOT NULL DEFAULT now()',
