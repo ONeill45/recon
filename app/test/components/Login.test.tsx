@@ -25,6 +25,7 @@ describe('<Login />', () => {
   })
 
   it('should log an error if the user is not logged in on click', async () => {
+    jest.spyOn(console, 'error').mockImplementation(() => {})
     const mockInstanceError = {
       loginPopup: jest.fn(() => {
         throw new Error('An error occurred')
