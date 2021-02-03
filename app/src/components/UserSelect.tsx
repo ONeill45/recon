@@ -46,7 +46,7 @@ export const UserSelect = () => {
           accessToken,
           'blob',
         )
-        setThumbnailSrc(msGraphResponse || '')
+        setThumbnailSrc(msGraphResponse)
       }
     }
     getMsAccountThumbnail()
@@ -65,7 +65,6 @@ export const UserSelect = () => {
 
   const logout = () => {
     if (homeAccountId) {
-      console.log(homeAccountId)
       const accountKeys = Object.keys(localStorage).filter((key) =>
         key.startsWith(homeAccountId),
       )
