@@ -22,7 +22,7 @@ export const Login = () => {
     try {
       await instance.loginPopup(loginRequest)
     } catch (error) {
-      // need to implement a logger or better error catching logic
+      // TODO: need to implement a logger or better error catching logic
       console.error(error)
     }
   }
