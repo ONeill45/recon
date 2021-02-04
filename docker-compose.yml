@@ -50,6 +50,7 @@ services:
     volumes:
       - ./app:/usr/src/app
       - /usr/src/app/.next
+      - /usr/src/app/node_modules
     restart: always
     depends_on:
       - recon-api
