@@ -1,9 +1,7 @@
-import { ClientCards } from '../components'
-import axios from 'axios'
-import { useEffect, useState } from 'react'
-import { Client } from 'src/interfaces'
+import { ClientCards, PlusCircle } from '../../components'
+import { gql, useQuery } from '@apollo/client'
 
-const GET_ALL_CLIENTS = `
+const GET_ALL_CLIENTS = gql`
   {
     clients {
       id
@@ -17,20 +15,20 @@ const GET_ALL_CLIENTS = `
 `
 
 const Clients = () => {
-  const [clients, setClients] = useState<Client[]>([])
+  const { data, loading, error } = useQuery(GET_ALL_CLIENTS)
 
-  useEffect(() => {
-    const getClients = async () => {
-      const { data } = await axios.post('http://localhost:5000', {
-        query: GET_ALL_CLIENTS,
-      })
-      setClients(data.data.clients)
-    }
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
 
-    getClients()
-  }, [])
+  // page not reloading when data is updated/new client is added
+  const { clients } = data
 
-  return <ClientCards clients={clients}></ClientCards>
+  return (
+    <>
+      <PlusCircle size={'75'} route={'/clients/new'} />
+      <ClientCards clients={clients}></ClientCards>
+    </>
+  )
 }
 
 export default Clients

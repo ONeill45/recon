@@ -1,6 +1,6 @@
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import React from 'react'
+import { gql, useMutation } from '@apollo/client'
 
 const NewClient = () => {
   const [clientName, setClientName] = React.useState('')
@@ -9,30 +9,25 @@ const NewClient = () => {
   const [startDate, setStartDate] = React.useState('')
   const router = useRouter()
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    const createClient = async () => {
-      await axios.post('http://localhost:5000', {
-        query: `
-        mutation CreateClient {
-          createClient(data: { clientName: "${clientName}", description: "${description}", logoUrl: "${logoUrl}", startDate: "${startDate}", createdBy: "c66b4b9e-e4e1-4c64-91c1-24bccf4ec831", updatedBy: "c66b4b9e-e4e1-4c64-91c1-24bccf4ec831" }) {
-            id
-          }
-        }
-      `,
-      })
-    }
-    try {
-      createClient()
-      router.push('/clients')
-    } catch (err) {
-      console.log(err)
+  const [createClient] = useMutation(gql`
+  mutation CreateClient {
+    createClient(data: { clientName: "${clientName}", description: "${description}", logoUrl: "${logoUrl}", startDate: "${startDate}", createdBy: "c66b4b9e-e4e1-4c64-91c1-24bccf4ec831", updatedBy: "c66b4b9e-e4e1-4c64-91c1-24bccf4ec831" }) {
+      id
     }
   }
+  `)
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          createClient({
+            variables: { clientName, description, logoUrl, startDate },
+          })
+          router.push('/clients')
+        }}
+      >
         <label>
           Client Name:
           <input
