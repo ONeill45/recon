@@ -4,9 +4,9 @@ import styles from '../styles/Home.module.css'
 import { Button } from '../components'
 import { useRouter } from 'next/router'
 
-export default function Custom404() {
+export default function e404() {
 
-  const router = useRouter()
+const router = useRouter()
   
   return (
     <div className={styles.container}>
