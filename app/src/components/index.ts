@@ -1,4 +1,7 @@
 export * from './Button'
+export * from './Card'
+export * from './ClientCard'
+export * from './ClientCards'
 export * from './FilterCategory'
 export * from './FilterPanel'
 export * from './NavBar'

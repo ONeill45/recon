@@ -1,41 +1,49 @@
-import { InputType, Field } from "type-graphql";
+import { InputType, Field } from 'type-graphql'
 
 @InputType()
 export class CreateResourceInput {
   @Field()
-  firstName: string;
+  firstName: string
 
   @Field()
-  lastName: string;
+  lastName: string
 
-  @Field({ nullable: true})
-  preferredName?: string;
-
-  @Field()
-  title: string;
+  @Field({ nullable: true })
+  preferredName?: string
 
   @Field()
-  startDate: Date;
+  title: string
+
+  @Field()
+  startDate: Date
+
+  @Field()
+  createdBy: string
+
+  @Field()
+  updatedBy: string
 }
 
 @InputType()
 export class UpdateResourceInput {
   @Field()
-  firstName?: string;
+  firstName?: string
 
   @Field()
-  lastName?: string;
+  lastName?: string
 
   @Field({ nullable: true })
-  preferredName?: string;
+  preferredName?: string
 
   @Field()
-  title?: string;
+  title?: string
 
   @Field()
-  startDate?: Date;
+  startDate?: Date
 
   @Field({ nullable: true })
-  terminationDate?: Date;
+  terminationDate?: Date
+
+  @Field()
+  updatedBy: string
 }
-

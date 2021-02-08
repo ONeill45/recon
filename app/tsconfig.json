@@ -16,7 +16,6 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "noUnusedLocals": true,
     "baseUrl": ".",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
