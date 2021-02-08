@@ -4,7 +4,7 @@ import styles from '../styles/Home.module.css'
 import { Button } from '../components'
 import { useRouter } from 'next/router'
 
-export default function e404() {
+const e404 = () => {
 
 const router = useRouter()
   
@@ -27,3 +27,5 @@ const router = useRouter()
     </div>
   )
 }
+
+export default e404
