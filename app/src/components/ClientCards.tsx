@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Client } from 'src/interfaces'
+import { Client } from 'interfaces'
 import { ClientCard } from './ClientCard'
 
 type ClientCardsProps = {

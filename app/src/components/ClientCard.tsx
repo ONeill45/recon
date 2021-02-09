@@ -1,4 +1,4 @@
-import { Client } from 'src/interfaces'
+import { Client } from 'interfaces'
 import { getDurationText } from '../utils'
 import {
   CardDescriptionDiv,
