@@ -14,6 +14,9 @@ export class CreateClientInput {
   @Field()
   startDate: Date
 
+  @Field({ nullable: true })
+  endDate?: Date
+
   @Field()
   createdBy: string
 

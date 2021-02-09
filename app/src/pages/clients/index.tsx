@@ -15,17 +15,18 @@ const GET_ALL_CLIENTS = gql`
 `
 
 const Clients = () => {
-  const { data, loading, error } = useQuery(GET_ALL_CLIENTS)
+  const { data, loading, error } = useQuery(GET_ALL_CLIENTS, {
+    fetchPolicy: 'network-only',
+  })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
-  // page not reloading when data is updated/new client is added
   const { clients } = data
 
   return (
     <>
-      <PlusCircle size={'75'} route={'/clients/new'} />
+      <PlusCircle size={'50'} route={'/clients/new'} />
       <ClientCards clients={clients}></ClientCards>
     </>
   )
