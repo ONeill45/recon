@@ -1,6 +1,5 @@
 module.exports = {
   env: {
-    browser: true,
     es6: true,
     node: true,
     jest: true,
@@ -13,21 +12,15 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
     ecmaVersion: 2018,
     sourceType: 'module',
   },
-  plugins: ['react', '@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint'],
   rules: {
-    //indent: ['error', 2, { SwitchCase: 1 }],
-    indent: 'off',
-    '@typescript-eslint/indent': ['error', 2, { SwitchCase: 1 }],
+    indent: ['error', 2, { SwitchCase: 1 }],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
-    'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
     'no-console': 'warn',
   },
 }

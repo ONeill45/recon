@@ -15,6 +15,18 @@ services:
     command: -p 5433
     volumes:
       - db-data:/var/lib/postgresql/data
+  test-db:
+    image: postgres:11
+    restart: always
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=test
+    expose:
+      - '6433'
+    ports:
+      - 6433:6433
+    command: -p 6433
   recon-api:
     ports:
       - 5000:5000
@@ -25,7 +37,7 @@ services:
       - ./api:/usr/src/api
       - /usr/src/api/node_modules
     env_file:
-      - api/.env
+      - api/.env.docker
     restart: always
     depends_on:
       - db
@@ -37,8 +49,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./app:/usr/src/app
-      - /usr/src/app/node_modules
       - /usr/src/app/.next
+      - /usr/src/app/node_modules
     env_file:
       - app/.env
     restart: always
