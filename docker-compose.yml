@@ -1,4 +1,4 @@
-version: "3.3"
+version: '3.3'
 
 services:
   db:
@@ -9,7 +9,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=recon
     expose:
-      - "5433"
+      - '5433'
     ports:
       - 5433:5433
     command: -p 5433
@@ -39,6 +39,8 @@ services:
       - ./app:/usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/.next
+    env_file:
+      - app/.env
     restart: always
     depends_on:
       - recon-api
