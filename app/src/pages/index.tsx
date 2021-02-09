@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { Button, FilterPanel, FullPageSpinner, Spinner } from '../components'
 
@@ -9,10 +8,6 @@ const Home = () => {
   return (
     <>
       <div className={styles.container}>
-        <Head>
-          <title>Recon</title>
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
         <FilterPanel />
         <main className={styles.main}>
           <h1 className={styles.title}>Welcome to Recon!</h1>

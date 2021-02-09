@@ -1,7 +1,7 @@
 import { ClientCards } from '../components'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import { Client } from 'src/interfaces'
+import { Client } from 'interfaces'
 
 const GET_ALL_CLIENTS = `
   {
