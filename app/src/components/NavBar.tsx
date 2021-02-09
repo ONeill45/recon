@@ -1,13 +1,19 @@
-import React, { useEffect, useState } from 'react'
+/** @jsx jsx */
+import React, { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
-import { css } from '@emotion/react'
+import { css, jsx } from '@emotion/react'
 import Image from 'next/image'
 import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { DisplayType } from '../interfaces'
+import { AuthenticatedTemplate } from '@azure/msal-react'
+
+import { DisplayType } from 'interfaces'
+import { UserSelect } from 'components'
+import { useClickOutside } from 'utils/hooks'
 
 type displayProps = {
   displayed: boolean
+  direction?: string
 }
 
 const isDisplayed = ({ displayed }: displayProps) => css`
@@ -17,6 +23,9 @@ const isDisplayed = ({ displayed }: displayProps) => css`
 export const MainDiv = styled.div`
   height: 60px;
   background-color: orange;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 
 export const FullNavDiv = styled.div<displayProps>`
@@ -35,7 +44,7 @@ export const SideNavDiv = styled.div<displayProps>`
   width: 25%;
   position: fixed;
   top: 60px;
-  left: 0;
+  ${(props) => (props.direction ? `${props.direction}: 0` : '')};
   background-color: orange;
   z-index: 1;
 `
@@ -43,6 +52,12 @@ export const SideNavDiv = styled.div<displayProps>`
 export const NavBar = () => {
   const [collapsed, setCollapsed] = useState(false)
   const [displaySideMenu, setDisplaySideMenu] = useState(false)
+
+  const menuRef = useRef(null),
+    buttonId = 'hamburgerButton',
+    menuDiv = 'hamburgerDiv'
+
+  useClickOutside(menuRef, () => setDisplaySideMenu(false), [buttonId, menuDiv])
 
   const buttonProperties = [
     {
@@ -81,8 +96,9 @@ export const NavBar = () => {
   return (
     <>
       <MainDiv>
-        <CollapsedNavDiv displayed={collapsed}>
+        <CollapsedNavDiv id={menuDiv} displayed={collapsed}>
           <GiHamburgerMenu
+            id={buttonId}
             size="40px"
             onClick={() => {
               setDisplaySideMenu(!displaySideMenu)
@@ -96,8 +112,11 @@ export const NavBar = () => {
             displayType={DisplayType.ROW}
           />
         </FullNavDiv>
+        <AuthenticatedTemplate>
+          <UserSelect />
+        </AuthenticatedTemplate>
       </MainDiv>
-      <SideNavDiv displayed={displaySideMenu}>
+      <SideNavDiv displayed={displaySideMenu} ref={menuRef} direction="left">
         <NavButtons
           buttonProperties={buttonProperties}
           displayType={DisplayType.COLUMN}

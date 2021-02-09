@@ -11,6 +11,8 @@
     "test": "jest -c test/jest.config.js --no-cache --runInBand --forceExit --detectOpenHandles"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.10.0",
+    "@azure/msal-react": "^1.0.0-alpha.3",
     "@apollo/client": "^3.3.7",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
@@ -26,6 +28,9 @@
   "devDependencies": {
     "@emotion/babel-plugin": "^11.1.2",
     "@emotion/jest": "^11.1.0",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.4",
+    "@testing-library/react-hooks": "^5.0.3",
     "@types/enzyme": "^3.10.8",
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/faker": "^5.1.6",

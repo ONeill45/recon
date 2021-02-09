@@ -14,6 +14,7 @@ type buttonProps = {
 }
 
 const Button = styled.button<buttonProps>`
+  cursor: pointer;
   border: none;
   padding: ${(props) =>
     props.displayType === DisplayType.COLUMN ? '12px' : '0 12px'};
