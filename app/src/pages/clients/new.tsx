@@ -1,5 +1,5 @@
 import React from 'react'
-import { NewClientForm } from 'src/components'
+import { NewClientForm } from 'components'
 
 const NewClient = () => {
   return (

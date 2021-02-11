@@ -19,7 +19,10 @@ const PlusCircleDiv = styled.div`
 export const PlusCircle = ({ size, route }: plusCircleProps) => {
   const router = useRouter()
   return (
-    <PlusCircleDiv onClick={() => router.push(route)}>
+    <PlusCircleDiv
+      data-testid="PlusCircleDiv"
+      onClick={() => router.push(route)}
+    >
       <BsPlusCircle size={size} />
     </PlusCircleDiv>
   )

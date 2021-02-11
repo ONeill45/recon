@@ -85,7 +85,7 @@ describe('ClientResolver', () => {
   })
 })
 
-describe('createRClient()', () => {
+describe('createClient()', () => {
   const createClientMutation = `
   mutation CreateClient($data: CreateClientInput!) {
     createClient (data: $data) {

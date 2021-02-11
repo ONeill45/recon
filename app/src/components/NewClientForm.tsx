@@ -5,6 +5,8 @@ import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
+import { useMsAccount } from 'utils/hooks'
+
 const CreateClientForm = styled.form`
   margin-top: 30px;
   padding-left: 35%;
@@ -22,8 +24,14 @@ const CreateClientFormInput = styled.input`
   margin: 8px 0;
 `
 
-const DateInputDiv = styled.div`
-  z-index: 1;
+const SubmitButton = styled.button``
+
+const CREATE_CLIENT = gql`
+  mutation CreateClient($data: CreateClientInput!) {
+    createClient(data: $data) {
+      id
+    }
+  }
 `
 
 export const NewClientForm = () => {
@@ -33,42 +41,36 @@ export const NewClientForm = () => {
   const [startDate, setStartDate] = React.useState(new Date())
   const [endDate, setEndDate] = React.useState<Date | null>(null)
   const router = useRouter()
+  const account = useMsAccount()
 
-  const nullEndDateChecker = (date: Date | null) => {
-    if (date) return `endDate: "${date}",`
-    return ''
-  }
+  const [createClient] = useMutation(CREATE_CLIENT)
 
-  const [createClient] = useMutation(gql`
-  mutation CreateClient {
-    createClient(data: { 
-      clientName: "${clientName}", 
-      description: "${description}", 
-      logoUrl: "${logoUrl}", 
-      startDate: "${startDate}", 
-      ${nullEndDateChecker(endDate)}
-      createdBy: "c66b4b9e-e4e1-4c64-91c1-24bccf4ec831", 
-      updatedBy: "c66b4b9e-e4e1-4c64-91c1-24bccf4ec831", 
-    }) {
-      id
-    }
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await createClient({
+      variables: {
+        data: {
+          clientName,
+          description,
+          logoUrl,
+          startDate,
+          endDate,
+          createdBy: account?.username,
+          updatedBy: account?.username,
+        },
+      },
+    })
+    router.push('/clients')
   }
-  `)
 
   return (
     <>
-      <CreateClientForm
-        onSubmit={async (e) => {
-          e.preventDefault()
-          await createClient()
-          router.push('/clients')
-        }}
-      >
+      <CreateClientForm onSubmit={(e) => onSubmit(e)}>
         <CreateClientFormLabel>
           Client Name
           <CreateClientFormInput
             type="text"
-            name="clientName"
+            aria-label="client-name"
             onChange={(e) => setClientName(e.target.value)}
           />
         </CreateClientFormLabel>
@@ -76,7 +78,7 @@ export const NewClientForm = () => {
           Description
           <CreateClientFormInput
             type="text"
-            name="description"
+            aria-label="description"
             onChange={(e) => setDescription(e.target.value)}
           />
         </CreateClientFormLabel>
@@ -84,31 +86,27 @@ export const NewClientForm = () => {
           Logo Url (Optional)
           <CreateClientFormInput
             type="text"
-            name="logoUrl"
+            aria-label="logo-url"
             onChange={(e) => setLogoUrl(e.target.value)}
           />
         </CreateClientFormLabel>
         <CreateClientFormLabel>
           Start Date
-          <DateInputDiv>
-            <DatePicker
-              name="startDate"
-              selected={startDate}
-              onChange={(date: Date) => setStartDate(date)}
-            />
-          </DateInputDiv>
+          <DatePicker
+            selected={startDate}
+            onChange={(date: Date) => setStartDate(date)}
+          />
         </CreateClientFormLabel>
         <CreateClientFormLabel>
           End Date (Optional)
-          <DateInputDiv>
-            <DatePicker
-              name="endDate"
-              selected={endDate}
-              onChange={(date: Date) => setEndDate(date)}
-            />
-          </DateInputDiv>
+          <DatePicker
+            selected={endDate}
+            onChange={(date: Date) => setEndDate(date)}
+          />
         </CreateClientFormLabel>
-        <CreateClientFormInput type="submit" value="Submit" />
+        <SubmitButton type="submit" name="Submit">
+          Submit
+        </SubmitButton>
       </CreateClientForm>
     </>
   )
