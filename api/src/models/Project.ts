@@ -6,10 +6,13 @@ import {
   DeleteDateColumn,
   CreateDateColumn,
   BaseEntity,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
 import { ProjectType } from './enums'
+import { Client } from './'
 
 @Entity()
 @ObjectType()
@@ -22,9 +25,10 @@ export class Project extends BaseEntity implements AuditableEntity {
   @Column({ name: 'project_name' })
   projectName: string
 
-  @Field(() => String)
-  @Column({ name: 'client_id' })
-  clientId: string
+  @Field(() => Client)
+  @ManyToOne(() => Client, { eager: true })
+  @JoinColumn({ name: 'client_id' })
+  client: Client
 
   @Field(() => Date)
   @Column({ name: 'start_date' })
