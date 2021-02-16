@@ -1,9 +1,13 @@
-import { shallow } from 'enzyme'
-import { matchers } from '@emotion/jest'
+import { AccountInfo } from '@azure/msal-browser'
+import { getByTitle, render, screen } from '@testing-library/react'
 import { NavButtons, NavButton } from 'components'
 import { DisplayType } from 'interfaces'
-
-expect.extend(matchers)
+import {
+  mockAccount,
+  mockAccessToken,
+  mockedUseAccessToken,
+  mockedUseMsAccount,
+} from '../testUtils'
 
 const buttonProperties = [
   {
@@ -24,19 +28,19 @@ const buttonProperties = [
   },
 ]
 const displayType = DisplayType.ROW
+const defaultRoute = '/home'
 
-const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-const pushHandler = jest.fn()
-useRouter.mockImplementation(() => ({
-  pathname: '/home',
-  push: pushHandler,
+const navHandler = jest.fn()
+jest.spyOn(require('next/router'), 'useRouter').mockImplementation(() => ({
+  pathname: defaultRoute,
+  push: navHandler,
 }))
 
-const renderWrapper = (
+const renderComponent = (
   buttonProperties: { title: string; route: string }[],
   displayType: DisplayType,
 ) =>
-  shallow(
+  render(
     <NavButtons
       buttonProperties={buttonProperties}
       displayType={displayType}
@@ -44,52 +48,55 @@ const renderWrapper = (
   )
 
 describe('<NavButtons />', () => {
-  it('should match snapshot', () => {
-    const wrapper = renderWrapper(buttonProperties, displayType)
-    expect(wrapper).toMatchSnapshot()
+  beforeEach(() => {
+    mockedUseMsAccount.mockImplementation(() => mockAccount as AccountInfo)
+    mockedUseAccessToken.mockImplementation(() => mockAccessToken)
+  })
+  it('should not render NavButtons if user is unauthenticated', () => {
+    mockedUseMsAccount.mockImplementation(() => null)
+    mockedUseAccessToken.mockImplementation(() => undefined)
+    const { getByRole } = renderComponent(buttonProperties, displayType)
+
+    // const homeButton = getByTitle('Home')
+    expect(getByRole('button')).toEqual(0)
+    // expect(wrapper.find(NavButton).length).toEqual(4)
+    // expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('row')
+    // expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+    //   'flex-direction',
+    //   'row',
+    // )
+    // expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+    //   'padding-left',
+    //   '20px',
+    // )
   })
 
-  it('should render NavButtons in row', () => {
-    const wrapper = renderWrapper(buttonProperties, displayType)
+  // it('should render NavButtons in column', () => {
+  //   const wrapper = renderComponent(buttonProperties, DisplayType.COLUMN)
 
-    expect(wrapper.find(NavButton).length).toEqual(4)
-    expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('row')
-    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-      'flex-direction',
-      'row',
-    )
-    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-      'padding-left',
-      '20px',
-    )
-  })
+  //   expect(wrapper.find(NavButton).length).toEqual(4)
+  //   expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('column')
+  //   expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+  //     'flex-direction',
+  //     'column',
+  //   )
+  //   expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
+  //     'align-items',
+  //     'flex-start',
+  //   )
+  //   expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule('width', '100%')
+  // })
 
-  it('should render NavButtons in column', () => {
-    const wrapper = renderWrapper(buttonProperties, DisplayType.COLUMN)
-
-    expect(wrapper.find(NavButton).length).toEqual(4)
-    expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('column')
-    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-      'flex-direction',
-      'column',
-    )
-    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-      'align-items',
-      'flex-start',
-    )
-    expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule('width', '100%')
-  })
-
-  it('should fail if displayType is invalid', () => {
-    const wrapper = renderWrapper(buttonProperties, 'bad' as DisplayType)
-    expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('bad')
-    expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
-      'flex-direction',
-      'column',
-    )
-    expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
-      'flex-direction',
-      'row',
-    )
-  })
+  // it('should fail if displayType is invalid', () => {
+  //   const wrapper = renderWrapper(buttonProperties, 'bad' as DisplayType)
+  //   expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('bad')
+  //   expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
+  //     'flex-direction',
+  //     'column',
+  //   )
+  //   expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
+  //     'flex-direction',
+  //     'row',
+  //   )
+  // })
 })

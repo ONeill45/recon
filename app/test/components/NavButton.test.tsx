@@ -1,74 +1,58 @@
-import { shallow } from 'enzyme'
-import { matchers } from '@emotion/jest'
+import { render } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { NavButton } from '../../src/components'
 import { DisplayType } from '../../src/interfaces'
 
-expect.extend(matchers)
+const defaultTitle = 'Home'
+const defaultRoute = '/home'
 
-const title = 'Home'
-const route = '/home'
-const displayType = DisplayType.ROW
+const fontColor = {
+  selected: 'white',
+  unselected: 'black',
+}
 
-const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-const pushHandler = jest.fn()
-useRouter.mockImplementation(() => ({
-  pathname: '/home',
-  push: pushHandler,
+const navHandler = jest.fn()
+jest.spyOn(require('next/router'), 'useRouter').mockImplementation(() => ({
+  pathname: defaultRoute,
+  push: navHandler,
 }))
 
-const renderWrapper = (
-  title: string,
-  route: string,
-  displayType: DisplayType,
+const renderComponent = (
+  title: string = defaultTitle,
+  route: string = defaultRoute,
 ) =>
-  shallow(<NavButton title={title} route={route} displayType={displayType} />)
+  render(
+    <NavButton title={title} route={route} displayType={DisplayType.ROW} />,
+  )
 
 describe('<NavButton />', () => {
-  it('should match snapshot', () => {
-    const wrapper = renderWrapper(title, route, displayType)
-    expect(wrapper).toMatchSnapshot()
-  })
+  it('should render a selected NavButton', () => {
+    const { getByText } = renderComponent()
+    const homeButton = getByText('Home')
 
-  it('should render a selected NavButton in row', () => {
-    const wrapper = renderWrapper(title, route, displayType)
+    expect(homeButton).toBeTruthy()
 
-    expect(wrapper.prop('children')).toEqual(title)
-    expect(wrapper.prop('selected')).toEqual(true)
-    expect(wrapper).toHaveStyleRule('color', 'white')
-    expect(wrapper).toHaveStyleRule('padding', '0 12px')
+    const { color } = window.getComputedStyle(homeButton)
+    expect(color).toEqual(fontColor.selected)
   })
 
   it('should render a unselected NavButton in row', () => {
-    const wrapper = renderWrapper(title, '/resources', displayType)
+    const { getByText } = renderComponent('Resources', '/resources')
+    const resourceButton = getByText('Resources')
 
-    expect(wrapper.prop('children')).toEqual(title)
-    expect(wrapper.prop('selected')).toEqual(false)
-    expect(wrapper).toHaveStyleRule('color', 'black')
-    expect(wrapper).toHaveStyleRule('padding', '0 12px')
+    expect(resourceButton).toBeTruthy()
+
+    const { color } = window.getComputedStyle(resourceButton)
+    expect(color).toEqual(fontColor.unselected)
   })
 
-  it('should render a selected NavButton in column', () => {
-    const wrapper = renderWrapper(title, route, DisplayType.COLUMN)
+  it('should navigate to requested new page when clicked', () => {
+    const { getByText } = renderComponent()
+    const homeButton = getByText('Home')
 
-    expect(wrapper.prop('children')).toEqual(title)
-    expect(wrapper.prop('selected')).toEqual(true)
-    expect(wrapper).toHaveStyleRule('color', 'white')
-    expect(wrapper).toHaveStyleRule('padding', '12px')
-  })
+    userEvent.click(homeButton)
 
-  it('should render a unselected NavButton in column', () => {
-    const wrapper = renderWrapper(title, '/resources', DisplayType.COLUMN)
-
-    expect(wrapper.prop('children')).toEqual(title)
-    expect(wrapper.prop('selected')).toEqual(false)
-    expect(wrapper).toHaveStyleRule('color', 'black')
-    expect(wrapper).toHaveStyleRule('padding', '12px')
-  })
-
-  it('simulates click events', () => {
-    const wrapper = renderWrapper(title, '/resources', DisplayType.COLUMN)
-    wrapper.simulate('click')
-
-    expect(pushHandler).toHaveBeenCalledTimes(1)
+    expect(navHandler).toHaveBeenCalledTimes(1)
+    expect(navHandler).toHaveBeenCalledWith('/home')
   })
 })
