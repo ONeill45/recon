@@ -4,6 +4,8 @@ export interface Resource {
   lastName: string
   preferredName: string
   title: string
+  department: string
+  imageUrl: string
   startDate: Date
   terminationDate: Date
   createdBy: string

@@ -9,7 +9,6 @@ import {
   LogoDiv,
   LogoImg,
 } from './Card'
-import faker from 'faker'
 
 type ResourceCardProps = {
   resource: Resource
@@ -21,6 +20,8 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
     lastName,
     preferredName,
     title,
+    department,
+    imageUrl,
     startDate,
     terminationDate,
   } = resource
@@ -29,13 +30,14 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
   return (
     <CardDiv>
       <LogoDiv>
-        <LogoImg src={faker.image.avatar.toString()} />
+        <LogoImg src={imageUrl} />
       </LogoDiv>
       <CardDetailsDiv>
         <CardNameDiv>
           {preferredName ? preferredName : firstName} {lastName}
         </CardNameDiv>
         <CardDescriptionDiv>{title}</CardDescriptionDiv>
+        <CardDescriptionDiv>{department}</CardDescriptionDiv>
         <CardDurationDiv>{duration}</CardDurationDiv>
       </CardDetailsDiv>
     </CardDiv>

@@ -9,50 +9,26 @@ import {
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
-import { DepartmentNames } from './'
+
+export enum DepartmentNames {
+  DATA = 'Data Analytics',
+  DESIGN = 'Design',
+  DEV = 'Development Services',
+  DEVOPS = 'Development Operations',
+  PMO = 'Project Management',
+  QA = 'Quality Assurance',
+}
 
 @Entity()
 @ObjectType()
-export class Resource extends BaseEntity implements AuditableEntity {
+export class Department extends BaseEntity implements AuditableEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string
 
   @Field(() => String)
-  @Column({ name: 'first_name', nullable: true })
-  firstName: string
-
-  @Field(() => String)
-  @Column({ name: 'last_name' })
-  lastName: string
-
-  @Field(() => String)
-  @Column({ name: 'preferred_name', nullable: true })
-  preferredName: string | null
-
-  @Field(() => String)
-  @Column()
-  title: string
-
-  @Field(() => String)
-  @Column({
-    type: 'enum',
-    enum: DepartmentNames,
-    unique: true,
-  })
-  department: DepartmentNames
-
-  @Field(() => String, { nullable: true })
-  @Column({ name: 'image_url', nullable: true })
-  imageUrl: string | null
-
-  @Field(() => Date)
-  @Column({ name: 'start_date' })
-  startDate: Date
-
-  @Field(() => Date, { nullable: true })
-  @Column({ name: 'termination_date', nullable: true })
-  terminationDate: Date | null
+  @Column({ name: 'department_name' })
+  departmentName: DepartmentNames
 
   @Field(() => Date)
   @CreateDateColumn({ name: 'created_date' })

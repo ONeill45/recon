@@ -1,4 +1,4 @@
-import { ResourceCards } from '../../components'
+import { ResourceCards, PlusCircle } from '../../components'
 import { gql, useQuery } from '@apollo/client'
 
 const GET_ALL_RESOURCES = gql`
@@ -27,7 +27,7 @@ const Resources = () => {
 
   return (
     <>
-      {/* <PlusCircle size={'50'} route={'/resources/new'} /> */}
+      <PlusCircle size={'50'} route={'/resources/new'} />
       <ResourceCards resources={resources}></ResourceCards>
     </>
   )
