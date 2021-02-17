@@ -2,6 +2,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { NavButton } from '../../src/components'
 import { DisplayType } from '../../src/interfaces'
+import { mockUseRouter } from '../testUtils'
 
 const defaultTitle = 'Home'
 const defaultRoute = '/home'
@@ -11,11 +12,9 @@ const fontColor = {
   unselected: 'black',
 }
 
-const navHandler = jest.fn()
-jest.spyOn(require('next/router'), 'useRouter').mockImplementation(() => ({
-  pathname: defaultRoute,
-  push: navHandler,
-}))
+jest
+  .spyOn(require('next/router'), 'useRouter')
+  .mockImplementation(() => require('../testUtils').mockUseRouter)
 
 const renderComponent = (
   title: string = defaultTitle,
@@ -52,7 +51,7 @@ describe('<NavButton />', () => {
 
     userEvent.click(homeButton)
 
-    expect(navHandler).toHaveBeenCalledTimes(1)
-    expect(navHandler).toHaveBeenCalledWith('/home')
+    expect(mockUseRouter.push).toHaveBeenCalledTimes(1)
+    expect(mockUseRouter.push).toHaveBeenCalledWith('/home')
   })
 })
