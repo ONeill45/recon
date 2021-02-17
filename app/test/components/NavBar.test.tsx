@@ -1,7 +1,7 @@
 import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { GiHamburgerMenu } from 'react-icons/gi'
-import { mount, shallow } from 'enzyme'
+import { mount } from 'enzyme'
 import { matchers } from '@emotion/jest'
 
 import { applyMockUseRouter } from '../testUtils'
@@ -16,8 +16,6 @@ applyMockUseRouter()
 
 expect.extend(matchers)
 
-const renderWrapper = () => shallow(<NavBar />)
-
 describe('<NavBar />', () => {
   beforeEach(() => {
     Object.defineProperty(window, 'innerWidth', {
@@ -27,12 +25,7 @@ describe('<NavBar />', () => {
     })
   })
 
-  it('should match snapshot', () => {
-    const wrapper = renderWrapper()
-    expect(wrapper).toMatchSnapshot()
-  })
-
-  it('should show the full nav bar by default', () => {
+  it.only('should show the full nav bar by default', () => {
     const wrapper = mount(<NavBar />)
 
     expect(wrapper.exists()).toEqual(true)
