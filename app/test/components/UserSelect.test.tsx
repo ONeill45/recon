@@ -6,21 +6,18 @@ import {
   mockMsAccountInfoMock,
   mockMsAccessTokenMock,
   mockMsInstance,
-  mockUseMsalResponse,
+  applyMockUseMsal,
   mockMsalUrl,
   mockUseRouter,
+  applyMockUseRouter,
 } from '../testUtils'
 
 const { homeAccountId, name } = mockMsAccountInfoMock
 const firstName = name?.split(' ')[0]
 
-jest
-  .spyOn(require('@azure/msal-react'), 'useMsal')
-  .mockImplementation(() => mockUseMsalResponse)
+applyMockUseMsal()
 
-jest
-  .spyOn(require('next/router'), 'useRouter')
-  .mockImplementation(() => require('../testUtils').mockUseRouter)
+applyMockUseRouter()
 
 jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
 

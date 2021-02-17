@@ -25,6 +25,11 @@ const mockMsalFunction = {
   callMsGraph: jest.fn().mockResolvedValue(() => mockMsalUrl),
 }
 
+const applyMockUseMsal = () =>
+  jest
+    .spyOn(require('@azure/msal-react'), 'useMsal')
+    .mockImplementation(() => mockUseMsalResponse)
+
 export {
   mockMsAccountInfoMock,
   mockMsAccessTokenMock,
@@ -33,4 +38,5 @@ export {
   mockMsalHook,
   mockMsalFunction,
   mockMsalUrl,
+  applyMockUseMsal,
 }
