@@ -1,6 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useMsAccount, useAccessToken } from 'utils/hooks'
-import { AccountInfo } from '@azure/msal-browser'
 
 import { UserSelect } from 'components'
 import {
@@ -9,7 +8,8 @@ import {
   mockMsInstance,
   mockUseMsalResponse,
   mockMsalUrl,
-} from '../testUtils/MSAuthLibrary'
+  mockUseRouter,
+} from '../testUtils'
 
 const { homeAccountId, name } = mockMsAccountInfoMock
 const firstName = name?.split(' ')[0]
@@ -18,14 +18,15 @@ jest
   .spyOn(require('@azure/msal-react'), 'useMsal')
   .mockImplementation(() => mockUseMsalResponse)
 
-jest.mock(
-  'utils/hooks/msal',
-  () => require('../testUtils/MSAuthLibrary').mockMsalHook,
-)
+jest
+  .spyOn(require('next/router'), 'useRouter')
+  .mockImplementation(() => require('../testUtils').mockUseRouter)
+
+jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
 
 jest.mock(
   'utils/functions/msal',
-  () => require('../testUtils/MSAuthLibrary').mockMsalFunction,
+  () => require('../testUtils').mockMsalFunction,
 )
 
 const mockedUseMsAccount = useMsAccount as jest.MockedFunction<
@@ -35,12 +36,6 @@ const mockedUseAccessToken = useAccessToken as jest.MockedFunction<
   typeof useAccessToken
 >
 
-const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-const routerReload = jest.fn()
-useRouter.mockImplementation(() => ({
-  reload: routerReload,
-}))
-
 const renderComponent = async () => {
   const component = render(<UserSelect />)
   await waitFor(() => Promise.resolve())
@@ -49,9 +44,7 @@ const renderComponent = async () => {
 
 describe('<UserSelect />', () => {
   beforeEach(() => {
-    mockedUseMsAccount.mockImplementation(
-      () => mockMsAccountInfoMock as AccountInfo,
-    )
+    mockedUseMsAccount.mockImplementation(() => mockMsAccountInfoMock)
     mockedUseAccessToken.mockImplementation(() => mockMsAccessTokenMock)
   })
   it('should not render UserSelectDiv if user is unauthenticated', async () => {
@@ -101,9 +94,10 @@ describe('<UserSelect />', () => {
   })
 
   it('should log the user out of their MS account if the user has no homeAccountId', async () => {
-    mockedUseMsAccount.mockImplementation(
-      () => ({ ...mockMsAccountInfoMock, homeAccountId: '' } as AccountInfo),
-    )
+    mockedUseMsAccount.mockImplementation(() => ({
+      ...mockMsAccountInfoMock,
+      homeAccountId: '',
+    }))
 
     await renderComponent()
 
@@ -129,6 +123,6 @@ describe('<UserSelect />', () => {
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
     expect(screen.queryByTestId('UserSelectMenu')).toBeVisible()
-    expect(routerReload).toBeCalled()
+    expect(mockUseRouter.reload).toBeCalled()
   })
 })
