@@ -38,7 +38,7 @@ export class Project extends BaseEntity implements AuditableEntity {
   @Column({ name: 'end_date', nullable: true })
   endDate: Date | null
 
-  @Field(() => ProjectType)
+  @Field(() => String)
   @Column({ name: 'project_type', type: 'enum', enum: ProjectType })
   projectType: ProjectType
 

@@ -1,10 +1,9 @@
 import { ProjectType } from './Enum'
-
+import { Client } from './'
 export interface Project {
   id: string
   projectName: string
-  clientId: string
-  logoUrl: string
+  client: Client
   startDate: Date
   endDate: Date
   ProjectType: ProjectType
