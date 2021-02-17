@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import { useMsAccount, useAccessToken } from 'utils/hooks'
 
 import { UserSelect } from 'components'
@@ -51,46 +51,46 @@ describe('<UserSelect />', () => {
     mockedUseMsAccount.mockImplementation(() => null)
     mockedUseAccessToken.mockImplementation(() => undefined)
 
-    await renderComponent()
+    const { queryByText, queryByRole } = await renderComponent()
 
-    expect(screen.queryByText(`Hi ${firstName}`)).toBeNull()
-    expect(screen.queryByRole('img')).toBeNull()
+    expect(queryByText(`Hi ${firstName}`)).toBeNull()
+    expect(queryByRole('img')).toBeNull()
   })
 
   it('should render the greeting and show the user thumbnail if user is authenticated', async () => {
-    await renderComponent()
+    const { queryByText, queryByRole, queryByTestId } = await renderComponent()
 
-    const greetingDiv = screen.queryByText(`Hi ${firstName}`)
-    const thumbnailImg = screen.queryByRole('img')
+    const greetingDiv = queryByText(`Hi ${firstName}`)
+    const thumbnailImg = queryByRole('img')
 
     expect(greetingDiv).not.toBeNull()
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(screen.queryByTestId('UserSelectMenu')).not.toBeVisible()
+    expect(queryByTestId('UserSelectMenu')).not.toBeVisible()
   })
 
   it('should show menu on thumbnail click', async () => {
-    await renderComponent()
+    const { queryByRole, queryByTestId } = await renderComponent()
 
-    const thumbnailImg = screen.queryByRole('img')
+    const thumbnailImg = queryByRole('img')
     if (thumbnailImg) fireEvent.click(thumbnailImg)
 
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(screen.queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(queryByTestId('UserSelectMenu')).toBeVisible()
   })
 
   it('should close the menu when the user clicks outside of it', async () => {
-    await renderComponent()
+    const { queryByRole, queryByTestId } = await renderComponent()
 
-    const thumbnailImg = screen.queryByRole('img')
+    const thumbnailImg = queryByRole('img')
     if (thumbnailImg) fireEvent.click(thumbnailImg)
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(screen.queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(queryByTestId('UserSelectMenu')).toBeVisible()
 
     fireEvent.mouseDown(document)
-    expect(screen.queryByTestId('UserSelectMenu')).not.toBeVisible()
+    expect(queryByTestId('UserSelectMenu')).not.toBeVisible()
   })
 
   it('should log the user out of their MS account if the user has no homeAccountId', async () => {
@@ -99,30 +99,30 @@ describe('<UserSelect />', () => {
       homeAccountId: '',
     }))
 
-    await renderComponent()
+    const { queryByRole, getByRole, queryByTestId } = await renderComponent()
 
-    const thumbnailImg = screen.queryByRole('img')
+    const thumbnailImg = queryByRole('img')
     if (thumbnailImg) fireEvent.click(thumbnailImg)
-    const logoutButton = screen.getByRole('button', { name: 'Log Out' })
+    const logoutButton = getByRole('button', { name: 'Log Out' })
     if (logoutButton) fireEvent.click(logoutButton)
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(screen.queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(queryByTestId('UserSelectMenu')).toBeVisible()
     expect(mockMsInstance.logout).toBeCalled()
   })
 
   it('should log out the user when logout is clicked in the menu', async () => {
     global.localStorage.setItem(`${homeAccountId}-blah`, 'blah')
 
-    await renderComponent()
+    const { queryByRole, getByRole, queryByTestId } = await renderComponent()
 
-    const thumbnailImg = screen.queryByRole('img')
+    const thumbnailImg = queryByRole('img')
     if (thumbnailImg) fireEvent.click(thumbnailImg)
-    const logoutButton = screen.getByRole('button', { name: 'Log Out' })
+    const logoutButton = getByRole('button', { name: 'Log Out' })
     if (logoutButton) fireEvent.click(logoutButton)
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(screen.queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(queryByTestId('UserSelectMenu')).toBeVisible()
     expect(mockUseRouter.reload).toBeCalled()
   })
 })
