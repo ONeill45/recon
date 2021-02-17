@@ -1,6 +1,9 @@
 import '../styles/globals.css'
 import Head from 'next/head'
 import { AppProps } from 'next/app'
+import { ApolloProvider } from '@apollo/client'
+
+import client from '../lib/apolloClient'
 import { MsalProvider } from '@azure/msal-react'
 import { PublicClientApplication, Configuration } from '@azure/msal-browser'
 import {
@@ -41,7 +44,9 @@ const App = ({ Component, pageProps }: AppProps) => {
       <MsalProvider instance={msalInstance}>
         <NavBar />
         <AuthenticatedTemplate>
-          <Component {...pageProps} />
+          <ApolloProvider client={client}>
+            <Component {...pageProps} />
+          </ApolloProvider>
         </AuthenticatedTemplate>
         <UnauthenticatedTemplate>
           <Login />
