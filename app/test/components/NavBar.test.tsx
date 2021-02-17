@@ -4,6 +4,7 @@ import { GiHamburgerMenu } from 'react-icons/gi'
 import { mount, shallow } from 'enzyme'
 import { matchers } from '@emotion/jest'
 
+import { applyMockUseRouter } from '../testUtils'
 import {
   CollapsedNavDiv,
   FullNavDiv,
@@ -11,16 +12,11 @@ import {
   SideNavDiv,
 } from '../../src/components'
 
+applyMockUseRouter()
+
 expect.extend(matchers)
 
 const renderWrapper = () => shallow(<NavBar />)
-
-const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-const pushHandler = jest.fn()
-useRouter.mockImplementation(() => ({
-  pathname: '/home',
-  push: pushHandler,
-}))
 
 describe('<NavBar />', () => {
   beforeEach(() => {
