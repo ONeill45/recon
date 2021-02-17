@@ -107,10 +107,12 @@ export const NavBar = () => {
         </CollapsedNavDiv>
         <FullNavDiv displayed={!collapsed}>
           <Image src="/images/recon-192x192.png" height="60" width="60" />
-          <NavButtons
-            buttonProperties={buttonProperties}
-            displayType={DisplayType.ROW}
-          />
+          <AuthenticatedTemplate>
+            <NavButtons
+              buttonProperties={buttonProperties}
+              displayType={DisplayType.ROW}
+            />
+          </AuthenticatedTemplate>
         </FullNavDiv>
         <AuthenticatedTemplate>
           <UserSelect />

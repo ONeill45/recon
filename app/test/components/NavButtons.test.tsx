@@ -1,13 +1,6 @@
-import { AccountInfo } from '@azure/msal-browser'
-import { getByTitle, render, screen } from '@testing-library/react'
-import { NavButtons, NavButton } from 'components'
+import { render, waitFor } from '@testing-library/react'
+import { NavButtons } from 'components'
 import { DisplayType } from 'interfaces'
-import {
-  mockAccount,
-  mockAccessToken,
-  mockedUseAccessToken,
-  mockedUseMsAccount,
-} from '../testUtils'
 
 const buttonProperties = [
   {
@@ -28,75 +21,56 @@ const buttonProperties = [
   },
 ]
 const displayType = DisplayType.ROW
-const defaultRoute = '/home'
 
-const navHandler = jest.fn()
-jest.spyOn(require('next/router'), 'useRouter').mockImplementation(() => ({
-  pathname: defaultRoute,
-  push: navHandler,
-}))
+jest
+  .spyOn(require('next/router'), 'useRouter')
+  .mockImplementation(() => require('../testUtils').mockUseRouter)
 
-const renderComponent = (
+const renderComponent = async (
   buttonProperties: { title: string; route: string }[],
   displayType: DisplayType,
-) =>
-  render(
+) => {
+  const component = render(
     <NavButtons
       buttonProperties={buttonProperties}
       displayType={displayType}
     />,
   )
+  await waitFor(() => Promise.resolve())
+  return component
+}
 
 describe('<NavButtons />', () => {
-  beforeEach(() => {
-    mockedUseMsAccount.mockImplementation(() => mockAccount as AccountInfo)
-    mockedUseAccessToken.mockImplementation(() => mockAccessToken)
-  })
-  it('should not render NavButtons if user is unauthenticated', () => {
-    mockedUseMsAccount.mockImplementation(() => null)
-    mockedUseAccessToken.mockImplementation(() => undefined)
-    const { getByRole } = renderComponent(buttonProperties, displayType)
+  it('should render NavButtons in row', async () => {
+    const component = await renderComponent(buttonProperties, displayType)
 
-    // const homeButton = getByTitle('Home')
-    expect(getByRole('button')).toEqual(0)
-    // expect(wrapper.find(NavButton).length).toEqual(4)
-    // expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('row')
-    // expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-    //   'flex-direction',
-    //   'row',
-    // )
-    // expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-    //   'padding-left',
-    //   '20px',
-    // )
+    const { queryByText, getAllByRole } = component
+
+    expect(getAllByRole('button').length).toEqual(4)
+    expect(queryByText('Home')).toBeTruthy()
+    expect(queryByText('Clients')).toBeTruthy()
+    expect(queryByText('Projects')).toBeTruthy()
+    expect(queryByText('Resources')).toBeTruthy()
+    const { flexDirection } = window.getComputedStyle(
+      component.container.firstElementChild as Element,
+    )
+    expect(flexDirection).toEqual('row')
   })
 
-  // it('should render NavButtons in column', () => {
-  //   const wrapper = renderComponent(buttonProperties, DisplayType.COLUMN)
+  it('should render NavButtons in column', async () => {
+    const { queryByText, getAllByRole, container } = await renderComponent(
+      buttonProperties,
+      DisplayType.COLUMN,
+    )
 
-  //   expect(wrapper.find(NavButton).length).toEqual(4)
-  //   expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('column')
-  //   expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-  //     'flex-direction',
-  //     'column',
-  //   )
-  //   expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule(
-  //     'align-items',
-  //     'flex-start',
-  //   )
-  //   expect(wrapper.find('NavButtonsDiv')).toHaveStyleRule('width', '100%')
-  // })
-
-  // it('should fail if displayType is invalid', () => {
-  //   const wrapper = renderWrapper(buttonProperties, 'bad' as DisplayType)
-  //   expect(wrapper.find('NavButtonsDiv').prop('displayType')).toEqual('bad')
-  //   expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
-  //     'flex-direction',
-  //     'column',
-  //   )
-  //   expect(wrapper.find('NavButtonsDiv')).not.toHaveStyleRule(
-  //     'flex-direction',
-  //     'row',
-  //   )
-  // })
+    expect(getAllByRole('button').length).toEqual(4)
+    expect(queryByText('Home')).toBeTruthy()
+    expect(queryByText('Clients')).toBeTruthy()
+    expect(queryByText('Projects')).toBeTruthy()
+    expect(queryByText('Resources')).toBeTruthy()
+    const { flexDirection } = window.getComputedStyle(
+      container.firstElementChild as Element,
+    )
+    expect(flexDirection).toEqual('column')
+  })
 })
