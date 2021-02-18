@@ -24,6 +24,7 @@ const CardsDiv = styled.div`
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  align-items: center;
 `
 
 const Projects = () => {
@@ -37,8 +38,8 @@ const Projects = () => {
   const { projects } = data
   return (
     <>
-      <PlusCircle size={'50'} route={'/projects'} />
       <CardsDiv>
+        <PlusCircle size={'50'} route={'/projects'} />
         {projects.map((project: Project) => {
           return <ProjectCard project={project} key={project.id} />
         })}
