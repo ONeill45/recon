@@ -1,7 +1,6 @@
-/** @jsx jsx */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
-import { css, jsx } from '@emotion/react'
+import { css } from '@emotion/react'
 import Image from 'next/image'
 import { NavButtons } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
@@ -44,7 +43,8 @@ export const SideNavDiv = styled.div<displayProps>`
   width: 25%;
   position: fixed;
   top: 60px;
-  ${(props) => (props.direction ? `${props.direction}: 0` : '')};
+  ${(props) =>
+    props.direction ? `${props.direction}: 0` /* istanbul ignore next */ : ''};
   background-color: orange;
   z-index: 1;
 `
@@ -80,7 +80,7 @@ export const NavBar = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const collapsed = window.innerWidth < 768 ? true : false
+      const collapsed = window.innerWidth < 768
       setCollapsed(collapsed)
 
       if (!collapsed) setDisplaySideMenu(false)
@@ -96,8 +96,13 @@ export const NavBar = () => {
   return (
     <>
       <MainDiv>
-        <CollapsedNavDiv id={menuDiv} displayed={collapsed}>
+        <CollapsedNavDiv
+          data-testid="CollapsedNav"
+          id={menuDiv}
+          displayed={collapsed}
+        >
           <GiHamburgerMenu
+            data-testid="HamburgerMenu"
             id={buttonId}
             size="40px"
             onClick={() => {
@@ -105,7 +110,7 @@ export const NavBar = () => {
             }}
           />
         </CollapsedNavDiv>
-        <FullNavDiv displayed={!collapsed}>
+        <FullNavDiv data-testid="FullNav" displayed={!collapsed}>
           <Image src="/images/recon-192x192.png" height="60" width="60" />
           <AuthenticatedTemplate>
             <NavButtons
@@ -118,7 +123,12 @@ export const NavBar = () => {
           <UserSelect />
         </AuthenticatedTemplate>
       </MainDiv>
-      <SideNavDiv displayed={displaySideMenu} ref={menuRef} direction="left">
+      <SideNavDiv
+        data-testid="SideNav"
+        displayed={displaySideMenu}
+        ref={menuRef}
+        direction="left"
+      >
         <NavButtons
           buttonProperties={buttonProperties}
           displayType={DisplayType.COLUMN}

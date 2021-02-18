@@ -1,85 +1,84 @@
 import React from 'react'
 import { act } from 'react-dom/test-utils'
-import { GiHamburgerMenu } from 'react-icons/gi'
-import { mount } from 'enzyme'
-import { matchers } from '@emotion/jest'
+import { render, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import { applyMockUseRouter } from '../testUtils'
-import {
-  CollapsedNavDiv,
-  FullNavDiv,
-  NavBar,
-  SideNavDiv,
-} from '../../src/components'
+import { NavBar } from '../../src/components'
 
 applyMockUseRouter()
 
-expect.extend(matchers)
+const renderComponent = async () => {
+  const component = render(<NavBar />)
+  await waitFor(() => Promise.resolve())
+  return component
+}
+
+const setInnerWidth = (width: number = 200) => {
+  Object.defineProperty(window, 'innerWidth', {
+    writable: true,
+    configurable: true,
+    value: width,
+  })
+}
 
 describe('<NavBar />', () => {
   beforeEach(() => {
-    Object.defineProperty(window, 'innerWidth', {
-      writable: true,
-      configurable: true,
-      value: 1024,
-    })
+    setInnerWidth(1024)
   })
 
-  it.only('should show the full nav bar by default', () => {
-    const wrapper = mount(<NavBar />)
+  it('should show the full nav bar by default', async () => {
+    const { getByTestId } = await renderComponent()
 
-    expect(wrapper.exists()).toEqual(true)
-    expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(false)
-    expect(wrapper.find(FullNavDiv).prop('displayed')).toEqual(true)
+    expect(getByTestId('FullNav')).toBeVisible()
+    expect(getByTestId('CollapsedNav')).not.toBeVisible()
+    expect(getByTestId('SideNav')).not.toBeVisible()
   })
 
-  it('should show the collapsed nav when screen is too small for full nav', () => {
-    Object.defineProperty(window, 'innerWidth', {
-      writable: true,
-      configurable: true,
-      value: 200,
-    })
-    const wrapper = mount(<NavBar />)
+  it('should show the collapsed nav when screen is too small for full nav', async () => {
+    setInnerWidth()
+    const { getByTestId } = await renderComponent()
 
-    expect(wrapper.exists()).toEqual(true)
-    expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(true)
-    expect(wrapper.find(FullNavDiv).prop('displayed')).toEqual(false)
+    expect(getByTestId('FullNav')).not.toBeVisible()
+    expect(getByTestId('CollapsedNav')).toBeVisible()
+    expect(getByTestId('SideNav')).not.toBeVisible()
   })
 
-  it('should collapse nav bar when screen is resized below threshold', () => {
-    const wrapper = mount(<NavBar />)
-    Object.defineProperty(window, 'innerWidth', {
-      writable: true,
-      configurable: true,
-      value: 200,
-    })
+  it('should collapse nav bar when screen is resized below threshold', async () => {
+    const { getByTestId } = await renderComponent()
+    setInnerWidth()
     act(() => {
       global.dispatchEvent(new Event('resize'))
     })
-    wrapper.update()
 
-    expect(wrapper.exists()).toEqual(true)
-    expect(wrapper.find(CollapsedNavDiv).prop('displayed')).toEqual(true)
-    expect(wrapper.find(FullNavDiv).prop('displayed')).toEqual(false)
+    expect(getByTestId('FullNav')).not.toBeVisible()
+    expect(getByTestId('CollapsedNav')).toBeVisible()
+    expect(getByTestId('SideNav')).not.toBeVisible()
   })
 
-  it('simulates click events', () => {
-    Object.defineProperty(window, 'innerWidth', {
-      writable: true,
-      configurable: true,
-      value: 200,
-    })
-    const wrapper = mount(<NavBar />)
-    wrapper.find(GiHamburgerMenu).simulate('click')
+  it('should open side nav when hamburger menu is clicked', async () => {
+    setInnerWidth()
+    const { getByTestId } = await renderComponent()
 
-    expect(wrapper.find(SideNavDiv).prop('displayed')).toEqual(true)
+    const hamburgerMenu = getByTestId('HamburgerMenu')
+
+    userEvent.click(hamburgerMenu)
+
+    expect(getByTestId('SideNav')).toBeVisible()
   })
 
-  it('should call useEffect cleanup function when component is unmounted', () => {
-    const wrapper = mount(<NavBar />)
+  it('should open side nav when hamburger menu is clicked', async () => {
+    setInnerWidth()
+    const component = await renderComponent()
 
-    wrapper.unmount()
+    const { getByTestId } = component
 
-    expect(wrapper.exists()).toEqual(false)
+    userEvent.click(getByTestId('HamburgerMenu'))
+
+    expect(getByTestId('SideNav')).toBeVisible()
+
+    userEvent.click(component.baseElement)
+
+    expect(getByTestId('SideNav')).not.toBeVisible()
   })
 })
