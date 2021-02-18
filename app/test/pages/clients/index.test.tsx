@@ -50,38 +50,36 @@ const errorMocks = [
   },
 ]
 
-const renderComponent = async (mocks: any) => {
+const renderComponent = async (mocks: any, waitForRender = true) => {
   const component = render(
     <MockedProvider mocks={mocks}>
       <Clients />
     </MockedProvider>,
   )
+
+  if (!waitForRender) return component
+
   await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
   return component
 }
 
 describe('Client page test', () => {
   it('should render client page and display Loading...', async () => {
-    render(
-      <MockedProvider mocks={mocks}>
-        <Clients />
-      </MockedProvider>,
-    )
-
-    expect(screen.getByText('Loading...')).toBeVisible()
+    const { queryByText } = await renderComponent(mocks, false)
+    expect(queryByText('Loading...')).toBeVisible()
   })
   it('should fetch all clients and display their cards', async () => {
-    await renderComponent(mocks)
+    const { queryByText } = await renderComponent(mocks)
 
-    expect(screen.queryByText(`${clients[0].clientName}`)).toBeVisible()
-    expect(screen.queryByText(`${clients[1].clientName}`)).toBeVisible()
-    expect(screen.queryByText(`${clients[2].clientName}`)).toBeVisible()
-    expect(screen.queryByText(`${clients[3].clientName}`)).toBeVisible()
-    expect(screen.queryByText(`${clients[4].clientName}`)).toBeVisible()
+    expect(queryByText(`${clients[0].clientName}`)).toBeVisible()
+    expect(queryByText(`${clients[1].clientName}`)).toBeVisible()
+    expect(queryByText(`${clients[2].clientName}`)).toBeVisible()
+    expect(queryByText(`${clients[3].clientName}`)).toBeVisible()
+    expect(queryByText(`${clients[4].clientName}`)).toBeVisible()
   })
   it('should show error message when an error occurs', async () => {
-    await renderComponent(errorMocks)
+    const { getByText } = await renderComponent(errorMocks)
 
-    expect(screen.getByText('Error: An error occurred')).toBeVisible()
+    expect(getByText('Error: An error occurred')).toBeVisible()
   })
 })

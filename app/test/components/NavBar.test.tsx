@@ -60,9 +60,7 @@ describe('<NavBar />', () => {
     setInnerWidth()
     const { getByTestId } = await renderComponent()
 
-    const hamburgerMenu = getByTestId('HamburgerMenu')
-
-    userEvent.click(hamburgerMenu)
+    userEvent.click(getByTestId('HamburgerMenu'))
 
     expect(getByTestId('SideNav')).toBeVisible()
   })

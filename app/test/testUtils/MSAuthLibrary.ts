@@ -6,6 +6,7 @@ const mockMsAccessTokenMock = MSAccessTokenFactory.build()
 
 const mockMsInstance = {
   acquireTokenSilent: jest.fn().mockResolvedValue(mockMsAccessTokenMock),
+  loginPopup: jest.fn(),
   logout: jest.fn(),
 }
 

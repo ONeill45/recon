@@ -1,4 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { fireEvent, getByTestId, render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import { PlusCircle } from 'components'
 
@@ -8,16 +9,13 @@ useRouter.mockImplementation(() => ({
   push: routerPush,
 }))
 
-const renderComponent = () => {
-  return render(<PlusCircle size={'50'} route={'/test'} />)
-}
+const renderComponent = () => render(<PlusCircle size={'50'} route={'/test'} />)
 
 describe('<PlusCircle />', () => {
   it('should route to new page when plus circle is clicked', async () => {
-    renderComponent()
+    const { queryByTestId } = renderComponent()
 
-    const plusCircle = screen.queryByTestId('PlusCircleDiv')
-    if (plusCircle) fireEvent.click(plusCircle)
+    userEvent.click(queryByTestId('PlusCircleDiv') as HTMLElement)
 
     expect(routerPush).toHaveBeenCalled()
   })

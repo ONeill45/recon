@@ -2,7 +2,7 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { NavButton } from '../../src/components'
 import { DisplayType } from '../../src/interfaces'
-import { mockUseRouter } from '../testUtils'
+import { applyMockUseRouter, mockUseRouter } from '../testUtils'
 
 const defaultTitle = 'Home'
 const defaultRoute = '/home'
@@ -12,9 +12,7 @@ const fontColor = {
   unselected: 'black',
 }
 
-jest
-  .spyOn(require('next/router'), 'useRouter')
-  .mockImplementation(() => require('../testUtils').mockUseRouter)
+applyMockUseRouter()
 
 const renderComponent = (
   title: string = defaultTitle,

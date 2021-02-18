@@ -1,29 +1,17 @@
+import { gql } from '@apollo/client'
 import { MockedProvider } from '@apollo/client/testing'
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import faker from 'faker'
-import { AccountInfo } from '@azure/msal-browser'
 
 import { NewClientForm } from 'components'
-import { gql } from '@apollo/client'
+import { applyMockUseMsal, applyMockUseRouter } from '../testUtils'
 
-const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-const routerPush = jest.fn()
-useRouter.mockImplementation(() => ({
-  push: routerPush,
-}))
+applyMockUseRouter()
 
-const mockAccount = {
-  username: faker.internet.email(),
-}
+applyMockUseMsal()
 
-const useMsal = jest.spyOn(require('@azure/msal-react'), 'useMsal')
-useMsal.mockImplementation(() => ({
-  accounts: [mockAccount],
-}))
-
-jest.mock('utils/hooks/msal', () => ({
-  useMsAccount: jest.fn(() => mockAccount as AccountInfo),
-}))
+jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
 
 describe('<NewClientForm />', () => {
   it('should create a new client with user provided info', async () => {
@@ -45,24 +33,26 @@ describe('<NewClientForm />', () => {
         },
       },
     ]
-    render(
+    const { getByLabelText } = render(
       <MockedProvider mocks={mocks} addTypename={false}>
         <NewClientForm />
       </MockedProvider>,
     )
 
-    const clientName = await screen.findByLabelText('client-name')
-    const description = await screen.findByLabelText('description')
-    const logoUrl = await screen.findByLabelText('logo-url')
+    const [clientName, description, logoUrl] = [
+      'client-name',
+      'description',
+      'logo-url',
+    ].map((text) => getByLabelText(text))
     //const submitButton = screen.getByRole('button', { name: 'Submit' })
 
     await waitFor(() => {
-      fireEvent.change(clientName, { target: { value: 'Test Client' } })
-      fireEvent.change(description, { target: { value: 'Test Desc' } })
-      fireEvent.change(logoUrl, { target: { value: 'http://test.com' } })
+      userEvent.type(clientName, 'Test Client')
+      userEvent.type(description, 'Test Desc')
+      userEvent.type(logoUrl, 'http://test.com')
     })
     //if (submitButton) fireEvent.click(submitButton)
     await new Promise((resolve) => setTimeout(resolve, 0))
-    //expect(routerPush).toBeCalled()
+    // expect(mockUseRouter.push).toHaveBeenCalledTimes(1)
   })
 })

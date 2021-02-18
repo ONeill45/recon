@@ -1,14 +1,18 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
 import { Login } from 'components'
+import { mockMsInstance, applyMockUseMsal } from '../testUtils'
 
-const useMsal = jest.spyOn(require('@azure/msal-react'), 'useMsal')
-const mockInstance = {
-  loginPopup: jest.fn(),
-}
-useMsal.mockImplementation(() => ({
-  instance: mockInstance,
-}))
+// const useMsal = jest.spyOn(require('@azure/msal-react'), 'useMsal')
+// const mockInstance = {
+//   loginPopup: jest.fn(),
+// }
+// useMsal.mockImplementation(() => ({
+//   instance: mockInstance,
+// // }))
+
+applyMockUseMsal()
 
 const renderComponent = () => {
   return render(<Login />)
@@ -16,29 +20,28 @@ const renderComponent = () => {
 
 describe('<Login />', () => {
   it('should log the user in on Log In button click', async () => {
-    renderComponent()
+    const { getByRole } = renderComponent()
 
-    const loginButton = screen.getByRole('button', { name: 'Log In' })
-    if (loginButton) fireEvent.click(loginButton)
+    userEvent.click(getByRole('button', { name: 'Log In' }))
 
-    expect(mockInstance.loginPopup).toHaveBeenCalled()
+    expect(mockMsInstance.loginPopup).toHaveBeenCalledWith({
+      prompt: 'select_account',
+      scopes: ['User.Read'],
+    })
   })
 
   it('should log an error if the user is not logged in on click', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
-    const mockInstanceError = {
-      loginPopup: jest.fn(() => {
-        throw new Error('An error occurred')
-      }),
-    }
-    useMsal.mockImplementation(() => ({
-      instance: mockInstanceError,
-    }))
-    renderComponent()
+    /* eslint-disable no-console */
+    console.error = jest.fn()
+    mockMsInstance.loginPopup = jest.fn(() => {
+      throw new Error('An error occurred')
+    })
+    const { getByRole } = renderComponent()
+    userEvent.click(getByRole('button', { name: 'Log In' }))
+    expect(mockMsInstance.loginPopup).toBeCalled()
 
-    const loginButton = screen.getByRole('button', { name: 'Log In' })
-    if (loginButton) fireEvent.click(loginButton)
-
-    expect(mockInstanceError.loginPopup).toHaveBeenCalled()
+    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(console.error).toHaveBeenCalledWith(new Error('An error occurred'))
+    /* eslint-enable no-console */
   })
 })
