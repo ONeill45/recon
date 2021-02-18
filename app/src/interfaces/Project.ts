@@ -6,7 +6,7 @@ export interface Project {
   client: Client
   startDate: Date
   endDate: Date
-  ProjectType: ProjectType
+  projectType: ProjectType
   confidence: number
   priority: number
   createdBy: string

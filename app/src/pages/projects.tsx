@@ -1,25 +1,24 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { gql, useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
-import { ProjectCard } from '../components'
+
+import { ProjectCard, PlusCircle } from '../components'
 import { Project } from 'interfaces'
 
-const GET_ALL_PROJECTS = `
-{
-  projects {
-    id
-    projectName
-    startDate
-    endDate
-    projectType
-    priority
-    confidence
-    client {
-      clientName
-      logoUrl
+const GET_ALL_PROJECTS = gql`
+  {
+    projects {
+      id
+      projectName
+      startDate
+      endDate
+      projectType
+      priority
+      confidence
+      client {
+        clientName
+      }
     }
   }
-}
 `
 const CardsDiv = styled.div`
   display: flex;
@@ -28,24 +27,23 @@ const CardsDiv = styled.div`
 `
 
 const Projects = () => {
-  const [projects, setProjects] = useState([])
+  const { data, loading, error } = useQuery(GET_ALL_PROJECTS, {
+    fetchPolicy: 'network-only',
+  })
 
-  useEffect(() => {
-    const getProjects = async () => {
-      const { data } = await axios.post('http://localhost:5000', {
-        query: GET_ALL_PROJECTS,
-      })
-      setProjects(data.data.projects)
-    }
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
 
-    getProjects()
-  }, [])
+  const { projects } = data
   return (
-    <CardsDiv>
-      {projects.map((project: Project) => {
-        return <ProjectCard project={project} key={project.id} />
-      })}
-    </CardsDiv>
+    <>
+      <PlusCircle size={'50'} route={'/projects'} />
+      <CardsDiv>
+        {projects.map((project: Project) => {
+          return <ProjectCard project={project} key={project.id} />
+        })}
+      </CardsDiv>
+    </>
   )
 }
 
