@@ -1,7 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
-import styled from '@emotion/styled'
 
-import { ProjectCard, PlusCircle } from '../components'
+import { ProjectCard, PlusCircle, Cards } from 'components'
 import { Project } from 'interfaces'
 
 const GET_ALL_PROJECTS = gql`
@@ -20,12 +19,6 @@ const GET_ALL_PROJECTS = gql`
     }
   }
 `
-const CardsDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-`
 
 const Projects = () => {
   const { data, loading, error } = useQuery(GET_ALL_PROJECTS, {
@@ -38,12 +31,12 @@ const Projects = () => {
   const { projects } = data
   return (
     <>
-      <CardsDiv>
-        <PlusCircle size={'50'} route={'/projects'} />
+      <Cards>
+        <PlusCircle size={'50'} route={'/projects/new'} />
         {projects.map((project: Project) => {
           return <ProjectCard project={project} key={project.id} />
         })}
-      </CardsDiv>
+      </Cards>
     </>
   )
 }

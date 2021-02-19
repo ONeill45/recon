@@ -6,7 +6,7 @@ import { gql } from '@apollo/client'
 import { render, screen, waitFor } from '@testing-library/react'
 
 const projects = ProjectFactory.buildList(5)
-console.log(projects)
+
 const mocks = [
   {
     request: {

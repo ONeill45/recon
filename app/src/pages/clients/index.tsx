@@ -1,5 +1,7 @@
-import { ClientCards, PlusCircle } from '../../components'
 import { gql, useQuery } from '@apollo/client'
+
+import { Client } from 'interfaces'
+import { Cards, PlusCircle, ClientCard } from 'components'
 
 const GET_ALL_CLIENTS = gql`
   {
@@ -26,8 +28,12 @@ const Clients = () => {
 
   return (
     <>
-      <PlusCircle size={'50'} route={'/clients/new'} />
-      <ClientCards clients={clients}></ClientCards>
+      <Cards>
+        <PlusCircle size={'50'} route={'/clients/new'} />
+        {clients.map((client: Client) => {
+          return <ClientCard key={client.id} client={client}></ClientCard>
+        })}
+      </Cards>
     </>
   )
 }
