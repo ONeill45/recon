@@ -6,9 +6,7 @@ import { mockMsInstance, applyMockUseMsal } from '../testUtils'
 
 applyMockUseMsal()
 
-const renderComponent = () => {
-  return render(<Login />)
-}
+const renderComponent = () => render(<Login />)
 
 describe('<Login />', () => {
   it('should log the user in on Log In button click', async () => {
