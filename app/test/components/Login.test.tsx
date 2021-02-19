@@ -4,14 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { Login } from 'components'
 import { mockMsInstance, applyMockUseMsal } from '../testUtils'
 
-// const useMsal = jest.spyOn(require('@azure/msal-react'), 'useMsal')
-// const mockInstance = {
-//   loginPopup: jest.fn(),
-// }
-// useMsal.mockImplementation(() => ({
-//   instance: mockInstance,
-// // }))
-
 applyMockUseMsal()
 
 const renderComponent = () => {
