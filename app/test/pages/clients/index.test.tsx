@@ -3,7 +3,7 @@ import Clients from '../../../src/pages/clients'
 import { ClientFactory } from '../../factories'
 import { MockedProvider } from '@apollo/client/testing'
 import { gql } from '@apollo/client'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 
 const clients = ClientFactory.buildList(5)
 const mocks = [

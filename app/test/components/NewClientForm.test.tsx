@@ -44,7 +44,7 @@ describe('<NewClientForm />', () => {
       'description',
       'logo-url',
     ].map((text) => getByLabelText(text))
-    //const submitButton = screen.getByRole('button', { name: 'Submit' })
+    //const submitButton = getByRole('button', { name: 'Submit' })
 
     await waitFor(() => {
       userEvent.type(clientName, 'Test Client')

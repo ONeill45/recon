@@ -1,4 +1,4 @@
-import { fireEvent, getByTestId, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { PlusCircle } from 'components'

@@ -1,6 +1,7 @@
-import { fireEvent, render, waitFor } from '@testing-library/react'
-import { useMsAccount, useAccessToken } from 'utils/hooks'
+import { render, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
+import { useMsAccount, useAccessToken } from 'utils/hooks'
 import { UserSelect } from 'components'
 import {
   mockMsAccountInfoMock,
@@ -70,7 +71,7 @@ describe('<UserSelect />', () => {
     const { queryByRole, queryByTestId } = await renderComponent()
 
     const thumbnailImg = queryByRole('img')
-    if (thumbnailImg) fireEvent.click(thumbnailImg)
+    userEvent.click(thumbnailImg as HTMLElement)
 
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
@@ -78,15 +79,15 @@ describe('<UserSelect />', () => {
   })
 
   it('should close the menu when the user clicks outside of it', async () => {
-    const { queryByRole, queryByTestId } = await renderComponent()
+    const { queryByRole, queryByTestId, queryByText } = await renderComponent()
 
     const thumbnailImg = queryByRole('img')
-    if (thumbnailImg) fireEvent.click(thumbnailImg)
+    userEvent.click(thumbnailImg as HTMLElement)
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
     expect(queryByTestId('UserSelectMenu')).toBeVisible()
 
-    fireEvent.mouseDown(document)
+    userEvent.click(queryByText(`Hi ${firstName}`) as HTMLElement)
     expect(queryByTestId('UserSelectMenu')).not.toBeVisible()
   })
 
@@ -99,9 +100,8 @@ describe('<UserSelect />', () => {
     const { queryByRole, getByRole, queryByTestId } = await renderComponent()
 
     const thumbnailImg = queryByRole('img')
-    if (thumbnailImg) fireEvent.click(thumbnailImg)
-    const logoutButton = getByRole('button', { name: 'Log Out' })
-    if (logoutButton) fireEvent.click(logoutButton)
+    userEvent.click(thumbnailImg as HTMLElement)
+    userEvent.click(getByRole('button', { name: 'Log Out' }))
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
     expect(queryByTestId('UserSelectMenu')).toBeVisible()
@@ -114,9 +114,8 @@ describe('<UserSelect />', () => {
     const { queryByRole, getByRole, queryByTestId } = await renderComponent()
 
     const thumbnailImg = queryByRole('img')
-    if (thumbnailImg) fireEvent.click(thumbnailImg)
-    const logoutButton = getByRole('button', { name: 'Log Out' })
-    if (logoutButton) fireEvent.click(logoutButton)
+    userEvent.click(thumbnailImg as HTMLElement)
+    userEvent.click(getByRole('button', { name: 'Log Out' }))
     expect(thumbnailImg).not.toBeNull()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
     expect(queryByTestId('UserSelectMenu')).toBeVisible()
