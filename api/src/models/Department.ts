@@ -9,15 +9,7 @@ import {
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
-
-export enum DepartmentNames {
-  DATA = 'Data Analytics',
-  DESIGN = 'Design',
-  DEV = 'Development Services',
-  DEVOPS = 'Development Operations',
-  PMO = 'Project Management',
-  QA = 'Quality Assurance',
-}
+import { DepartmentNames } from './enums'
 
 @Entity()
 @ObjectType()
@@ -27,8 +19,8 @@ export class Department extends BaseEntity implements AuditableEntity {
   id: string
 
   @Field(() => String)
-  @Column({ name: 'department_name' })
-  departmentName: DepartmentNames
+  @Column({ type: 'enum', enum: DepartmentNames })
+  name: DepartmentNames
 
   @Field(() => Date)
   @CreateDateColumn({ name: 'created_date' })

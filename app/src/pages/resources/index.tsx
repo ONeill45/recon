@@ -11,6 +11,11 @@ const GET_ALL_RESOURCES = gql`
       title
       startDate
       terminationDate
+      imageUrl
+      department {
+        name
+      }
+      email
     }
   }
 `

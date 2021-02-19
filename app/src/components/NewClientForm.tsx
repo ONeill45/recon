@@ -38,7 +38,7 @@ export const NewClientForm = () => {
   const [clientName, setClientName] = React.useState('')
   const [description, setDescription] = React.useState('')
   const [logoUrl, setLogoUrl] = React.useState('')
-  const [startDate, setStartDate] = React.useState<Date | null>(null)
+  const [startDate, setStartDate] = React.useState(new Date())
   const [endDate, setEndDate] = React.useState<Date | null>(null)
   const router = useRouter()
   const account = useMsAccount()

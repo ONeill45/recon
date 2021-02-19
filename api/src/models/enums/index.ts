@@ -1,7 +1,4 @@
-export enum DisplayType {
-  COLUMN = 'column',
-  ROW = 'row',
-}
+import { registerEnumType } from 'type-graphql'
 
 export enum DepartmentNames {
   DATA = 'Data Analytics',
@@ -11,3 +8,7 @@ export enum DepartmentNames {
   PMO = 'Project Management',
   QA = 'Quality Assurance',
 }
+
+registerEnumType(DepartmentNames, {
+  name: 'DepartmentNames',
+})

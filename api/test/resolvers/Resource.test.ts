@@ -3,8 +3,8 @@ import faker from 'faker'
 import '../utils/populateEnvVariables'
 import { connect, disconnect } from '../../src/database'
 import { gqlCall } from '../utils/gqlCall'
-import { ResourceFactory } from '../factories'
-import { Resource } from '../../src/models'
+import { DepartmentFactory, ResourceFactory } from '../factories'
+import { Department, Resource } from '../../src/models'
 import { uuidRegex } from '../utils/regex'
 import { Connection } from 'typeorm'
 
@@ -45,7 +45,8 @@ describe('ResourceResolver', () => {
       })
     })
     it('should return a populated array if resources exist', async () => {
-      const resource = ResourceFactory.build()
+      const department = DepartmentFactory.build()
+      const resource = ResourceFactory.build({ department })
       const {
         id,
         firstName,
@@ -54,6 +55,7 @@ describe('ResourceResolver', () => {
         startDate,
         terminationDate,
       } = resource
+      await Department.insert(department)
       await Resource.insert(resource)
       const response = await gqlCall({
         source: query,
@@ -75,10 +77,13 @@ describe('ResourceResolver', () => {
       })
     })
     it('should not return deleted resources', async () => {
+      const department = DepartmentFactory.build()
       const resources = ResourceFactory.buildList(5, {
         deletedDate: new Date().toISOString(),
+        department,
       })
 
+      await Department.insert(department)
       await Resource.insert(resources)
 
       const response = await gqlCall({
@@ -116,8 +121,10 @@ describe('ResourceResolver', () => {
     })
 
     it('should return resource if it exists', async () => {
-      const resource = ResourceFactory.build()
+      const department = DepartmentFactory.build()
+      const resource = ResourceFactory.build({ department })
 
+      await Department.insert(department)
       await Resource.insert(resource)
 
       const {
@@ -148,10 +155,13 @@ describe('ResourceResolver', () => {
     })
 
     it('should not return a deleted resource', async () => {
+      const department = DepartmentFactory.build()
       const resource = ResourceFactory.build({
         deletedDate: new Date().toISOString(),
+        department,
       })
 
+      await Department.insert(department)
       await Resource.insert(resource)
 
       const response = await gqlCall({
@@ -173,20 +183,30 @@ describe('ResourceResolver', () => {
         firstName
         lastName
         title
+        department {
+          name
+        }
+        email
+        imageUrl
         startDate
         terminationDate
       }
     }`
     it('should return null if resource does not exist', async () => {
+      const department = DepartmentFactory.build()
       const resource = ResourceFactory.build({})
       const {
         firstName,
         lastName,
         title,
+        email,
+        imageUrl,
         startDate,
         createdBy,
         updatedBy,
       } = resource
+
+      await Department.insert(department)
 
       const response = await gqlCall({
         source: createResourceMutation,
@@ -195,6 +215,9 @@ describe('ResourceResolver', () => {
             firstName,
             lastName,
             title,
+            departmentId: department.id,
+            email,
+            imageUrl,
             startDate,
             createdBy,
             updatedBy,
@@ -209,11 +232,59 @@ describe('ResourceResolver', () => {
             firstName,
             lastName,
             title,
+            department: { name: department.name },
+            email,
+            imageUrl,
             startDate,
             terminationDate: null,
           },
         },
       })
+    })
+
+    it('should return error if department does not exist', async () => {
+      const invalidDepartmentId = faker.random.uuid()
+      const department = DepartmentFactory.build()
+      const resource = ResourceFactory.build({
+        department,
+      })
+
+      await Department.insert(department)
+      await Resource.insert(resource)
+
+      const {
+        firstName,
+        lastName,
+        title,
+        email,
+        imageUrl,
+        startDate,
+        createdBy,
+        updatedBy,
+      } = resource
+
+      const { errors } = await gqlCall({
+        source: createResourceMutation,
+        variableValues: {
+          data: {
+            firstName,
+            lastName,
+            title,
+            departmentId: invalidDepartmentId,
+            email,
+            imageUrl,
+            startDate,
+            createdBy,
+            updatedBy,
+          },
+        },
+      })
+
+      expect(errors).toHaveLength(1)
+
+      expect(errors[0].message).toEqual(
+        `Department ${invalidDepartmentId} not found!`,
+      )
     })
   })
 
@@ -225,13 +296,30 @@ describe('ResourceResolver', () => {
         firstName
         lastName
         title
+        department {
+          name
+        }
+        email
+        imageUrl
         startDate
         terminationDate
       }
     }`
     it('should return error if resource does not exist', async () => {
+      const department = DepartmentFactory.build()
       const resource = ResourceFactory.build({})
-      const { id, firstName, lastName, title, startDate, updatedBy } = resource
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        email,
+        imageUrl,
+        startDate,
+        updatedBy,
+      } = resource
+
+      await Department.insert(department)
 
       const { data, errors } = await gqlCall({
         source: updateResourceMutation,
@@ -240,6 +328,9 @@ describe('ResourceResolver', () => {
             firstName,
             lastName,
             title,
+            departmentId: department.id,
+            email,
+            imageUrl,
             startDate,
             updatedBy,
           },
@@ -254,8 +345,58 @@ describe('ResourceResolver', () => {
       expect(notFoundError.message).toEqual(`Resource ${id} not found!`)
     })
 
+    it('should return error if updated department does not exist', async () => {
+      const invalidDepartmentId = faker.random.uuid()
+      const department = DepartmentFactory.build()
+      const resource = ResourceFactory.build({
+        department,
+      })
+
+      await Department.insert(department)
+      await Resource.insert(resource)
+
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        email,
+        imageUrl,
+        startDate,
+        updatedBy,
+      } = resource
+
+      const { errors } = await gqlCall({
+        source: updateResourceMutation,
+        variableValues: {
+          data: {
+            firstName,
+            lastName,
+            title,
+            departmentId: invalidDepartmentId,
+            email,
+            imageUrl,
+            startDate,
+            updatedBy,
+          },
+          id,
+        },
+      })
+
+      expect(errors).toHaveLength(1)
+
+      expect(errors[0].message).toEqual(
+        `Department ${invalidDepartmentId} not found!`,
+      )
+    })
+
     it('should return updated resource', async () => {
-      const [resource, updatedResource] = ResourceFactory.buildList(2)
+      const department = DepartmentFactory.build()
+      const [resource, updatedResource] = ResourceFactory.buildList(2, {
+        department,
+      })
+
+      await Department.insert(department)
       await Resource.insert(resource)
 
       const { id } = resource
@@ -263,6 +404,8 @@ describe('ResourceResolver', () => {
         firstName,
         lastName,
         title,
+        email,
+        imageUrl,
         startDate,
         updatedBy,
       } = updatedResource
@@ -274,6 +417,9 @@ describe('ResourceResolver', () => {
             firstName,
             lastName,
             title,
+            departmentId: department.id,
+            email,
+            imageUrl,
             startDate,
             updatedBy,
           },
@@ -288,6 +434,9 @@ describe('ResourceResolver', () => {
             firstName,
             lastName,
             title,
+            department: { name: department.name },
+            email,
+            imageUrl,
             startDate: new Date(startDate).toISOString(),
           },
         },
@@ -326,7 +475,9 @@ describe('ResourceResolver', () => {
     })
 
     it('should return updated resource', async () => {
-      const resource = ResourceFactory.build()
+      const department = DepartmentFactory.build()
+      const resource = ResourceFactory.build({ department })
+      await Department.insert(department)
       await Resource.insert(resource)
 
       const { id } = resource
