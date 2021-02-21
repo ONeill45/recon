@@ -34,7 +34,7 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
 
   const duration = getDurationText(startDate, terminationDate)
   return (
-    <ResourceCardDiv>
+    <ResourceCardDiv data-testid="ResourceCardDiv">
       <LogoDiv>
         <LogoImg
           src={imageUrl ? imageUrl : '/images/default-avatar-500x500.png'}

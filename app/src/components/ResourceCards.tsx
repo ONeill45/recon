@@ -14,7 +14,7 @@ const CardsDiv = styled.div`
 export const ResourceCards = ({ resources }: ResourceCardsProps) => (
   <CardsDiv>
     {resources.map((resource) => {
-      return <ResourceCard key={resource.id} resource={resource}></ResourceCard>
+      return <ResourceCard key={resource.id} resource={resource} />
     })}
   </CardsDiv>
 )
