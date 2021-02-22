@@ -7,25 +7,45 @@ trigger:
   paths:
     include:
       - api/*
+  variables:
+    - group: cdefense
+    - name: cdefenceAPIKey
 
 jobs:
+  - job: Cloud_Defense_SAST_Scan
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      matrix:
+        dotnet5.0.x:
+          dotnet.version: '5.0.x'
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '$(dotnet.version)'
+        displayName: 'Use Dotnet $(dotnet.version)'
+      - script: |
+          curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
+          /tmp/cdefense scan --lang=dotnet --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)
+        displayName: 'SAST Scan'
+
   - job: Build_Push_Artifacts
 
     steps:
       - task: Docker@2
         inputs:
-          containerRegistry: "Ascendum ACR"
-          command: "login"
+          containerRegistry: 'Ascendum ACR'
+          command: 'login'
 
       - task: Docker@2
         inputs:
-          containerRegistry: "Ascendum ACR"
+          containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
-          command: "buildAndPush"
-          Dockerfile: "api/Dockerfile"
+          command: 'buildAndPush'
+          Dockerfile: 'api/Dockerfile'
           tags: |
             $(Build.SourceVersion)
       - task: Docker@2
         inputs:
-          containerRegistry: "Ascendum ACR"
-          command: "logout"
+          containerRegistry: 'Ascendum ACR'
+          command: 'logout'
