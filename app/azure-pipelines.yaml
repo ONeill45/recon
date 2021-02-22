@@ -27,7 +27,7 @@ jobs:
       - script: |
           curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
           /tmp/cdefense scan --lang=dotnet --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)
-          displayName: 'SAST Scan'
+        displayName: 'SAST Scan'
 
   - job: Build_Push_Artifacts
 
