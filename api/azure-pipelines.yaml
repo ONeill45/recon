@@ -7,9 +7,9 @@ trigger:
   paths:
     include:
       - api/*
-  variables:
-    - group: cdefense
-    - name: cdefenceAPIKey
+variables:
+  - group: cdefense
+  - name: cdefenceAPIKey
 
 jobs:
   - job: Cloud_Defense_SAST_Scan
