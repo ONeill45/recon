@@ -10,13 +10,13 @@ const renderComponent = (client: Client) =>
 describe('<ClientCard />', () => {
   it('should initialize client details', () => {
     const client = ClientFactory.build()
-    const { clientName, description, startDate, endDate } = client
+    const { clientName, description, startDate, endDate, logoUrl } = client
 
-    const { getByText, getByRole } = renderComponent(client)
-    // expect(wrapper.find(LogoImg).prop('src')).toEqual(logoUrl)
-    getByRole('img', {})
-    expect(getByText(clientName)).toBeVisible()
-    expect(getByText(description)).toBeVisible()
-    expect(getByText(getDurationText(startDate, endDate))).toBeVisible()
+    const { queryByRole, queryByText } = renderComponent(client)
+
+    expect(queryByRole('img')).toHaveProperty('src', logoUrl)
+    expect(queryByText(clientName)).toBeVisible()
+    expect(queryByText(description)).toBeVisible()
+    expect(queryByText(getDurationText(startDate, endDate))).toBeVisible()
   })
 })
