@@ -1,6 +1,8 @@
 import { render, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { NavButtons } from 'components'
 import { DisplayType } from 'interfaces'
+import { applyMockUseRouter, mockUseRouter } from '../testUtils'
 
 const buttonProperties = [
   {
@@ -22,9 +24,7 @@ const buttonProperties = [
 ]
 const displayType = DisplayType.ROW
 
-jest
-  .spyOn(require('next/router'), 'useRouter')
-  .mockImplementation(() => require('../testUtils').mockUseRouter)
+applyMockUseRouter()
 
 const renderComponent = async (
   buttonProperties: { title: string; route: string }[],
@@ -44,13 +44,13 @@ describe('<NavButtons />', () => {
   it('should render NavButtons in row', async () => {
     const component = await renderComponent(buttonProperties, displayType)
 
-    const { queryByText, getAllByRole } = component
+    const { getByText, getAllByRole } = component
 
     expect(getAllByRole('button').length).toEqual(4)
-    expect(queryByText('Home')).toBeTruthy()
-    expect(queryByText('Clients')).toBeTruthy()
-    expect(queryByText('Projects')).toBeTruthy()
-    expect(queryByText('Resources')).toBeTruthy()
+    expect(getByText('Home')).toBeTruthy()
+    expect(getByText('Clients')).toBeTruthy()
+    expect(getByText('Projects')).toBeTruthy()
+    expect(getByText('Resources')).toBeTruthy()
     const { flexDirection } = window.getComputedStyle(
       component.container.firstElementChild as Element,
     )
@@ -58,19 +58,27 @@ describe('<NavButtons />', () => {
   })
 
   it('should render NavButtons in column', async () => {
-    const { queryByText, getAllByRole, container } = await renderComponent(
+    const { getByText, getAllByRole, container } = await renderComponent(
       buttonProperties,
       DisplayType.COLUMN,
     )
 
     expect(getAllByRole('button').length).toEqual(4)
-    expect(queryByText('Home')).toBeTruthy()
-    expect(queryByText('Clients')).toBeTruthy()
-    expect(queryByText('Projects')).toBeTruthy()
-    expect(queryByText('Resources')).toBeTruthy()
+    expect(getByText('Home')).toBeTruthy()
+    expect(getByText('Clients')).toBeTruthy()
+    expect(getByText('Projects')).toBeTruthy()
+    expect(getByText('Resources')).toBeTruthy()
     const { flexDirection } = window.getComputedStyle(
       container.firstElementChild as Element,
     )
     expect(flexDirection).toEqual('column')
+  })
+
+  it('should navigate to route when button is clicked', async () => {
+    const { getByText } = await renderComponent(buttonProperties, displayType)
+
+    userEvent.click(getByText('Clients'))
+
+    expect(mockUseRouter.push).toHaveBeenCalledWith('/clients')
   })
 })
