@@ -12,7 +12,6 @@ import {
   applyMockUseRouter,
   renderComponent,
 } from '../testUtils'
-import { screen, waitFor } from '@testing-library/react'
 
 const { homeAccountId, name } = mockMsAccountInfoMock
 const firstName = name?.split(' ')[0]
