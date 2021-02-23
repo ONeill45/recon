@@ -44,15 +44,12 @@ describe('<NewClientForm />', () => {
       'description',
       'logo-url',
     ].map((text) => getByLabelText(text))
-    //const submitButton = getByRole('button', { name: 'Submit' })
 
     await waitFor(() => {
       userEvent.type(clientName, 'Test Client')
       userEvent.type(description, 'Test Desc')
       userEvent.type(logoUrl, 'http://test.com')
     })
-    //if (submitButton) fireEvent.click(submitButton)
     await new Promise((resolve) => setTimeout(resolve, 0))
-    // expect(mockUseRouter.push).toHaveBeenCalledTimes(1)
   })
 })
