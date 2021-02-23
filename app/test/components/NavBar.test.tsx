@@ -1,26 +1,14 @@
-import React from 'react'
 import { act } from 'react-dom/test-utils'
-import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
-import { applyMockUseRouter } from '../testUtils'
-import { NavBar } from '../../src/components'
+import { NavBar } from 'components'
+import {
+  applyMockUseRouter,
+  renderComponent,
+  setInnerWidth,
+} from '../testUtils'
 
 applyMockUseRouter()
-
-const renderComponent = async () => {
-  const component = render(<NavBar />)
-  await waitFor(() => Promise.resolve())
-  return component
-}
-
-const setInnerWidth = (width: number = 200) => {
-  Object.defineProperty(window, 'innerWidth', {
-    writable: true,
-    configurable: true,
-    value: width,
-  })
-}
 
 describe('<NavBar />', () => {
   beforeEach(() => {
@@ -28,7 +16,7 @@ describe('<NavBar />', () => {
   })
 
   it('should show the full nav bar by default', async () => {
-    const { getByTestId } = await renderComponent()
+    const { getByTestId } = await renderComponent(NavBar)
 
     expect(getByTestId('FullNav')).toBeVisible()
     expect(getByTestId('CollapsedNav')).not.toBeVisible()
@@ -37,7 +25,7 @@ describe('<NavBar />', () => {
 
   it('should show the collapsed nav when screen is too small for full nav', async () => {
     setInnerWidth()
-    const { getByTestId } = await renderComponent()
+    const { getByTestId } = await renderComponent(NavBar)
 
     expect(getByTestId('FullNav')).not.toBeVisible()
     expect(getByTestId('CollapsedNav')).toBeVisible()
@@ -45,7 +33,7 @@ describe('<NavBar />', () => {
   })
 
   it('should collapse nav bar when screen is resized below threshold', async () => {
-    const { getByTestId } = await renderComponent()
+    const { getByTestId } = await renderComponent(NavBar)
     setInnerWidth()
     act(() => {
       global.dispatchEvent(new Event('resize'))
@@ -58,7 +46,7 @@ describe('<NavBar />', () => {
 
   it('should open side nav when hamburger menu is clicked', async () => {
     setInnerWidth()
-    const { getByTestId } = await renderComponent()
+    const { getByTestId } = await renderComponent(NavBar)
 
     userEvent.click(getByTestId('HamburgerMenu'))
 
@@ -67,7 +55,7 @@ describe('<NavBar />', () => {
 
   it('should open side nav when hamburger menu is clicked', async () => {
     setInnerWidth()
-    const component = await renderComponent()
+    const component = await renderComponent(NavBar)
 
     const { getByTestId } = component
 

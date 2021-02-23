@@ -1,11 +1,18 @@
-import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { NavButton } from '../../src/components'
-import { DisplayType } from '../../src/interfaces'
-import { applyMockUseRouter, mockUseRouter } from '../testUtils'
 
-const defaultTitle = 'Home'
-const defaultRoute = '/home'
+import { NavButton } from 'components'
+import { DisplayType } from 'interfaces'
+import {
+  applyMockUseRouter,
+  mockUseRouter,
+  renderComponent,
+} from '../testUtils'
+
+const defaultProps = {
+  title: 'Home',
+  route: '/home',
+  displayType: DisplayType.ROW,
+}
 
 const fontColor = {
   selected: 'white',
@@ -14,17 +21,9 @@ const fontColor = {
 
 applyMockUseRouter()
 
-const renderComponent = (
-  title: string = defaultTitle,
-  route: string = defaultRoute,
-) =>
-  render(
-    <NavButton title={title} route={route} displayType={DisplayType.ROW} />,
-  )
-
 describe('<NavButton />', () => {
-  it('should render a selected NavButton', () => {
-    const { getByText } = renderComponent()
+  it('should render a selected NavButton', async () => {
+    const { getByText } = await renderComponent(NavButton, defaultProps)
     const homeButton = getByText('Home')
 
     expect(homeButton).toBeTruthy()
@@ -33,8 +32,12 @@ describe('<NavButton />', () => {
     expect(color).toEqual(fontColor.selected)
   })
 
-  it('should render a unselected NavButton in row', () => {
-    const { getByText } = renderComponent('Resources', '/resources')
+  it('should render a unselected NavButton in row', async () => {
+    const { getByText } = await renderComponent(NavButton, {
+      ...defaultProps,
+      title: 'Resources',
+      route: '/resources',
+    })
     const resourceButton = getByText('Resources')
 
     expect(resourceButton).toBeTruthy()
@@ -43,8 +46,8 @@ describe('<NavButton />', () => {
     expect(color).toEqual(fontColor.unselected)
   })
 
-  it('should navigate to requested new page when clicked', () => {
-    const { getByText } = renderComponent()
+  it('should navigate to requested new page when clicked', async () => {
+    const { getByText } = await renderComponent(NavButton, defaultProps)
     const homeButton = getByText('Home')
 
     userEvent.click(homeButton)

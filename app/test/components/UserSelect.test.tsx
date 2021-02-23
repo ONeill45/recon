@@ -1,4 +1,3 @@
-import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { useMsAccount, useAccessToken } from 'utils/hooks'
@@ -11,7 +10,9 @@ import {
   mockMsalUrl,
   mockUseRouter,
   applyMockUseRouter,
+  renderComponent,
 } from '../testUtils'
+import { screen, waitFor } from '@testing-library/react'
 
 const { homeAccountId, name } = mockMsAccountInfoMock
 const firstName = name?.split(' ')[0]
@@ -34,12 +35,6 @@ const mockedUseAccessToken = useAccessToken as jest.MockedFunction<
   typeof useAccessToken
 >
 
-const renderComponent = async () => {
-  const component = render(<UserSelect />)
-  await waitFor(() => Promise.resolve())
-  return component
-}
-
 describe('<UserSelect />', () => {
   beforeEach(() => {
     mockedUseMsAccount.mockImplementation(() => mockMsAccountInfoMock)
@@ -49,14 +44,16 @@ describe('<UserSelect />', () => {
     mockedUseMsAccount.mockImplementation(() => null)
     mockedUseAccessToken.mockImplementation(() => undefined)
 
-    const { queryByText, queryByRole } = await renderComponent()
+    const { queryByText, queryByRole } = await renderComponent(UserSelect)
 
     expect(queryByText(`Hi ${firstName}`)).toBeNull()
     expect(queryByRole('img')).toBeNull()
   })
 
   it('should render the greeting and show the user thumbnail if user is authenticated', async () => {
-    const { getByText, getByRole, getByTestId } = await renderComponent()
+    const { getByText, getByRole, getByTestId } = await renderComponent(
+      UserSelect,
+    )
 
     const greetingDiv = getByText(`Hi ${firstName}`)
     const thumbnailImg = getByRole('img')
@@ -68,7 +65,7 @@ describe('<UserSelect />', () => {
   })
 
   it('should show menu on thumbnail click', async () => {
-    const { getByRole, getByTestId } = await renderComponent()
+    const { getByRole, getByTestId } = await renderComponent(UserSelect)
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)
@@ -79,7 +76,9 @@ describe('<UserSelect />', () => {
   })
 
   it('should close the menu when the user clicks outside of it', async () => {
-    const { getByRole, getByTestId, getByText } = await renderComponent()
+    const { getByRole, getByTestId, container } = await renderComponent(
+      UserSelect,
+    )
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)
@@ -87,7 +86,8 @@ describe('<UserSelect />', () => {
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
     expect(getByTestId('UserSelectMenu')).toBeVisible()
 
-    userEvent.click(getByText(`Hi ${firstName}`))
+    userEvent.click(container)
+
     expect(getByTestId('UserSelectMenu')).not.toBeVisible()
   })
 
@@ -97,7 +97,7 @@ describe('<UserSelect />', () => {
       homeAccountId: '',
     }))
 
-    const { getByRole, getByTestId } = await renderComponent()
+    const { getByRole, getByTestId } = await renderComponent(UserSelect)
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)
@@ -111,7 +111,7 @@ describe('<UserSelect />', () => {
   it('should log out the user when logout is clicked in the menu', async () => {
     global.localStorage.setItem(`${homeAccountId}-blah`, 'blah')
 
-    const { getByRole, getByTestId } = await renderComponent()
+    const { getByRole, getByTestId } = await renderComponent(UserSelect)
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)

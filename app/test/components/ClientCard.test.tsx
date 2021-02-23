@@ -1,18 +1,16 @@
-import { render } from '@testing-library/react'
-import { getDurationText } from '../../src/utils'
-import { ClientCard } from '../../src/components'
-import { Client } from '../../src/interfaces'
+import { getDurationText } from 'utils'
+import { ClientCard } from 'components'
 import { ClientFactory } from '../factories'
-
-const renderComponent = (client: Client) =>
-  render(<ClientCard client={client} />)
+import { renderComponent } from '../testUtils'
 
 describe('<ClientCard />', () => {
-  it('should initialize client details', () => {
+  it('should initialize client details', async () => {
     const client = ClientFactory.build()
     const { clientName, description, startDate, endDate, logoUrl } = client
 
-    const { getByRole, getByText } = renderComponent(client)
+    const { getByRole, getByText } = await renderComponent(ClientCard, {
+      client,
+    })
 
     expect(getByRole('img')).toHaveProperty('src', logoUrl)
     expect(getByText(clientName)).toBeVisible()

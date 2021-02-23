@@ -1,48 +1,40 @@
-import { render, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+
 import { NavButtons } from 'components'
 import { DisplayType } from 'interfaces'
-import { applyMockUseRouter, mockUseRouter } from '../testUtils'
+import {
+  applyMockUseRouter,
+  mockUseRouter,
+  renderComponent,
+} from '../testUtils'
 
-const buttonProperties = [
-  {
-    title: 'Home',
-    route: '/',
-  },
-  {
-    title: 'Clients',
-    route: '/clients',
-  },
-  {
-    title: 'Projects',
-    route: '/projects',
-  },
-  {
-    title: 'Resources',
-    route: '/resources',
-  },
-]
-const displayType = DisplayType.ROW
+const defaultProps = {
+  buttonProperties: [
+    {
+      title: 'Home',
+      route: '/',
+    },
+    {
+      title: 'Clients',
+      route: '/clients',
+    },
+    {
+      title: 'Projects',
+      route: '/projects',
+    },
+    {
+      title: 'Resources',
+      route: '/resources',
+    },
+  ],
+  displayType: DisplayType.ROW,
+}
 
 applyMockUseRouter()
 
-const renderComponent = async (
-  buttonProperties: { title: string; route: string }[],
-  displayType: DisplayType,
-) => {
-  const component = render(
-    <NavButtons
-      buttonProperties={buttonProperties}
-      displayType={displayType}
-    />,
-  )
-  await waitFor(() => Promise.resolve())
-  return component
-}
-
 describe('<NavButtons />', () => {
   it('should render NavButtons in row', async () => {
-    const component = await renderComponent(buttonProperties, displayType)
+    const component = await renderComponent(NavButtons, defaultProps)
 
     const { getByText, getAllByRole } = component
 
@@ -59,8 +51,11 @@ describe('<NavButtons />', () => {
 
   it('should render NavButtons in column', async () => {
     const { getByText, getAllByRole, container } = await renderComponent(
-      buttonProperties,
-      DisplayType.COLUMN,
+      NavButtons,
+      {
+        ...defaultProps,
+        displayType: DisplayType.COLUMN,
+      },
     )
 
     expect(getAllByRole('button').length).toEqual(4)
@@ -75,7 +70,7 @@ describe('<NavButtons />', () => {
   })
 
   it('should navigate to route when button is clicked', async () => {
-    const { getByText } = await renderComponent(buttonProperties, displayType)
+    const { getByText } = await renderComponent(NavButtons, defaultProps)
 
     userEvent.click(getByText('Clients'))
 
