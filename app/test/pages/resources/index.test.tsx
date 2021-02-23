@@ -77,17 +77,17 @@ const renderComponent = async (mocks: any, waitForRender = true) => {
 
 describe('Resource page test', () => {
   it('should render resource page and display Loading...', async () => {
-    const { queryByText } = await renderComponent(mocks, false)
-    expect(queryByText('Loading...')).toBeVisible()
+    const { getByText } = await renderComponent(mocks, false)
+    expect(getByText('Loading...')).toBeVisible()
   })
   it('should fetch all resources and display their cards', async () => {
-    const { queryByText } = await renderComponent(mocks)
+    const { getByText } = await renderComponent(mocks)
 
-    expect(queryByText(`${resources[0].email}`)).toBeVisible()
-    expect(queryByText(`${resources[1].email}`)).toBeVisible()
-    expect(queryByText(`${resources[2].email}`)).toBeVisible()
-    expect(queryByText(`${resources[3].email}`)).toBeVisible()
-    expect(queryByText(`${resources[4].email}`)).toBeVisible()
+    expect(getByText(`${resources[0].email}`)).toBeVisible()
+    expect(getByText(`${resources[1].email}`)).toBeVisible()
+    expect(getByText(`${resources[2].email}`)).toBeVisible()
+    expect(getByText(`${resources[3].email}`)).toBeVisible()
+    expect(getByText(`${resources[4].email}`)).toBeVisible()
   })
   it('should show error message when an error occurs', async () => {
     const { getByText } = await renderComponent(errorMocks)

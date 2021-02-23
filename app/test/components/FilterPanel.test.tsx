@@ -7,17 +7,17 @@ const renderComponent = () => render(<FilterPanel />)
 
 describe('<FilterPanel />', () => {
   it('should not show expanded filter panel by default', () => {
-    const { queryByTestId } = renderComponent()
+    const { getByTestId } = renderComponent()
 
-    expect(queryByTestId('SideFilterPanel')).toBeVisible()
-    expect(queryByTestId('ExpandedFilterPanel')).not.toBeVisible()
+    expect(getByTestId('SideFilterPanel')).toBeVisible()
+    expect(getByTestId('ExpandedFilterPanel')).not.toBeVisible()
   })
 
   it('should show expanded filter panel when side filter bar is clicked', () => {
-    const { queryByTestId } = renderComponent()
+    const { getByTestId } = renderComponent()
 
-    userEvent.click(queryByTestId('SideFilterPanel') as HTMLElement)
+    userEvent.click(getByTestId('SideFilterPanel'))
 
-    expect(queryByTestId('ExpandedFilterPanel')).toBeVisible()
+    expect(getByTestId('ExpandedFilterPanel')).toBeVisible()
   })
 })

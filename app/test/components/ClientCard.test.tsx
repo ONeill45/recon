@@ -12,11 +12,11 @@ describe('<ClientCard />', () => {
     const client = ClientFactory.build()
     const { clientName, description, startDate, endDate, logoUrl } = client
 
-    const { queryByRole, queryByText } = renderComponent(client)
+    const { getByRole, getByText } = renderComponent(client)
 
-    expect(queryByRole('img')).toHaveProperty('src', logoUrl)
-    expect(queryByText(clientName)).toBeVisible()
-    expect(queryByText(description)).toBeVisible()
-    expect(queryByText(getDurationText(startDate, endDate))).toBeVisible()
+    expect(getByRole('img')).toHaveProperty('src', logoUrl)
+    expect(getByText(clientName)).toBeVisible()
+    expect(getByText(description)).toBeVisible()
+    expect(getByText(getDurationText(startDate, endDate))).toBeVisible()
   })
 })

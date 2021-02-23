@@ -7,19 +7,17 @@ const renderComponent = () => render(<FilterCategory title="test" />)
 
 describe('<FilterCategory />', () => {
   it('should not show expanded filter category content by default', () => {
-    const { queryByTestId } = renderComponent()
+    const { queryByTestId, getByText } = renderComponent()
 
     expect(queryByTestId('FilterCategoryContent')).toBeNull()
+    expect(getByText('test')).toBeVisible()
   })
 
   it('should show expanded filter category content when header is clicked', () => {
-    const { queryByText, queryByTestId } = renderComponent()
+    const { getByText, getByTestId } = renderComponent()
 
-    const header = queryByText('test')
-    expect(header).not.toBeNull()
+    userEvent.click(getByText('test'))
 
-    userEvent.click(header as HTMLElement)
-
-    expect(queryByTestId('FilterCategoryContent')).toBeVisible()
+    expect(getByTestId('FilterCategoryContent')).toBeVisible()
   })
 })

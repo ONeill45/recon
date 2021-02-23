@@ -82,11 +82,11 @@ describe('Projects page test', () => {
   it('should fetch all projects and display their cards', async () => {
     await renderComponent(mocks)
 
-    expect(screen.queryByText(`${projects[0].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[1].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[2].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[3].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[4].projectName}`)).toBeVisible()
+    expect(screen.getByText(`${projects[0].projectName}`)).toBeVisible()
+    expect(screen.getByText(`${projects[1].projectName}`)).toBeVisible()
+    expect(screen.getByText(`${projects[2].projectName}`)).toBeVisible()
+    expect(screen.getByText(`${projects[3].projectName}`)).toBeVisible()
+    expect(screen.getByText(`${projects[4].projectName}`)).toBeVisible()
   })
   it('should show error message when an error occurs', async () => {
     await renderComponent(errorMocks)

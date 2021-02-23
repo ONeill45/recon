@@ -5,8 +5,8 @@ const renderComponent = () => render(<SearchBar />)
 
 describe('<SearchBar />', () => {
   it('should render a search bar', () => {
-    const { queryByText } = renderComponent()
+    const { getByText } = renderComponent()
 
-    expect(queryByText('Search')).toBeVisible()
+    expect(getByText('Search')).toBeVisible()
   })
 })

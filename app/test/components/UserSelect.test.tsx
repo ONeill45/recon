@@ -56,39 +56,39 @@ describe('<UserSelect />', () => {
   })
 
   it('should render the greeting and show the user thumbnail if user is authenticated', async () => {
-    const { queryByText, queryByRole, queryByTestId } = await renderComponent()
+    const { getByText, getByRole, getByTestId } = await renderComponent()
 
-    const greetingDiv = queryByText(`Hi ${firstName}`)
-    const thumbnailImg = queryByRole('img')
+    const greetingDiv = getByText(`Hi ${firstName}`)
+    const thumbnailImg = getByRole('img')
 
-    expect(greetingDiv).not.toBeNull()
-    expect(thumbnailImg).not.toBeNull()
+    expect(greetingDiv).toBeVisible()
+    expect(thumbnailImg).toBeVisible()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(queryByTestId('UserSelectMenu')).not.toBeVisible()
+    expect(getByTestId('UserSelectMenu')).not.toBeVisible()
   })
 
   it('should show menu on thumbnail click', async () => {
-    const { queryByRole, queryByTestId } = await renderComponent()
+    const { getByRole, getByTestId } = await renderComponent()
 
-    const thumbnailImg = queryByRole('img')
-    userEvent.click(thumbnailImg as HTMLElement)
+    const thumbnailImg = getByRole('img')
+    userEvent.click(thumbnailImg)
 
-    expect(thumbnailImg).not.toBeNull()
+    expect(thumbnailImg).toBeVisible()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(getByTestId('UserSelectMenu')).toBeVisible()
   })
 
   it('should close the menu when the user clicks outside of it', async () => {
-    const { queryByRole, queryByTestId, queryByText } = await renderComponent()
+    const { getByRole, getByTestId, getByText } = await renderComponent()
 
-    const thumbnailImg = queryByRole('img')
-    userEvent.click(thumbnailImg as HTMLElement)
-    expect(thumbnailImg).not.toBeNull()
+    const thumbnailImg = getByRole('img')
+    userEvent.click(thumbnailImg)
+    expect(thumbnailImg).toBeVisible()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(getByTestId('UserSelectMenu')).toBeVisible()
 
-    userEvent.click(queryByText(`Hi ${firstName}`) as HTMLElement)
-    expect(queryByTestId('UserSelectMenu')).not.toBeVisible()
+    userEvent.click(getByText(`Hi ${firstName}`))
+    expect(getByTestId('UserSelectMenu')).not.toBeVisible()
   })
 
   it('should log the user out of their MS account if the user has no homeAccountId', async () => {
@@ -97,28 +97,28 @@ describe('<UserSelect />', () => {
       homeAccountId: '',
     }))
 
-    const { queryByRole, getByRole, queryByTestId } = await renderComponent()
+    const { getByRole, getByTestId } = await renderComponent()
 
-    const thumbnailImg = queryByRole('img')
-    userEvent.click(thumbnailImg as HTMLElement)
+    const thumbnailImg = getByRole('img')
+    userEvent.click(thumbnailImg)
     userEvent.click(getByRole('button', { name: 'Log Out' }))
-    expect(thumbnailImg).not.toBeNull()
+    expect(thumbnailImg).toBeVisible()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(getByTestId('UserSelectMenu')).toBeVisible()
     expect(mockMsInstance.logout).toBeCalled()
   })
 
   it('should log out the user when logout is clicked in the menu', async () => {
     global.localStorage.setItem(`${homeAccountId}-blah`, 'blah')
 
-    const { queryByRole, getByRole, queryByTestId } = await renderComponent()
+    const { getByRole, getByTestId } = await renderComponent()
 
-    const thumbnailImg = queryByRole('img')
-    userEvent.click(thumbnailImg as HTMLElement)
+    const thumbnailImg = getByRole('img')
+    userEvent.click(thumbnailImg)
     userEvent.click(getByRole('button', { name: 'Log Out' }))
-    expect(thumbnailImg).not.toBeNull()
+    expect(thumbnailImg).toBeVisible()
     expect(thumbnailImg).toHaveProperty('src', mockMsalUrl)
-    expect(queryByTestId('UserSelectMenu')).toBeVisible()
+    expect(getByTestId('UserSelectMenu')).toBeVisible()
     expect(mockUseRouter.reload).toBeCalled()
   })
 })

@@ -2,21 +2,24 @@ import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 
 import { PlusCircle } from 'components'
+import { applyMockUseRouter, mockUseRouter } from '../testUtils'
 
-const useRouter = jest.spyOn(require('next/router'), 'useRouter')
-const routerPush = jest.fn()
-useRouter.mockImplementation(() => ({
-  push: routerPush,
-}))
+applyMockUseRouter()
 
 const renderComponent = () => render(<PlusCircle size={'50'} route={'/test'} />)
 
 describe('<PlusCircle />', () => {
+  it('should render a plus circle button', async () => {
+    const { getByTestId } = renderComponent()
+
+    expect(getByTestId('PlusCircleDiv')).toBeVisible()
+  })
+
   it('should route to new page when plus circle is clicked', async () => {
-    const { queryByTestId } = renderComponent()
+    const { getByTestId } = renderComponent()
 
-    userEvent.click(queryByTestId('PlusCircleDiv') as HTMLElement)
+    userEvent.click(getByTestId('PlusCircleDiv'))
 
-    expect(routerPush).toHaveBeenCalled()
+    expect(mockUseRouter.push).toHaveBeenCalledWith('/test')
   })
 })
