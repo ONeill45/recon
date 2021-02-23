@@ -5,13 +5,17 @@ export const render = async (
   // eslint-disable-next-line no-unused-vars
   Component: (props: any) => JSX.Element,
   props: any = {},
-  mocks: any = null,
+  mocks: any = undefined,
   waitForRender = true,
 ) => {
   const component = rtlRender(
-    <MockedProvider mocks={mocks}>
+    mocks === undefined ? (
       <Component {...props} />
-    </MockedProvider>,
+    ) : (
+      <MockedProvider mocks={mocks}>
+        <Component {...props} />
+      </MockedProvider>
+    ),
   )
 
   if (!waitForRender) return component
