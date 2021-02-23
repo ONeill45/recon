@@ -12,3 +12,13 @@ export enum DepartmentNames {
 registerEnumType(DepartmentNames, {
   name: 'DepartmentNames',
 })
+
+export enum ProjectType {
+  HOURLY = 'hourly',
+  FIXED = 'fixed bid',
+  INTERNAL = 'internal',
+}
+
+registerEnumType(ProjectType, {
+  name: 'ProjectType',
+})
