@@ -1,22 +1,20 @@
-import { shallow } from 'enzyme'
-import { ClientCard, ClientCards } from '../../src/components'
+import { render } from '@testing-library/react'
+import { ClientCards } from '../../src/components'
 import { Client } from '../../src/interfaces'
 import { ClientFactory } from '../factories'
 
-const renderWrapper = (clients: Client[]) =>
-  shallow(<ClientCards clients={clients} />)
+const renderComponent = (clients: Client[]) =>
+  render(<ClientCards clients={clients} />)
 
 describe('<ClientCards />', () => {
-  it('should match snapshot', () => {
-    const clients = ClientFactory.buildList(5)
-    const wrapper = renderWrapper(clients)
-    expect(wrapper).toMatchSnapshot()
-  })
-
   it('should initialize client cards', () => {
     const clients = ClientFactory.buildList(5)
+    const { getByText } = renderComponent(clients)
 
-    const wrapper = renderWrapper(clients)
-    expect(wrapper.find(ClientCard).length).toEqual(5)
+    expect(getByText(clients[0].clientName)).toBeVisible()
+    expect(getByText(clients[1].clientName)).toBeVisible()
+    expect(getByText(clients[2].clientName)).toBeVisible()
+    expect(getByText(clients[3].clientName)).toBeVisible()
+    expect(getByText(clients[4].clientName)).toBeVisible()
   })
 })

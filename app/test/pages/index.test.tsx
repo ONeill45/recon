@@ -1,10 +1,10 @@
-import React from 'react'
-import { shallow } from 'enzyme'
+import { render } from '@testing-library/react'
 import Index from '../../src/pages/index'
 
 describe('Index page test', () => {
-  it('matches snapshot', () => {
-    const wrapper = shallow(<Index />)
-    expect(wrapper).toMatchSnapshot()
+  it('should render index page', () => {
+    const { queryByText } = render(<Index />)
+
+    expect(queryByText('Welcome to Recon!')).toBeVisible()
   })
 })

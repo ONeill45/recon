@@ -1,31 +1,25 @@
-import { shallow } from 'enzyme'
-import { matchers } from '@emotion/jest'
-import {
-  FilterCategory,
-  FilterCategoryContentDiv,
-  FilterCategoryHeaderDiv,
-} from '../../src/components'
+import { render } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
-expect.extend(matchers)
+import { FilterCategory } from '../../src/components'
 
-const renderWrapper = () => shallow(<FilterCategory title="test" />)
+const renderComponent = () => render(<FilterCategory title="test" />)
 
 describe('<FilterCategory />', () => {
-  it('should match snapshot', () => {
-    const wrapper = renderWrapper()
-    expect(wrapper).toMatchSnapshot()
-  })
-
   it('should not show expanded filter category content by default', () => {
-    const wrapper = renderWrapper()
+    const { queryByTestId } = renderComponent()
 
-    expect(wrapper.find(FilterCategoryContentDiv).length).toBe(0)
+    expect(queryByTestId('FilterCategoryContent')).toBeNull()
   })
 
   it('should show expanded filter category content when header is clicked', () => {
-    const wrapper = renderWrapper()
-    wrapper.find(FilterCategoryHeaderDiv).simulate('click')
+    const { queryByText, queryByTestId } = renderComponent()
 
-    expect(wrapper.find(FilterCategoryContentDiv).length).toBe(1)
+    const header = queryByText('test')
+    expect(header).not.toBeNull()
+
+    userEvent.click(header as HTMLElement)
+
+    expect(queryByTestId('FilterCategoryContent')).toBeVisible()
   })
 })

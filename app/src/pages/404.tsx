@@ -5,9 +5,8 @@ import { Button } from '../components'
 import { useRouter } from 'next/router'
 
 const e404 = () => {
+  const router = useRouter()
 
-const router = useRouter()
-  
   return (
     <div className={styles.container}>
       <Head>
@@ -17,10 +16,7 @@ const router = useRouter()
 
       <main className={styles.main}>
         <h1 className={styles.description}>404 - Page Not Found</h1>
-        <Button 
-          color = "orange"
-          onClick={() => router.push('/')}
-        >
+        <Button color="orange" onClick={() => router.push('/')}>
           Go Home
         </Button>
       </main>

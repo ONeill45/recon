@@ -1,37 +1,23 @@
-import { shallow } from 'enzyme'
-import { matchers } from '@emotion/jest'
-import {
-  ExpandedFilterPanelDiv,
-  FilterPanel,
-  SideFilterPanelDiv,
-} from '../../src/components'
+import { render } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 
-expect.extend(matchers)
+import { FilterPanel } from '../../src/components'
 
-const renderWrapper = () => shallow(<FilterPanel />)
+const renderComponent = () => render(<FilterPanel />)
 
 describe('<FilterPanel />', () => {
-  it('should match snapshot', () => {
-    const wrapper = renderWrapper()
-    expect(wrapper).toMatchSnapshot()
-  })
-
   it('should not show expanded filter panel by default', () => {
-    const wrapper = renderWrapper()
+    const { queryByTestId } = renderComponent()
 
-    expect(wrapper.find(ExpandedFilterPanelDiv)).toHaveStyleRule(
-      'display',
-      'none',
-    )
+    expect(queryByTestId('SideFilterPanel')).toBeVisible()
+    expect(queryByTestId('ExpandedFilterPanel')).not.toBeVisible()
   })
 
   it('should show expanded filter panel when side filter bar is clicked', () => {
-    const wrapper = renderWrapper()
-    wrapper.find(SideFilterPanelDiv).simulate('click')
+    const { queryByTestId } = renderComponent()
 
-    expect(wrapper.find(ExpandedFilterPanelDiv)).toHaveStyleRule(
-      'display',
-      'flex',
-    )
+    userEvent.click(queryByTestId('SideFilterPanel') as HTMLElement)
+
+    expect(queryByTestId('ExpandedFilterPanel')).toBeVisible()
   })
 })
