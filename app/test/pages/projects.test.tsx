@@ -1,9 +1,9 @@
-import React from 'react'
-import Projects from 'pages/projects'
-import { ProjectFactory } from '../factories'
 import { MockedProvider } from '@apollo/client/testing'
 import { gql } from '@apollo/client'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
+
+import Projects from 'pages/projects'
+import { ProjectFactory } from '../factories'
 
 const projects = ProjectFactory.buildList(5)
 
@@ -71,26 +71,26 @@ const renderComponent = async (mocks: any) => {
 
 describe('Projects page test', () => {
   it('should render projects page and display Loading...', async () => {
-    render(
+    const { getByText } = render(
       <MockedProvider mocks={mocks}>
         <Projects />
       </MockedProvider>,
     )
 
-    expect(screen.getByText('Loading...')).toBeVisible()
+    expect(getByText('Loading...')).toBeVisible()
   })
   it('should fetch all projects and display their cards', async () => {
-    await renderComponent(mocks)
+    const { getByText } = await renderComponent(mocks)
 
-    expect(screen.getByText(`${projects[0].projectName}`)).toBeVisible()
-    expect(screen.getByText(`${projects[1].projectName}`)).toBeVisible()
-    expect(screen.getByText(`${projects[2].projectName}`)).toBeVisible()
-    expect(screen.getByText(`${projects[3].projectName}`)).toBeVisible()
-    expect(screen.getByText(`${projects[4].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[0].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[1].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[2].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[3].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[4].projectName}`)).toBeVisible()
   })
   it('should show error message when an error occurs', async () => {
-    await renderComponent(errorMocks)
+    const { getByText } = await renderComponent(errorMocks)
 
-    expect(screen.getByText('Error: An error occurred')).toBeVisible()
+    expect(getByText('Error: An error occurred')).toBeVisible()
   })
 })
