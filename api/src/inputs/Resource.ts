@@ -14,6 +14,15 @@ export class CreateResourceInput {
   @Field()
   title: string
 
+  @Field({ nullable: true })
+  imageUrl?: string
+
+  @Field()
+  departmentId: string
+
+  @Field()
+  email: string
+
   @Field()
   startDate: Date
 
@@ -37,6 +46,15 @@ export class UpdateResourceInput {
 
   @Field()
   title?: string
+
+  @Field({ nullable: true })
+  imageUrl?: string
+
+  @Field()
+  departmentId?: string
+
+  @Field()
+  email?: string
 
   @Field()
   startDate?: Date

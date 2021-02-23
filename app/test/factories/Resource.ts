@@ -1,6 +1,6 @@
 import { Factory } from 'rosie'
 import faker from 'faker'
-import { Resource } from '../../src/models'
+import { Resource } from '../../src/interfaces'
 import { DepartmentFactory } from './'
 import { AuditableEntityFactory } from './AuditableEntity'
 

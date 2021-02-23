@@ -1,2 +1,5 @@
 export * from './Client'
 export * from './MSAuthLibrary'
+export * from './Department'
+export * from './Resource'
+export * from './Project'
