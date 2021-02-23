@@ -10,7 +10,7 @@ import {
   mockMsalUrl,
   mockUseRouter,
   applyMockUseRouter,
-  renderComponent,
+  render,
 } from '../testUtils'
 
 const { homeAccountId, name } = mockMsAccountInfoMock
@@ -43,16 +43,14 @@ describe('<UserSelect />', () => {
     mockedUseMsAccount.mockImplementation(() => null)
     mockedUseAccessToken.mockImplementation(() => undefined)
 
-    const { queryByText, queryByRole } = await renderComponent(UserSelect)
+    const { queryByText, queryByRole } = await render(UserSelect)
 
     expect(queryByText(`Hi ${firstName}`)).toBeNull()
     expect(queryByRole('img')).toBeNull()
   })
 
   it('should render the greeting and show the user thumbnail if user is authenticated', async () => {
-    const { getByText, getByRole, getByTestId } = await renderComponent(
-      UserSelect,
-    )
+    const { getByText, getByRole, getByTestId } = await render(UserSelect)
 
     const greetingDiv = getByText(`Hi ${firstName}`)
     const thumbnailImg = getByRole('img')
@@ -64,7 +62,7 @@ describe('<UserSelect />', () => {
   })
 
   it('should show menu on thumbnail click', async () => {
-    const { getByRole, getByTestId } = await renderComponent(UserSelect)
+    const { getByRole, getByTestId } = await render(UserSelect)
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)
@@ -75,9 +73,7 @@ describe('<UserSelect />', () => {
   })
 
   it('should close the menu when the user clicks outside of it', async () => {
-    const { getByRole, getByTestId, container } = await renderComponent(
-      UserSelect,
-    )
+    const { getByRole, getByTestId, container } = await render(UserSelect)
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)
@@ -96,7 +92,7 @@ describe('<UserSelect />', () => {
       homeAccountId: '',
     }))
 
-    const { getByRole, getByTestId } = await renderComponent(UserSelect)
+    const { getByRole, getByTestId } = await render(UserSelect)
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)
@@ -110,7 +106,7 @@ describe('<UserSelect />', () => {
   it('should log out the user when logout is clicked in the menu', async () => {
     global.localStorage.setItem(`${homeAccountId}-blah`, 'blah')
 
-    const { getByRole, getByTestId } = await renderComponent(UserSelect)
+    const { getByRole, getByTestId } = await render(UserSelect)
 
     const thumbnailImg = getByRole('img')
     userEvent.click(thumbnailImg)

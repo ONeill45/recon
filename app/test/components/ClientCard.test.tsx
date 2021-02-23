@@ -1,14 +1,14 @@
 import { getDurationText } from 'utils'
 import { ClientCard } from 'components'
 import { ClientFactory } from '../factories'
-import { renderComponent } from '../testUtils'
+import { render } from '../testUtils'
 
 describe('<ClientCard />', () => {
   it('should initialize client details', async () => {
     const client = ClientFactory.build()
     const { clientName, description, startDate, endDate, logoUrl } = client
 
-    const { getByRole, getByText } = await renderComponent(ClientCard, {
+    const { getByRole, getByText } = await render(ClientCard, {
       client,
     })
 

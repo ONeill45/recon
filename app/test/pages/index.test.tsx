@@ -1,9 +1,9 @@
 import Index from 'pages/index'
-import { renderComponent } from '../testUtils'
+import { render } from '../testUtils'
 
 describe('Index page test', () => {
   it('should render index page', async () => {
-    const { getByText } = await renderComponent(Index)
+    const { getByText } = await render(Index)
 
     expect(getByText('Welcome to Recon!')).toBeVisible()
   })

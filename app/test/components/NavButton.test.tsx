@@ -2,11 +2,7 @@ import userEvent from '@testing-library/user-event'
 
 import { NavButton } from 'components'
 import { DisplayType } from 'interfaces'
-import {
-  applyMockUseRouter,
-  mockUseRouter,
-  renderComponent,
-} from '../testUtils'
+import { applyMockUseRouter, mockUseRouter, render } from '../testUtils'
 
 const defaultProps = {
   title: 'Home',
@@ -23,7 +19,7 @@ applyMockUseRouter()
 
 describe('<NavButton />', () => {
   it('should render a selected NavButton', async () => {
-    const { getByText } = await renderComponent(NavButton, defaultProps)
+    const { getByText } = await render(NavButton, defaultProps)
     const homeButton = getByText('Home')
 
     expect(homeButton).toBeTruthy()
@@ -33,7 +29,7 @@ describe('<NavButton />', () => {
   })
 
   it('should render a unselected NavButton in row', async () => {
-    const { getByText } = await renderComponent(NavButton, {
+    const { getByText } = await render(NavButton, {
       ...defaultProps,
       title: 'Resources',
       route: '/resources',
@@ -47,7 +43,7 @@ describe('<NavButton />', () => {
   })
 
   it('should navigate to requested new page when clicked', async () => {
-    const { getByText } = await renderComponent(NavButton, defaultProps)
+    const { getByText } = await render(NavButton, defaultProps)
     const homeButton = getByText('Home')
 
     userEvent.click(homeButton)

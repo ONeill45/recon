@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 
 import { Login } from 'components'
-import { mockMsInstance, applyMockUseMsal, renderComponent } from '../testUtils'
+import { mockMsInstance, applyMockUseMsal, render } from '../testUtils'
 
 applyMockUseMsal()
 
 describe('<Login />', () => {
   it('should log the user in on Log In button click', async () => {
-    const { getByRole } = await renderComponent(Login)
+    const { getByRole } = await render(Login)
 
     userEvent.click(getByRole('button', { name: 'Log In' }))
 
@@ -23,7 +23,7 @@ describe('<Login />', () => {
     mockMsInstance.loginPopup = jest.fn(() => {
       throw new Error('An error occurred')
     })
-    const { getByRole } = await renderComponent(Login)
+    const { getByRole } = await render(Login)
     userEvent.click(getByRole('button', { name: 'Log In' }))
     expect(mockMsInstance.loginPopup).toBeCalled()
 

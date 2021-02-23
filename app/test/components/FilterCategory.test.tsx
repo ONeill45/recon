@@ -1,13 +1,13 @@
 import userEvent from '@testing-library/user-event'
 
 import { FilterCategory } from 'components'
-import { renderComponent } from '../testUtils'
+import { render } from '../testUtils'
 
 const title = 'test'
 
 describe('<FilterCategory />', () => {
   it('should not show expanded filter category content by default', async () => {
-    const { queryByTestId, getByText } = await renderComponent(FilterCategory, {
+    const { queryByTestId, getByText } = await render(FilterCategory, {
       title,
     })
 
@@ -16,7 +16,7 @@ describe('<FilterCategory />', () => {
   })
 
   it('should show expanded filter category content when header is clicked', async () => {
-    const { getByTestId, getByText } = await renderComponent(FilterCategory, {
+    const { getByTestId, getByText } = await render(FilterCategory, {
       title,
     })
 

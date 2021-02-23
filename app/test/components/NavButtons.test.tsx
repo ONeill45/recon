@@ -2,11 +2,7 @@ import userEvent from '@testing-library/user-event'
 
 import { NavButtons } from 'components'
 import { DisplayType } from 'interfaces'
-import {
-  applyMockUseRouter,
-  mockUseRouter,
-  renderComponent,
-} from '../testUtils'
+import { applyMockUseRouter, mockUseRouter, render } from '../testUtils'
 
 const defaultProps = {
   buttonProperties: [
@@ -34,7 +30,7 @@ applyMockUseRouter()
 
 describe('<NavButtons />', () => {
   it('should render NavButtons in row', async () => {
-    const component = await renderComponent(NavButtons, defaultProps)
+    const component = await render(NavButtons, defaultProps)
 
     const { getByText, getAllByRole } = component
 
@@ -50,13 +46,10 @@ describe('<NavButtons />', () => {
   })
 
   it('should render NavButtons in column', async () => {
-    const { getByText, getAllByRole, container } = await renderComponent(
-      NavButtons,
-      {
-        ...defaultProps,
-        displayType: DisplayType.COLUMN,
-      },
-    )
+    const { getByText, getAllByRole, container } = await render(NavButtons, {
+      ...defaultProps,
+      displayType: DisplayType.COLUMN,
+    })
 
     expect(getAllByRole('button').length).toEqual(4)
     expect(getByText('Home')).toBeTruthy()
@@ -70,7 +63,7 @@ describe('<NavButtons />', () => {
   })
 
   it('should navigate to route when button is clicked', async () => {
-    const { getByText } = await renderComponent(NavButtons, defaultProps)
+    const { getByText } = await render(NavButtons, defaultProps)
 
     userEvent.click(getByText('Clients'))
 

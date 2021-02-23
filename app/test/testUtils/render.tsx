@@ -1,14 +1,14 @@
 import { MockedProvider } from '@apollo/client/testing'
-import { render, waitFor } from '@testing-library/react'
+import { render as rtlRender, waitFor } from '@testing-library/react'
 
-export const renderComponent = async (
+export const render = async (
   // eslint-disable-next-line no-unused-vars
   Component: (props: any) => JSX.Element,
   props: any = {},
   mocks: any = null,
   waitForRender = true,
 ) => {
-  const component = render(
+  const component = rtlRender(
     <MockedProvider mocks={mocks}>
       <Component {...props} />
     </MockedProvider>,
