@@ -6,9 +6,12 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   CreateDateColumn,
+  JoinColumn,
+  ManyToOne,
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
+import { Department } from './Department'
 
 @Entity()
 @ObjectType()
@@ -25,13 +28,26 @@ export class Resource extends BaseEntity implements AuditableEntity {
   @Column({ name: 'last_name' })
   lastName: string
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ name: 'preferred_name', nullable: true })
   preferredName: string | null
 
   @Field(() => String)
   @Column()
   title: string
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: 'image_url', nullable: true })
+  imageUrl: string | null
+
+  @Field(() => Department)
+  @ManyToOne(() => Department, { eager: true })
+  @JoinColumn({ name: 'department_id' })
+  department: Department
+
+  @Field(() => String)
+  @Column()
+  email: string
 
   @Field(() => Date)
   @Column({ name: 'start_date' })
