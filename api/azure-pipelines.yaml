@@ -49,11 +49,17 @@ jobs:
       - task: Docker@2
         inputs:
           containerRegistry: 'Ascendum ACR'
-      - script: |
-        cdefense container --api-key=$(cdefenseAPIkey) --image-name='Ascendum ACR' --project-name=recon-api-docker
-      
-      - task: Docker@2
-        inputs:
-          containerRegistry: 'Ascendum ACR'
           command: 'logout'
+    
+    - job: Container_Scan
+      steps:
+        - task: UseDotNet@2
+          inputs:
+            version: '$(dotnet.version)'
+          displayName: 'Use Dotnet $(dotnet.version)'
+        - script: |
+            curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
+            /tmp/cdefense container --api-key=$(cdefenseAPIkey) --image-name='Ascendum ACR' --project-name=recon-api-docker
+          displayName: 'Container_Scan'
+      
       
