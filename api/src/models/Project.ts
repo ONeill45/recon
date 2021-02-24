@@ -1,61 +1,54 @@
 import {
   Entity,
-  BaseEntity,
   PrimaryGeneratedColumn,
   Column,
   UpdateDateColumn,
   DeleteDateColumn,
   CreateDateColumn,
-  JoinColumn,
+  BaseEntity,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
-import { Department } from './Department'
+import { ProjectType } from './enums'
+import { Client } from './'
 
 @Entity()
 @ObjectType()
-export class Resource extends BaseEntity implements AuditableEntity {
+export class Project extends BaseEntity implements AuditableEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string
 
   @Field(() => String)
-  @Column({ name: 'first_name', nullable: true })
-  firstName: string
+  @Column({ name: 'project_name' })
+  projectName: string
 
-  @Field(() => String)
-  @Column({ name: 'last_name' })
-  lastName: string
-
-  @Field(() => String, { nullable: true })
-  @Column({ name: 'preferred_name', nullable: true })
-  preferredName: string | null
-
-  @Field(() => String)
-  @Column()
-  title: string
-
-  @Field(() => String, { nullable: true })
-  @Column({ name: 'image_url', nullable: true })
-  imageUrl: string | null
-
-  @Field(() => Department)
-  @ManyToOne(() => Department, { eager: true })
-  @JoinColumn({ name: 'department_id' })
-  department: Department
-
-  @Field(() => String)
-  @Column()
-  email: string
+  @Field(() => Client)
+  @ManyToOne(() => Client, { eager: true })
+  @JoinColumn({ name: 'client_id' })
+  client: Client
 
   @Field(() => Date)
   @Column({ name: 'start_date' })
   startDate: Date
 
   @Field(() => Date, { nullable: true })
-  @Column({ name: 'termination_date', nullable: true })
-  terminationDate: Date | null
+  @Column({ name: 'end_date', nullable: true })
+  endDate: Date | null
+
+  @Field(() => String)
+  @Column({ name: 'project_type', type: 'enum', enum: ProjectType })
+  projectType: ProjectType
+
+  @Field(() => Number)
+  @Column({ name: 'confidence' })
+  confidence: Number
+
+  @Field(() => Number)
+  @Column({ name: 'priority' })
+  priority: Number
 
   @Field(() => Date)
   @CreateDateColumn({ name: 'created_date' })

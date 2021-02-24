@@ -13,7 +13,7 @@ const renderComponent = () => {
 }
 
 describe('<PlusCircle />', () => {
-  it('should log the user in on Log In button click', async () => {
+  it('should route to new page when plus circle is clicked', async () => {
     renderComponent()
 
     const plusCircle = screen.queryByTestId('PlusCircleDiv')

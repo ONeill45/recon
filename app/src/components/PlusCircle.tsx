@@ -8,7 +8,7 @@ type plusCircleProps = {
 }
 
 const PlusCircleDiv = styled.div`
-  float: right;
+  float: left;
   padding: 15px 15px;
   &:hover {
     color: orange;
