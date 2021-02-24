@@ -12,6 +12,7 @@ export const CardDiv = styled.div`
   width: 200px;
   padding: 16px;
   margin: 16px;
+  cursor: pointer;
 `
 
 export const CardDetailsDiv = styled.div`

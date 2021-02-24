@@ -9,17 +9,31 @@ import {
   LogoDiv,
   LogoImg,
 } from './Card'
+import { useRouter } from 'next/router'
+import React from 'react'
+import { Button } from './Button'
+
 
 type ClientCardProps = {
   client: Client
 }
 
 export const ClientCard = ({ client }: ClientCardProps) => {
-  const { clientName, description, logoUrl, startDate, endDate } = client
+  const router = useRouter()
+
+  const { id, clientName, description, logoUrl, startDate, endDate } = client
 
   const duration = getDurationText(startDate, endDate)
+
+  function viewClient(clientid: string ) {
+    router.push({
+      pathname: '/clients/new',
+      query: { id: clientid }
+  })
+  }
+
   return (
-    <CardDiv>
+    <CardDiv onClick={() => viewClient(id)}>
       <LogoDiv>
         <LogoImg src={logoUrl} />
       </LogoDiv>
