@@ -18,31 +18,23 @@ const GET_CLIENT_FROM_ID = gql`
 const NewClient = () => {
   const router = useRouter()
   const { id } = router.query; 
-  
-  if (id)
-  {
+
     const { data, loading, error } = useQuery(GET_CLIENT_FROM_ID, {
       fetchPolicy: 'network-only',
       variables: { id: id },
+      skip: !id,
     })
 
     if (loading) return <p>Loading...</p>
     if (error) return <p>Error: {error.message}</p>
 
-    const { client } = data
+    const { client = {} } = data ? data : {}
     return (
       <>     
         <NewClientForm client={client}></NewClientForm>
       </>
     )
-  }
-  else{
-    return (
-      <>     
-        <NewClientForm></NewClientForm>
-      </>
-    )
-  }
+
 }
 
 export default NewClient
