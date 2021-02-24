@@ -19,28 +19,30 @@ const NewClient = () => {
   const router = useRouter()
   const { id } = router.query; 
   
-  // if (id)
-  // {
-  console.log('Client Id received...' + id)
-  
-  const { data, loading, error } = useQuery(GET_CLIENT_FROM_ID, {
-    fetchPolicy: 'network-only',
-    variables: { id: id },
-  })
+  if (id)
+  {
+    const { data, loading, error } = useQuery(GET_CLIENT_FROM_ID, {
+      fetchPolicy: 'network-only',
+      variables: { id: id },
+    })
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error.message}</p>
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Error: {error.message}</p>
 
-  const client = data
-  // }
-  // else{
-  //   client = undefined
-  // }
-  return (
-    <>
-      <NewClientForm client={client}></NewClientForm>
-    </>
-  )
+    const { client } = data
+    return (
+      <>     
+        <NewClientForm client={client}></NewClientForm>
+      </>
+    )
+  }
+  else{
+    return (
+      <>     
+        <NewClientForm></NewClientForm>
+      </>
+    )
+  }
 }
 
 export default NewClient

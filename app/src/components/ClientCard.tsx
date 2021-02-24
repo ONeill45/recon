@@ -11,8 +11,6 @@ import {
 } from './Card'
 import { useRouter } from 'next/router'
 import React from 'react'
-import { Button } from './Button'
-
 
 type ClientCardProps = {
   client: Client

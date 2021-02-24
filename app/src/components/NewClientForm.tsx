@@ -44,7 +44,7 @@ const UPDATE_CLIENT = gql`
   }
 `
 type ClientProps = {
-  client: Client
+  client?: Client
 }
 
 export const NewClientForm = ({ client }: ClientProps) => {
@@ -53,11 +53,11 @@ export const NewClientForm = ({ client }: ClientProps) => {
   const [logoUrl, setLogoUrl] = React.useState(client ? client.logoUrl : '')
   const [startDate, setStartDate] = React.useState(new Date())
   const [endDate, setEndDate] = React.useState<Date | null>(null)
-  const id = client ? client.id : null
+  const id  = client ? client.id : null
 
   const router = useRouter()
   const account = useMsAccount()
-  
+
   const [createClient] = useMutation(CREATE_CLIENT)
   const [updateClient] = useMutation(UPDATE_CLIENT)
 
