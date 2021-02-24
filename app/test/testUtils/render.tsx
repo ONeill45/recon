@@ -3,25 +3,25 @@ import { render as rtlRender, waitFor } from '@testing-library/react'
 
 export const render = async (
   // eslint-disable-next-line no-unused-vars
-  Component: (props: any) => JSX.Element,
+  Container: (props: any) => JSX.Element,
   props: any = {},
   mocks: any = undefined,
   waitForRender = true,
 ) => {
-  const component = rtlRender(
+  const container = rtlRender(
     mocks === undefined ? (
-      <Component {...props} />
+      <Container {...props} />
     ) : (
       <MockedProvider mocks={mocks}>
-        <Component {...props} />
+        <Container {...props} />
       </MockedProvider>
     ),
   )
 
-  if (!waitForRender) return component
+  if (!waitForRender) return container
 
   await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
-  return component
+  return container
 }
 
 export const setInnerWidth = (width: number = 200) => {
