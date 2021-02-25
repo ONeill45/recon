@@ -29,7 +29,7 @@ const Clients = () => {
   return (
     <>
       <Cards>
-        <PlusCircle size={'50'} route={'/clients/new'} />
+        <PlusCircle size={'50'} route={'/clients/client'} />
         {clients.map((client: Client) => {
           return <ClientCard key={client.id} client={client}></ClientCard>
         })}

@@ -25,7 +25,7 @@ export const ClientCard = ({ client }: ClientCardProps) => {
 
   function viewClient(clientid: string ) {
     router.push({
-      pathname: '/clients/new',
+      pathname: '/clients/client',
       query: { id: clientid }
   })
   }
