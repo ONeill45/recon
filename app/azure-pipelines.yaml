@@ -56,3 +56,20 @@ jobs:
         inputs:
           containerRegistry: 'Ascendum ACR'
           command: 'logout'
+
+  - job: Cloud_Defense_SAST_Scan
+    pool:
+      vmImage: 'ubuntu-latest'
+    strategy:
+      matrix:
+        dotnet5.0.x:
+          dotnet.version: '5.0.x'
+    steps:
+      - task: UseDotNet@2
+        inputs:
+          version: '$(dotnet.version)'
+        displayName: 'Use Dotnet $(dotnet.version)'
+      - script: |
+          curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
+            /tmp/cdefense cdefense container --api-key=$(cdefenseAPIkey) --image-name=recon-app --project-name=recon-app-docker
+          displayName: 'Container Scan'
