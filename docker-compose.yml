@@ -1,4 +1,4 @@
-version: '3.3'
+version: "3.3"
 
 services:
   db:
@@ -9,7 +9,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=recon
     expose:
-      - '5433'
+      - "5433"
     ports:
       - 5433:5433
     command: -p 5433
@@ -23,7 +23,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_DB=test
     expose:
-      - '6433'
+      - "6433"
     ports:
       - 6433:6433
     command: -p 6433
@@ -50,7 +50,6 @@ services:
     volumes:
       - ./app:/usr/src/app
       - /usr/src/app/.next
-      - /usr/src/app/node_modules
     restart: always
     depends_on:
       - recon-api
