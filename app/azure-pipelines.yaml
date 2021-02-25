@@ -26,7 +26,7 @@ jobs:
         displayName: 'Use Dotnet $(dotnet.version)'
       - script: |
           curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
-          /tmp/cdefense scan --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app/package.json
+          /tmp/cdefense scan --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app/
         displayName: 'SAST Scan'
 
   - job: Build_Push_Artifacts
@@ -50,7 +50,7 @@ jobs:
         inputs:
           containerRegistry: 'Ascendum ACR'
       - script: |
-          cdefense container --api-key=$(cdefenseAPIkey) --image-name='Ascendum ACR' --project-name=recon-app-docker
+          cdefense container --api-key=$(cdefenseAPIkey) --image-name=recon-app --project-name=recon-app-docker
 
       - task: Docker@2
         inputs:
