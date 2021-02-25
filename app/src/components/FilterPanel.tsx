@@ -51,17 +51,23 @@ export const FilterPanel = () => {
 
   return (
     <>
-      <SideFilterPanelDiv onClick={() => setExpanded(!expanded)}>
+      <SideFilterPanelDiv
+        data-testid="SideFilterPanel"
+        onClick={() => setExpanded(!expanded)}
+      >
         <SideFilterPanelContentDiv>
           <FiFilter />
           <FiltersTextDiv>Filters</FiltersTextDiv>
         </SideFilterPanelContentDiv>
       </SideFilterPanelDiv>
-      <ExpandedFilterPanelDiv displayed={expanded}>
+      <ExpandedFilterPanelDiv
+        data-testid="ExpandedFilterPanel"
+        displayed={expanded}
+      >
         <SearchBar />
-        {filterCategoryProperties.map((property) => {
-          return <FilterCategory key={property.title} title={property.title} />
-        })}
+        {filterCategoryProperties.map((property) => (
+          <FilterCategory key={property.title} title={property.title} />
+        ))}
       </ExpandedFilterPanelDiv>
     </>
   )

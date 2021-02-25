@@ -17,7 +17,9 @@ const Button = styled.button<buttonProps>`
   cursor: pointer;
   border: none;
   padding: ${(props) =>
-    props.displayType === DisplayType.COLUMN ? '12px' : '0 12px'};
+    props.displayType === DisplayType.ROW
+      ? '0 12px' /* istanbul ignore next */
+      : '12px'};
   font-weight: bold;
   opacity: 100%;
   background-color: transparent;

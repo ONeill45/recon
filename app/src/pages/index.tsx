@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import React, { useState } from 'react'
 import styles from '../styles/Home.module.css'
 import { Button, FilterPanel, FullPageSpinner, Spinner } from '../components'

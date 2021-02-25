@@ -2,7 +2,6 @@ import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { NavButton } from 'components'
 import { DisplayType } from 'interfaces'
-import { AuthenticatedTemplate } from '@azure/msal-react'
 
 type navButtonProps = {
   buttonProperties: { title: string; route: string }[]
@@ -27,6 +26,7 @@ const direction = ({ displayType }: navButtonDivProps) => {
         flex-direction: row;
         padding-left: 20px;
       `
+    /* istanbul ignore next */
     default:
       return ''
   }
@@ -42,16 +42,14 @@ export const NavButtons = ({
   buttonProperties,
   displayType,
 }: navButtonProps) => (
-  <AuthenticatedTemplate>
-    <NavButtonsDiv displayType={displayType}>
-      {buttonProperties.map((buttonProperty) => (
-        <NavButton
-          key={buttonProperty.title}
-          title={buttonProperty.title}
-          route={buttonProperty.route}
-          displayType={displayType}
-        />
-      ))}
-    </NavButtonsDiv>
-  </AuthenticatedTemplate>
+  <NavButtonsDiv displayType={displayType}>
+    {buttonProperties.map((buttonProperty) => (
+      <NavButton
+        key={buttonProperty.title}
+        title={buttonProperty.title}
+        route={buttonProperty.route}
+        displayType={displayType}
+      />
+    ))}
+  </NavButtonsDiv>
 )

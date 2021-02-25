@@ -1,9 +1,8 @@
-import React from 'react'
+import { gql } from '@apollo/client'
+
 import Projects from 'pages/projects'
 import { ProjectFactory } from '../factories'
-import { MockedProvider } from '@apollo/client/testing'
-import { gql } from '@apollo/client'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render } from '../testUtils/render'
 
 const projects = ProjectFactory.buildList(5)
 
@@ -59,38 +58,24 @@ const errorMocks = [
   },
 ]
 
-const renderComponent = async (mocks: any) => {
-  const component = render(
-    <MockedProvider mocks={mocks}>
-      <Projects />
-    </MockedProvider>,
-  )
-  await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
-  return component
-}
-
 describe('Projects page test', () => {
   it('should render projects page and display Loading...', async () => {
-    render(
-      <MockedProvider mocks={mocks}>
-        <Projects />
-      </MockedProvider>,
-    )
+    const { getByText } = await render(Projects, {}, mocks, false)
 
-    expect(screen.getByText('Loading...')).toBeVisible()
+    expect(getByText('Loading...')).toBeVisible()
   })
   it('should fetch all projects and display their cards', async () => {
-    await renderComponent(mocks)
+    const { getByText } = await render(Projects, {}, mocks)
 
-    expect(screen.queryByText(`${projects[0].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[1].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[2].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[3].projectName}`)).toBeVisible()
-    expect(screen.queryByText(`${projects[4].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[0].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[1].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[2].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[3].projectName}`)).toBeVisible()
+    expect(getByText(`${projects[4].projectName}`)).toBeVisible()
   })
   it('should show error message when an error occurs', async () => {
-    await renderComponent(errorMocks)
+    const { getByText } = await render(Projects, {}, errorMocks)
 
-    expect(screen.getByText('Error: An error occurred')).toBeVisible()
+    expect(getByText('Error: An error occurred')).toBeVisible()
   })
 })

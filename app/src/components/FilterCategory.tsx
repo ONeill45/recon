@@ -26,7 +26,7 @@ export const FilterCategory = ({ title }: filterCategoryProps) => {
       </FilterCategoryHeaderDiv>
 
       {expanded ? (
-        <FilterCategoryContentDiv>
+        <FilterCategoryContentDiv data-testid="FilterCategoryContent">
           {/* this is just an example and will be removed/replaced later */}
           <div>
             <input type="checkbox" id="checkbox1" />
