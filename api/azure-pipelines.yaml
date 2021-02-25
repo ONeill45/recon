@@ -57,4 +57,4 @@ jobs:
             curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
             /tmp/cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) \
             --project-name=recon-api-docker
-        condition: always()
+          condition: always()
