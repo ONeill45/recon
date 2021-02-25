@@ -1,17 +1,13 @@
-import { render } from '@testing-library/react'
-import { ResourceCard } from '../../src/components'
-import { Resource } from '../../src/interfaces'
+import { ResourceCard } from 'components'
 import { ResourceFactory } from '../factories'
-
-const renderComponent = (resource: Resource) =>
-  render(<ResourceCard resource={resource} />)
+import { render } from '../testUtils'
 
 describe('<ResourceCard />', () => {
   it('should initialize resource details', async () => {
     const resource = ResourceFactory.build()
     const { firstName, lastName, title, email, department } = resource
 
-    const { getByText } = renderComponent(resource)
+    const { getByText } = await render(ResourceCard, { resource })
     expect(getByText(`${firstName} ${lastName}`)).toBeVisible()
     expect(getByText(title)).toBeVisible()
     expect(getByText(email)).toBeVisible()
