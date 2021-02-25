@@ -12,7 +12,7 @@ export const render = async (
     mocks === undefined ? (
       <Component {...props} />
     ) : (
-      <MockedProvider mocks={mocks}>
+      <MockedProvider mocks={mocks} addTypename={false}>
         <Component {...props} />
       </MockedProvider>
     ),

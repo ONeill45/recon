@@ -1,8 +1,11 @@
 import { gql } from '@apollo/client'
+import userEvent from '@testing-library/user-event'
 
 import Resources from 'pages/resources'
 import { ResourceFactory } from '../../factories'
-import { render } from '../../testUtils'
+import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
+
+applyMockUseRouter()
 
 const resources = ResourceFactory.buildList(5)
 const mocks = [
@@ -79,5 +82,14 @@ describe('Resource page test', () => {
     const { getByText } = await render(Resources, {}, errorMocks)
 
     expect(getByText('Error: An error occurred')).toBeVisible()
+  })
+  it('should route to appropriate resource page when its card is clicked', async () => {
+    const { getByText } = await render(Resources, {}, mocks)
+
+    userEvent.click(getByText(`${resources[0].email}`))
+    expect(mockUseRouter.push).toHaveBeenCalledWith({
+      pathname: '/resources/[id]',
+      query: { id: resources[0].id },
+    })
   })
 })
