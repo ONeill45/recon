@@ -71,5 +71,5 @@ jobs:
         displayName: 'Use Dotnet $(dotnet.version)'
       - script: |
           curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
-            /tmp/cdefense cdefense container --api-key=$(cdefenseAPIkey) --image-name=recon-app --project-name=recon-app-docker
+            /tmp/cdefense container --api-key=$(cdefenseAPIkey) --image-name=recon-app --project-name=recon-app-docker
           displayName: 'Container Scan'
