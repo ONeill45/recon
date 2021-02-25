@@ -41,7 +41,7 @@ jobs:
         inputs:
           containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
-          command: 'buildAndPush'
+          command: 'build'
           Dockerfile: 'api/Dockerfile'
           tags: |
             $(Build.SourceVersion)
@@ -51,19 +51,10 @@ jobs:
           containerRegistry: 'Ascendum ACR'
           command: 'logout'
 
-  - job: Cloud_Defense_Docker_Scan
-    pool:
-      vmImage: 'ubuntu-latest'
-    strategy:
-      matrix:
-        dotnet5.0.x:
-          dotnet.version: '5.0.x'
-    steps:
-      - task: UseDotNet@2
+      - task: bash@3
         inputs:
-          version: '$(dotnet.version)'
-        displayName: 'Use Dotnet $(dotnet.version)'
-      - script: |
-          curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
-          /tmp/cdefense container --api-key=$(cdefenseAPIkey) --image-name=recon-api --project-name=recon-api-docker
-        displayName: 'Container Scan'
+          script: |
+            curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
+            /tmp/cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) \
+            --project-name=recon-api-docker
+        condition: always()
