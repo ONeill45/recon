@@ -57,7 +57,7 @@ jobs:
           containerRegistry: 'Ascendum ACR'
           command: 'logout'
 
-  - job: Cloud_Defense_SAST_Scan
+  - job: Cloud_Defense_Docker_Scan
     pool:
       vmImage: 'ubuntu-latest'
     strategy:
