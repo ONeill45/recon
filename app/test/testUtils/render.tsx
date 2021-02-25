@@ -3,17 +3,17 @@ import { render as rtlRender, waitFor } from '@testing-library/react'
 
 export const render = async (
   // eslint-disable-next-line no-unused-vars
-  Container: (props: any) => JSX.Element,
+  Component: (props: any) => JSX.Element,
   props: any = {},
   mocks: any = undefined,
   waitForRender = true,
 ) => {
   const container = rtlRender(
     mocks === undefined ? (
-      <Container {...props} />
+      <Component {...props} />
     ) : (
       <MockedProvider mocks={mocks}>
-        <Container {...props} />
+        <Component {...props} />
       </MockedProvider>
     ),
   )
