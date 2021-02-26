@@ -55,13 +55,11 @@ export const ResourceHeader = ({ resource }: ResourceHeaderProps) => {
   return (
     <HeaderDiv>
       <LogoDiv>
-        <LogoImg
-          src={imageUrl ? imageUrl : '/images/default-avatar-500x500.png'}
-        />
+        <LogoImg src={imageUrl || '/images/default-avatar-500x500.png'} />
       </LogoDiv>
       <SubHeaderDiv>
         <NameDiv>
-          {preferredName ? preferredName : firstName} {lastName}
+          {preferredName || firstName} {lastName}
         </NameDiv>
         <DescriptionDiv>{email}</DescriptionDiv>
         <DescriptionDiv>{title}</DescriptionDiv>

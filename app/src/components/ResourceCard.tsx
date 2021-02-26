@@ -48,13 +48,11 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
       }
     >
       <LogoDiv>
-        <LogoImg
-          src={imageUrl ? imageUrl : '/images/default-avatar-500x500.png'}
-        />
+        <LogoImg src={imageUrl || '/images/default-avatar-500x500.png'} />
       </LogoDiv>
       <CardDetailsDiv>
         <CardNameDiv>
-          {preferredName ? preferredName : firstName} {lastName}
+          {preferredName || firstName} {lastName}
         </CardNameDiv>
         <CardDescriptionDiv>{email}</CardDescriptionDiv>
         <CardDescriptionDiv>{title}</CardDescriptionDiv>

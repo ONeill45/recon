@@ -5,11 +5,9 @@ const mockUseRouter = {
 }
 
 const applyMockUseRouter = (options?: {}) =>
-  jest.spyOn(require('next/router'), 'useRouter').mockImplementation(() => {
-    return {
-      ...mockUseRouter,
-      ...options,
-    }
-  })
+  jest.spyOn(require('next/router'), 'useRouter').mockImplementation(() => ({
+    ...mockUseRouter,
+    ...options,
+  }))
 
 export { mockUseRouter, applyMockUseRouter }
