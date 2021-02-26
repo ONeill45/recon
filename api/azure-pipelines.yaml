@@ -37,18 +37,13 @@ jobs:
       - task: Docker@2
         inputs:
           containerRegistry: 'Ascendum ACR'
-          command: 'login'
-
-      - task: Docker@2
-        inputs:
-          containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
           command: 'build'
           Dockerfile: 'api/Dockerfile'
           tags: |
             $(Build.SourceVersion)
 
-      - task: Docker@2
+      - task: Bash@3
         inputs:
           containerRegistry: 'Ascendum ACR'
       - script: |
@@ -58,4 +53,8 @@ jobs:
       - task: Docker@2
         inputs:
           containerRegistry: 'Ascendum ACR'
-          command: 'logout'
+          repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
+          command: 'Push'
+          Dockerfile: 'api/Dockerfile'
+          tags: |
+            $(Build.SourceVersion)
