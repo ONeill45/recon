@@ -47,7 +47,7 @@ jobs:
           tags: |
             $(Build.SourceVersion)
 
-      - task: Container_Scan
+      - task: Bash@3
         inputs:
           containerRegistry: 'Ascendum ACR'
       - script: |
