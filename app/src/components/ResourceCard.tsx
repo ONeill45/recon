@@ -1,4 +1,6 @@
 import styled from '@emotion/styled'
+import { useRouter } from 'next/router'
+
 import { Resource } from 'interfaces'
 import { getDurationText } from '../utils'
 import {
@@ -13,6 +15,10 @@ import {
 
 const ResourceCardDiv = styled(CardDiv)`
   width: 250px;
+  cursor: pointer;
+  &:hover {
+    outline: 1px solid black;
+  }
 `
 
 type ResourceCardProps = {
@@ -31,18 +37,22 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
     startDate,
     terminationDate,
   } = resource
+  const router = useRouter()
 
   const duration = getDurationText(startDate, terminationDate)
   return (
-    <ResourceCardDiv data-testid="ResourceCardDiv">
+    <ResourceCardDiv
+      data-testid="ResourceCardDiv"
+      onClick={() =>
+        router.push({ pathname: '/resources/[id]', query: { id: resource.id } })
+      }
+    >
       <LogoDiv>
-        <LogoImg
-          src={imageUrl ? imageUrl : '/images/default-avatar-500x500.png'}
-        />
+        <LogoImg src={imageUrl || '/images/default-avatar-500x500.png'} />
       </LogoDiv>
       <CardDetailsDiv>
         <CardNameDiv>
-          {preferredName ? preferredName : firstName} {lastName}
+          {preferredName || firstName} {lastName}
         </CardNameDiv>
         <CardDescriptionDiv>{email}</CardDescriptionDiv>
         <CardDescriptionDiv>{title}</CardDescriptionDiv>
