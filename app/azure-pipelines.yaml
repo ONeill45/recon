@@ -13,6 +13,7 @@ variables:
 
 jobs:
   - job: Cloud_Defense_SAST_Scan
+    continueOnError: true
     pool:
       vmImage: 'ubuntu-latest'
     strategy:
@@ -29,6 +30,7 @@ jobs:
           /tmp/cdefense sast --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app
 
   - job: Build_Artifacts
+    continueOnError: true
 
     steps:
       - task: Docker@2
@@ -50,7 +52,6 @@ jobs:
           containerRegistry: 'Ascendum ACR'
       - script: |
           cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-app-docker
-        continueOnError: true
 
       - task: Docker@2
         inputs:

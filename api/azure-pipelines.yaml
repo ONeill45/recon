@@ -13,6 +13,7 @@ variables:
 
 jobs:
   - job: Cloud_Defense_SAST_Scan
+    continueOnError: true
     pool:
       vmImage: 'ubuntu-latest'
     strategy:
@@ -27,8 +28,10 @@ jobs:
       - script: |
           curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
           /tmp/cdefense sast --lang=dotnet --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api
+        continueOnError: true
 
   - job: Build_Artifacts
+    continueOnError: true
 
     steps:
       - task: Docker@2
@@ -50,7 +53,6 @@ jobs:
           containerRegistry: 'Ascendum ACR'
       - script: |
           cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker
-        continueOnError: true
 
       - task: Docker@2
         inputs:
