@@ -44,10 +44,12 @@ jobs:
 
       - task: Bash@3
         inputs:
+          targetType: 'inline'
           containerRegistry: 'Ascendum ACR'
-      - script: |
-          curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz >  $(System.DefaultWorkingDirectory)
-          cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-ap:$(Build.SourceVersion) --project-name=recon-app-docker
+          script: |
+            curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz >  $(System.DefaultWorkingDirectory)
+            cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-ap:$(Build.SourceVersion) --project-name=recon-app-docker
+          failOnStderr: false
 
       - task: Docker@2
         inputs:
