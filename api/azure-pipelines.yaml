@@ -55,6 +55,5 @@ jobs:
           containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
           command: 'push'
-          Dockerfile: 'api/Dockerfile'
           tags: |
             $(Build.SourceVersion)
