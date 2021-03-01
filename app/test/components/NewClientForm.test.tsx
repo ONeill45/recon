@@ -1,11 +1,12 @@
 import { gql } from '@apollo/client'
-import { MockedProvider } from '@apollo/client/testing'
-import { render, waitFor } from '@testing-library/react'
+import { waitFor } from '@testing-library/react'
+import { render } from '../testUtils'
 import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
 import { NewClientForm } from 'components'
 import { applyMockUseMsal, applyMockUseRouter } from '../testUtils'
+import { ClientFactory } from '../factories'
 
 applyMockUseRouter()
 
@@ -33,11 +34,8 @@ describe('<NewClientForm />', () => {
         },
       },
     ]
-    const { getByLabelText } = render(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <NewClientForm />
-      </MockedProvider>,
-    )
+
+    const { getByLabelText } = await render(NewClientForm, {}, mocks, false)
 
     const [clientName, description, logoUrl] = [
       'client-name',
@@ -50,6 +48,36 @@ describe('<NewClientForm />', () => {
       userEvent.type(description, 'Test Desc')
       userEvent.type(logoUrl, 'http://test.com')
     })
+    await new Promise((resolve) => setTimeout(resolve, 0))
+  })
+
+  it('should update a client with user provided info', async () => {
+    const client = ClientFactory.build()
+
+    const mocks = [
+      {
+        request: {
+          query: gql`
+          mutation UpdateClient($id: String!, $data: UpdateClientInput!) {
+            updateClient(id:$id, data: $data) {
+              id
+            }
+          }
+        `,
+        },
+        result: {
+          data: {
+            id: client.id
+          },
+        },
+      },
+    ]
+ 
+    const { getByLabelText } = await render(NewClientForm, {client}, mocks, false)
+    
+    expect(getByLabelText('client-name')).toHaveValue(client.clientName)
+    expect(getByLabelText('description')).toHaveValue(client.description)
+
     await new Promise((resolve) => setTimeout(resolve, 0))
   })
 })
