@@ -46,7 +46,7 @@ jobs:
         inputs:
           targetType: 'inline'
           script: |
-            curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz  $(System.DefaultWorkingDirectory)
+            curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz/$(System.DefaultWorkingDirectory)
             cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker
           failOnStderr: false
 
