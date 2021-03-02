@@ -16,26 +16,21 @@ variables:
   - name: cdefenceAPIKey
 
 jobs:
-  - job: Cloud_Defense_SAST_Scan
-    continueOnError: true
-    pool:
-      vmImage: 'ubuntu-latest'
-    strategy:
-      matrix:
-        dotnet5.0.x:
-          dotnet.version: '5.0.x'
+  - job: Build_Scan_Push
+    displayName: Build, Scan and Push
     steps:
-      - task: UseDotNet@2
+      - task: Bash@3
+        displayName: 'Download CDefense Binary'
         inputs:
-          version: '$(dotnet.version)'
-        displayName: 'Use Dotnet $(dotnet.version)'
-      - script: |
-          curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
-          '/tmp/cdefense sast --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app'
-        continueOnError: true
+          targetType: 'inline'
+          script: curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
 
-  - job: Build_Artifacts
-    steps:
+      - task: Bash@3
+        displayName: 'Run CDefense SAST Scan'
+        inputs:
+          targetType: 'inline'
+          script: '/tmp/cdefense sast --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app'
+
       - task: Docker@2
         inputs:
           containerRegistry: 'Ascendum ACR'
