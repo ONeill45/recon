@@ -10,7 +10,7 @@ trigger:
 
 pool:
   name: Linux Nodes
-  
+
 variables:
   - group: cdefense
   - name: cdefenceAPIKey
@@ -26,7 +26,6 @@ jobs:
           dotnet.version: '5.0.x'
     steps:
       - task: UseDotNet@2
-        displayName: 'Download CDefense binary'
         inputs:
           version: '$(dotnet.version)'
         displayName: 'Use Dotnet $(dotnet.version)'
