@@ -29,7 +29,7 @@ jobs:
         displayName: 'Run CDefense SAST Scan'
         inputs:
           targetType: 'inline'
-          script: '/tmp/cdefense sast -q --lang=dotnet --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
+          script: '/tmp/cdefense sast --lang=node --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
         continueOnError: true
 
       - task: Docker@2
