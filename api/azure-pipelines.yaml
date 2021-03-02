@@ -51,7 +51,7 @@ jobs:
       - task: Docker@2
         displayName: Push Container
         inputs:
-          containerRegistry: Azure ACR
+          containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
           command: push
           tags: |
