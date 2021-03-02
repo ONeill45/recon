@@ -134,3 +134,106 @@ describe('createClient()', () => {
     })
   })
 })
+
+describe('updateClient()', () => {
+  const updateClientMutation = `
+  mutation UpdateClient($data: UpdateClientInput!, $id: String!) {
+    updateClient (data: $data, id: $id) {
+      id
+      clientName
+      description
+      logoUrl
+      startDate
+      endDate
+    }
+  }`
+  it('should return error if Client does not exist', async () => {
+    const client = ClientFactory.build({})
+    const {
+      id,
+      clientName,
+      description,
+      logoUrl,
+      startDate,
+      endDate,
+      updatedBy,
+    } = client
+
+    const { data, errors } = await gqlCall({
+      source: updateClientMutation,
+      variableValues: {
+        data: {
+         clientName,
+          description,
+          logoUrl,
+          startDate,
+          endDate,
+          updatedBy,
+        },
+        id,
+      },
+    })
+
+    expect(data).toBeNull()
+    expect(errors).toHaveLength(1)
+
+    const notFoundError = errors![0].originalError!
+    expect(notFoundError.message).toEqual(`Client ${id} not found!`)
+  })
+
+  it('should return updated client', async () => {
+    const [client, updatedClient] = ClientFactory.buildList(2)
+
+    await Client.insert(client)
+
+    const { id } = client
+    const {
+      clientName,
+      description,
+      logoUrl,
+      startDate,
+      endDate,
+      updatedBy,
+    } = updatedClient
+
+    const response = await gqlCall({
+      source: updateClientMutation,
+      variableValues: {
+        data: {
+          clientName,
+          description,
+          logoUrl,
+          startDate,
+          endDate,
+          updatedBy,
+        },
+        id,
+      },
+    })
+
+    expect(response).toMatchObject({
+      data: {
+        updateClient: {
+          id,
+          clientName,
+          description,
+          logoUrl,
+          startDate: new Date(startDate).toISOString(),
+          endDate,
+          updatedBy,
+        },
+      },
+    })
+
+    const dbClient = await Client.findOne(id)
+    expect(dbClient).toMatchObject({
+      id,
+      clientName,
+      description,
+      logoUrl,
+      startDate: new Date(startDate),
+      endDate,
+      updatedBy,
+    })
+  })
+})
