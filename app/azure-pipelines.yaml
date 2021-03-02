@@ -23,13 +23,14 @@ jobs:
         displayName: 'Download CDefense Binary'
         inputs:
           targetType: 'inline'
-          script: curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
+          script: 'curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense'
 
       - task: Bash@3
         displayName: 'Run CDefense SAST Scan'
         inputs:
           targetType: 'inline'
           script: '/tmp/cdefense sast --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app'
+        continueOnError: true
 
       - task: Docker@2
         inputs:
