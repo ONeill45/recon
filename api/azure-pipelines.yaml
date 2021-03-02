@@ -31,8 +31,13 @@ jobs:
         continueOnError: true
 
   - job: Build_Artifacts
-
     steps:
+      - task: Bash@3
+        displayName: "Download CDefense binary"
+        inputs:
+          targetType: 'inline'
+          script: 'curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense'
+
       - task: Docker@2
         inputs:
           containerRegistry: 'Ascendum ACR'
@@ -43,12 +48,10 @@ jobs:
             $(Build.SourceVersion)
 
       - task: Bash@3
+        displayName: "Run CDefense Container Scan"
         inputs:
           targetType: 'inline'
-          script: |
-            wget https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz $(System.DefaultWorkingDirectory)
-            cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker
-          failOnStderr: false
+          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker
 
       - task: Docker@2
         inputs:
