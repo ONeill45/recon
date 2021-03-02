@@ -7,56 +7,52 @@ trigger:
   paths:
     include:
       - api/*
+
+pool:
+  name: Linux Nodes
+
 variables:
   - group: cdefense
   - name: cdefenceAPIKey
 
 jobs:
-  - job: Cloud_Defense_SAST_Scan
-    continueOnError: true
-    pool:
-      vmImage: 'ubuntu-latest'
-    strategy:
-      matrix:
-        dotnet5.0.x:
-          dotnet.version: '5.0.x'
-    steps:
-      - task: UseDotNet@2
-        inputs:
-          version: '$(dotnet.version)'
-        displayName: 'Use Dotnet $(dotnet.version)'
-      - script: |
-          curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
-          /tmp/cdefense sast --lang=dotnet --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api
-        continueOnError: true
-
-  - job: Build_Artifacts
+  - job: Build_Scan_Push
+    displayName: Build, Scan and Push
     steps:
       - task: Bash@3
-        displayName: "Download CDefense binary"
+        displayName: 'Download CDefense binary'
         inputs:
           targetType: 'inline'
           script: 'curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense'
 
-      - task: Docker@2
+      - task: Bash@3
+        displayName: 'Run CDefense SAST Scan'
         inputs:
-          containerRegistry: 'Ascendum ACR'
+          targetType: 'inline'
+          script: '/tmp/cdefense sast -q --lang=node --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
+        continueOnError: true
+
+      - task: Docker@2
+        displayName: Build Container
+        inputs:
+          containerRegistry: Azure ACR
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
-          command: 'build'
+          command: build
           Dockerfile: 'api/Dockerfile'
           tags: |
             $(Build.SourceVersion)
 
       - task: Bash@3
-        displayName: "Run CDefense Container Scan"
+        displayName: 'Run CDefense Container Scan'
         inputs:
           targetType: 'inline'
-          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker
+          script: '/tmp/cdefense container -q --lang=node --api-key=$(cdefenseAPIKey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker'
 
       - task: Docker@2
+        displayName: Push Container
         inputs:
-          containerRegistry: 'Ascendum ACR'
+          containerRegistry: Azure ACR
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
-          command: 'push'
+          command: push
           tags: |
             $(Build.SourceVersion)
