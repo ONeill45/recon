@@ -29,7 +29,7 @@ jobs:
         displayName: 'Run CDefense SAST Scan'
         inputs:
           targetType: 'inline'
-          script: '/tmp/cdefense sast -q --lang=node --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
+          script: '/tmp/cdefense sast -q --lang=dotnet --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
         continueOnError: true
 
       - task: Docker@2
@@ -46,7 +46,7 @@ jobs:
         displayName: 'Run CDefense Container Scan'
         inputs:
           targetType: 'inline'
-          script: '/tmp/cdefense container -q --lang=node --api-key=$(cdefenseAPIKey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker'
+          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker'
 
       - task: Docker@2
         displayName: Push Container
