@@ -46,7 +46,7 @@ jobs:
         displayName: 'Run CDefense Container Scan'
         inputs:
           targetType: 'inline'
-          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker'
+          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=ascendum.azurecr.io/$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker'
 
       - task: Docker@2
         displayName: Push Container
