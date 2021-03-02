@@ -55,7 +55,7 @@ jobs:
         displayName: Push Container
         inputs:
           containerRegistry: 'Ascendum ACR'
-          repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
+          repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-app
           command: 'push'
           tags: |
             $(Build.SourceVersion)
