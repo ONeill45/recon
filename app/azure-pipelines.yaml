@@ -7,6 +7,10 @@ trigger:
   paths:
     include:
       - app/*
+
+pool:
+  name: Linux Nodes
+  
 variables:
   - group: cdefense
   - name: cdefenceAPIKey
@@ -22,6 +26,7 @@ jobs:
           dotnet.version: '5.0.x'
     steps:
       - task: UseDotNet@2
+        displayName: 'Download CDefense binary'
         inputs:
           version: '$(dotnet.version)'
         displayName: 'Use Dotnet $(dotnet.version)'
@@ -30,8 +35,6 @@ jobs:
           /tmp/cdefense sast --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app
 
   - job: Build_Artifacts
-    continueOnError: true
-
     steps:
       - task: Docker@2
         inputs:
@@ -43,15 +46,14 @@ jobs:
             $(Build.SourceVersion)
 
       - task: Bash@3
+        displayName: 'Run CDefense Container Scan'
         inputs:
           targetType: 'inline'
-          containerRegistry: 'Ascendum ACR'
-          script: |
-            curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz >  $(System.DefaultWorkingDirectory)
-            cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-ap:$(Build.SourceVersion) --project-name=recon-app-docker
+          script: '/tmp/cdefense container --api-key=$(cdefenseAPIkey) --image-name=$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-ap:$(Build.SourceVersion) --project-name=recon-app-docker'
           failOnStderr: false
 
       - task: Docker@2
+        displayName: Push Container
         inputs:
           containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
