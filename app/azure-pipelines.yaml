@@ -31,7 +31,8 @@ jobs:
         displayName: 'Use Dotnet $(dotnet.version)'
       - script: |
           curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense
-          /tmp/cdefense sast --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app
+          '/tmp/cdefense sast --lang=dotnet --project-name=recon-app --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app'
+        continueOnError: true
 
   - job: Build_Artifacts
     steps:
