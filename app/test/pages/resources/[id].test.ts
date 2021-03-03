@@ -1,6 +1,4 @@
-import { gql } from '@apollo/client'
-
-import Resource from 'pages/resources/[id]'
+import Resource, { GET_RESOURCE } from 'pages/resources/[id]'
 import { ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
@@ -8,24 +6,6 @@ const resource = ResourceFactory.build()
 
 applyMockUseRouter({ query: { id: resource.id } })
 
-const GET_RESOURCE = gql`
-  query GetResource($id: String!) {
-    resource(id: $id) {
-      id
-      firstName
-      lastName
-      preferredName
-      title
-      startDate
-      terminationDate
-      imageUrl
-      department {
-        name
-      }
-      email
-    }
-  }
-`
 const mocks = [
   {
     request: {

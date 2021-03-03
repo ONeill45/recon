@@ -1,11 +1,11 @@
 import faker from 'faker'
-import { getDurationText } from '../../src/utils'
+import { getRelativeTime } from '../../src/utils'
 describe('getDurationText()', () => {
   it('should return ended text when end date is in past', () => {
     const startDate = faker.date.past()
     const endDate = faker.date.recent()
 
-    const text = getDurationText(startDate, endDate)
+    const text = getRelativeTime(startDate, endDate)
 
     expect(text).toContain('Ended')
     expect(text).toContain('ago')
@@ -14,7 +14,7 @@ describe('getDurationText()', () => {
     const startDate = faker.date.past()
     const endDate = faker.date.soon()
 
-    const text = getDurationText(startDate, endDate)
+    const text = getRelativeTime(startDate, endDate)
 
     expect(text).toContain('Ending in')
   })
@@ -22,7 +22,7 @@ describe('getDurationText()', () => {
     const startDate = faker.date.future()
     const endDate = undefined
 
-    const text = getDurationText(startDate, (endDate as unknown) as Date)
+    const text = getRelativeTime(startDate, (endDate as unknown) as Date)
 
     expect(text).toContain('Starting in')
   })
@@ -30,7 +30,7 @@ describe('getDurationText()', () => {
     const startDate = faker.date.past()
     const endDate = undefined
 
-    const text = getDurationText(startDate, (endDate as unknown) as Date)
+    const text = getRelativeTime(startDate, (endDate as unknown) as Date)
 
     expect(text).toContain('Started')
     expect(text).toContain('ago')
