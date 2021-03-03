@@ -44,6 +44,22 @@ const errorMocks = [
     },
     error: new Error('An error occurred'),
   },
+]
+
+const resourceErrorMocks = [
+  {
+    request: {
+      query: GET_PROJECT,
+      variables: {
+        id: project.id,
+      },
+    },
+    result: {
+      data: {
+        project,
+      },
+    },
+  },
   {
     request: {
       query: GET_ALL_RESOURCES,
@@ -64,6 +80,11 @@ describe('Individual project page test', () => {
   })
   it('should show error message when an error occurs', async () => {
     const { getByText } = await render(Project, {}, errorMocks)
+
+    expect(getByText('Error: An error occurred')).toBeVisible()
+  })
+  it('should show error message when a resources error occurs', async () => {
+    const { getByText } = await render(Project, {}, resourceErrorMocks)
 
     expect(getByText('Error: An error occurred')).toBeVisible()
   })
