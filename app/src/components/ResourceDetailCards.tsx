@@ -1,5 +1,5 @@
 import { Resource } from 'interfaces'
-import { getRelativeTime, formatDate, DateFormat, getDuration } from 'utils'
+import { formatDate, DateFormat, getDuration } from 'utils'
 import { CardDetailsDiv, CardDiv, CardNameDiv } from './Card'
 import { Cards } from './Cards'
 
