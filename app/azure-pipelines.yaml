@@ -8,24 +8,50 @@ trigger:
     include:
       - app/*
 
-jobs:
-  - job: Build_Push_Artifacts
+pool:
+  name: Linux Nodes
 
+variables:
+  - group: cdefense
+
+jobs:
+  - job: Build_Scan_Push
+    displayName: Build, Scan and Push
     steps:
-      - task: Docker@2
+      - task: Bash@3
+        displayName: 'Download CDefense Binary'
         inputs:
-          containerRegistry: 'Ascendum ACR'
-          command: 'login'
+          targetType: 'inline'
+          script: 'curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense'
+
+      - task: Bash@3
+        displayName: 'Run CDefense SAST Scan'
+        inputs:
+          targetType: 'inline'
+          script: '/tmp/cdefense sast -q --lang=dotnet --project-name="Recon App" --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/app'
+        continueOnError: true
 
       - task: Docker@2
         inputs:
           containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-app
-          command: 'buildAndPush'
+          command: 'build'
           Dockerfile: 'app/Dockerfile'
           tags: |
             $(Build.SourceVersion)
+
+      - task: Bash@3
+        displayName: 'Run CDefense Container Scan'
+        inputs:
+          targetType: 'inline'
+          script: '/tmp/cdefense container -q --api-key=$(cdefenseAPIkey) --image-name=ascendum.azurecr.io/$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-app:$(Build.SourceVersion) --project-name="Recon App - Docker"'
+          failOnStderr: false
+
       - task: Docker@2
+        displayName: Push Container
         inputs:
           containerRegistry: 'Ascendum ACR'
-          command: 'logout'
+          repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-app
+          command: 'push'
+          tags: |
+            $(Build.SourceVersion)
