@@ -1,8 +1,10 @@
 import Project, { GET_PROJECT } from 'pages/projects/[id]'
-import { ProjectFactory } from '../../factories'
+import { GET_ALL_RESOURCES } from 'pages/resources'
+import { ProjectFactory, ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
 const project = ProjectFactory.build()
+const resources = ResourceFactory.buildList(5)
 
 applyMockUseRouter({ query: { id: project.id } })
 
@@ -20,6 +22,16 @@ const mocks = [
       },
     },
   },
+  {
+    request: {
+      query: GET_ALL_RESOURCES,
+    },
+    result: {
+      data: {
+        resources,
+      },
+    },
+  },
 ]
 
 const errorMocks = [
@@ -29,6 +41,12 @@ const errorMocks = [
       variables: {
         id: project.id,
       },
+    },
+    error: new Error('An error occurred'),
+  },
+  {
+    request: {
+      query: GET_ALL_RESOURCES,
     },
     error: new Error('An error occurred'),
   },
