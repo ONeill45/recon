@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 /** @jsx jsx */
 import { jsx, keyframes } from '@emotion/react'
 import styled from '@emotion/styled'

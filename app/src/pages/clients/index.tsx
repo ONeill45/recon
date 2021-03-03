@@ -29,11 +29,11 @@ const Clients = () => {
   return (
     <>
       <Cards>
-        <PlusCircle size={'50'} route={'/clients/new'} />
         {clients.map((client: Client) => {
           return <ClientCard key={client.id} client={client}></ClientCard>
         })}
       </Cards>
+      <PlusCircle size={'50'} route={'/clients/new'} />
     </>
   )
 }

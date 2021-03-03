@@ -1,14 +1,7 @@
 import { Client } from 'interfaces'
-import { getDurationText } from '../utils'
-import {
-  CardDescriptionDiv,
-  CardDetailsDiv,
-  CardDiv,
-  CardDurationDiv,
-  CardNameDiv,
-  LogoDiv,
-  LogoImg,
-} from './Card'
+import { getRelativeTime } from '../utils'
+import { CardDescriptionDiv, CardDiv, CardNameDiv } from './Card'
+import { LogoDiv, LogoImg } from './Logo'
 
 type ClientCardProps = {
   client: Client
@@ -17,17 +10,15 @@ type ClientCardProps = {
 export const ClientCard = ({ client }: ClientCardProps) => {
   const { clientName, description, logoUrl, startDate, endDate } = client
 
-  const duration = getDurationText(startDate, endDate)
+  const duration = getRelativeTime(startDate, endDate)
   return (
     <CardDiv>
       <LogoDiv>
         <LogoImg src={logoUrl} />
       </LogoDiv>
-      <CardDetailsDiv>
-        <CardNameDiv>{clientName}</CardNameDiv>
-        <CardDescriptionDiv>{description}</CardDescriptionDiv>
-        <CardDurationDiv>{duration}</CardDurationDiv>
-      </CardDetailsDiv>
+      <CardNameDiv>{clientName}</CardNameDiv>
+      <CardDescriptionDiv>{description}</CardDescriptionDiv>
+      <CardDescriptionDiv color="grey">{duration}</CardDescriptionDiv>
     </CardDiv>
   )
 }
