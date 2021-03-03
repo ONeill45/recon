@@ -1,5 +1,5 @@
 import React from 'react'
-import { NewClientForm } from 'components'
+import { ClientForm } from 'components'
 import { gql, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 
@@ -15,7 +15,7 @@ const GET_CLIENT_FROM_ID = gql`
     }
   }
 `
-const NewClient = () => {
+const Client = () => {
   const router = useRouter()
   const { id } = router.query; 
 
@@ -31,10 +31,10 @@ const NewClient = () => {
     const { client = {} } = data ? data : {}
     return (
       <>     
-        <NewClientForm client={client}></NewClientForm>
+        <ClientForm client={client}></ClientForm>
       </>
     )
 
 }
 
-export default NewClient
+export default Client

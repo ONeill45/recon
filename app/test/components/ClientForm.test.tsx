@@ -4,7 +4,7 @@ import { render } from '../testUtils'
 import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
-import { NewClientForm } from 'components'
+import { ClientForm } from 'components'
 import { applyMockUseMsal, applyMockUseRouter } from '../testUtils'
 import { ClientFactory } from '../factories'
 
@@ -14,7 +14,7 @@ applyMockUseMsal()
 
 jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
 
-describe('<NewClientForm />', () => {
+describe('<ClientForm />', () => {
   it('should create a new client with user provided info', async () => {
     const mocks = [
       {
@@ -35,7 +35,7 @@ describe('<NewClientForm />', () => {
       },
     ]
 
-    const { getByLabelText } = await render(NewClientForm, {}, mocks, false)
+    const { getByLabelText } = await render(ClientForm, {}, mocks, false)
 
     const [clientName, description, logoUrl] = [
       'client-name',
@@ -73,7 +73,7 @@ describe('<NewClientForm />', () => {
       },
     ]
  
-    const { getByLabelText } = await render(NewClientForm, {client}, mocks, false)
+    const { getByLabelText } = await render(ClientForm, {client}, mocks, false)
     
     expect(getByLabelText('client-name')).toHaveValue(client.clientName)
     expect(getByLabelText('description')).toHaveValue(client.description)

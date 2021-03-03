@@ -19,19 +19,19 @@ type ClientCardProps = {
 export const ClientCard = ({ client }: ClientCardProps) => {
   const router = useRouter()
 
-  const { id, clientName, description, logoUrl, startDate, endDate } = client
+  const { clientName, description, logoUrl, startDate, endDate } = client
 
   const duration = getDurationText(startDate, endDate)
 
-  function viewClient(clientid: string ) {
+  function viewClient() {
     router.push({
       pathname: '/clients/client',
-      query: { id: clientid }
+      query: { id: client.id }
   })
   }
 
   return (
-    <CardDiv onClick={() => viewClient(id)}>
+    <CardDiv onClick={() => viewClient()}>
       <LogoDiv>
         <LogoImg src={logoUrl} />
       </LogoDiv>

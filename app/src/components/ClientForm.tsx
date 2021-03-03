@@ -47,7 +47,7 @@ type ClientProps = {
   client?: Client
 }
 
-export const NewClientForm = ({ client }: ClientProps) => {
+export const ClientForm = ({ client }: ClientProps) => {
   const [clientName, setClientName] = React.useState(client ? client.clientName : '')
   const [description, setDescription] = React.useState(client ? client.description : '')
   const [logoUrl, setLogoUrl] = React.useState(client ? client.logoUrl : '')
