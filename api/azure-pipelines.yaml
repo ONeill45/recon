@@ -3,7 +3,7 @@
 trigger:
   branches:
     include:
-      - cddefense_sast
+      - main
   paths:
     include:
       - api/*
@@ -13,7 +13,6 @@ pool:
 
 variables:
   - group: cdefense
-  - name: cdefenceAPIKey
 
 jobs:
   - job: Build_Scan_Push
@@ -29,7 +28,7 @@ jobs:
         displayName: 'Run CDefense SAST Scan'
         inputs:
           targetType: 'inline'
-          script: '/tmp/cdefense sast --lang=node --project-name=recon-api --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
+          script: '/tmp/cdefense sast --lang=node --project-name="Recon API" --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
         continueOnError: true
 
       - task: Docker@2
@@ -46,7 +45,7 @@ jobs:
         displayName: 'Run CDefense Container Scan'
         inputs:
           targetType: 'inline'
-          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=ascendum.azurecr.io/$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name=recon-api-docker'
+          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=ascendum.azurecr.io/$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name="Recon API - Docker"'
 
       - task: Docker@2
         displayName: Push Container
