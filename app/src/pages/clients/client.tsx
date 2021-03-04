@@ -3,7 +3,7 @@ import { ClientForm } from 'components'
 import { gql, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 
-const GET_CLIENT_FROM_ID = gql`
+export const GET_CLIENT_FROM_ID = gql`
   query GetClient($id: String!){
     client(id: $id){
       id
@@ -15,7 +15,7 @@ const GET_CLIENT_FROM_ID = gql`
     }
   }
 `
-const Client = () => {
+export const Client = () => {
   const router = useRouter()
   const { id } = router.query; 
 

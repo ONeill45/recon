@@ -1,10 +1,9 @@
-import { gql } from '@apollo/client'
 import { waitFor } from '@testing-library/react'
 import { render } from '../testUtils'
 import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
-import { ClientForm } from 'components'
+import { ClientForm, CREATE_CLIENT, UPDATE_CLIENT } from 'components'
 import { applyMockUseMsal, applyMockUseRouter } from '../testUtils'
 import { ClientFactory } from '../factories'
 
@@ -19,13 +18,7 @@ describe('<ClientForm />', () => {
     const mocks = [
       {
         request: {
-          query: gql`
-            mutation CreateClient($data: CreateClientInput!) {
-              createClient(data: $data) {
-                id
-              }
-            }
-          `,
+          query: CREATE_CLIENT,
         },
         result: {
           data: {
@@ -57,13 +50,7 @@ describe('<ClientForm />', () => {
     const mocks = [
       {
         request: {
-          query: gql`
-          mutation UpdateClient($id: String!, $data: UpdateClientInput!) {
-            updateClient(id:$id, data: $data) {
-              id
-            }
-          }
-        `,
+          query: UPDATE_CLIENT,
         },
         result: {
           data: {

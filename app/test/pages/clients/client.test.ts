@@ -1,25 +1,10 @@
-import { gql} from '@apollo/client'
-
-import Client from 'pages/clients/client'
+import { Client, GET_CLIENT_FROM_ID } from 'pages/clients/client'
 import { ClientFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
 const client = ClientFactory.build()
 
 applyMockUseRouter({ query: { id: client.id } })
-
-const GET_CLIENT_FROM_ID = gql`
-  query GetClient($id: String!){
-    client(id: $id){
-      id
-      clientName
-      description
-      logoUrl
-      startDate
-      endDate
-    }
-  }
-`
 
 const mocks = [
   {

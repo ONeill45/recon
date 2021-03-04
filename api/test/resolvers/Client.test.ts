@@ -148,7 +148,7 @@ describe('updateClient()', () => {
     }
   }`
   it('should return error if Client does not exist', async () => {
-    const client = ClientFactory.build({})
+    const client = ClientFactory.build()
     const {
       id,
       clientName,

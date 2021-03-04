@@ -29,14 +29,14 @@ const SubmitButton = styled.button``
 
 const UpdateButton = styled.button``
 
-const CREATE_CLIENT = gql`
+export const CREATE_CLIENT = gql`
   mutation CreateClient($data: CreateClientInput!) {
     createClient(data: $data) {
       id
     }
   }
 `
-const UPDATE_CLIENT = gql`
+export const UPDATE_CLIENT = gql`
   mutation UpdateClient($id: String!, $data: UpdateClientInput!) {
     updateClient(id:$id, data: $data) {
       id
@@ -48,9 +48,9 @@ type ClientProps = {
 }
 
 export const ClientForm = ({ client }: ClientProps) => {
-  const [clientName, setClientName] = React.useState(client ? client.clientName : '')
-  const [description, setDescription] = React.useState(client ? client.description : '')
-  const [logoUrl, setLogoUrl] = React.useState(client ? client.logoUrl : '')
+  const [clientName, setClientName] = React.useState(client?.clientName || '')
+  const [description, setDescription] = React.useState(client?.description || '')
+  const [logoUrl, setLogoUrl] = React.useState(client?.logoUrl || '')
   const [startDate, setStartDate] = React.useState(new Date())
   const [endDate, setEndDate] = React.useState<Date | null>(null)
   const id  = client ? client.id : null
@@ -142,11 +142,11 @@ export const ClientForm = ({ client }: ClientProps) => {
             onChange={(date: Date) => setEndDate(date)}
           ></DatePicker>
         </CreateClientFormLabel>
-        { id ? <UpdateButton name="Update" onClick={(e) => updateClientById(e)} >
+        { id ? <UpdateButton name="Update" onClick={updateClientById} >
           Update
         </UpdateButton> 
         :
-        <SubmitButton name="Submit" onClick={(e) => createNewClient(e) }>
+        <SubmitButton name="Submit" onClick={createNewClient}>
           Submit
         </SubmitButton>
         }
