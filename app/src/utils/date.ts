@@ -23,3 +23,9 @@ export const getDurationText = (startDate: Date, endDate: Date) => {
     addSuffix: true,
   })}`
 }
+
+export const formatDate = (date: Date) => {
+  if (!date) return ''
+  const newDate = date.toString().split('T')[0].split('-')
+  return `${newDate[1]}-${newDate[2]}-${newDate[0]}`
+}

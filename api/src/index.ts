@@ -3,11 +3,21 @@ import { ApolloServer } from 'apollo-server'
 import { buildSchema } from 'type-graphql'
 
 import { connect } from './database'
-import { ClientResolver, ResourceResolver, ProjectResolver } from './resolvers'
+import {
+  ClientResolver,
+  ResourceResolver,
+  ResourceAllocationResolver,
+  ProjectResolver,
+} from './resolvers'
 
 export const createSchema = async () =>
   buildSchema({
-    resolvers: [ClientResolver, ResourceResolver, ProjectResolver],
+    resolvers: [
+      ClientResolver,
+      ResourceResolver,
+      ResourceAllocationResolver,
+      ProjectResolver,
+    ],
   })
 
 async function main() {

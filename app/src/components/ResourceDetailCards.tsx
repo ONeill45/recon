@@ -1,6 +1,10 @@
 import styled from '@emotion/styled'
-import { Resource } from 'interfaces'
-import { getDurationText } from 'utils'
+import { Resource, ResourceAllocation } from 'interfaces'
+import { formatDate, getDurationText } from 'utils'
+import {
+  CurrentResourceAllocationDetail,
+  PastResourceAllocationDetail,
+} from 'components'
 
 const CardsDiv = styled.div`
   display: flex;
@@ -31,11 +35,22 @@ const CardDetailsDiv = styled.div`
 
 type ResourceDetailCardsProps = {
   resource: Resource
+  resourceAllocation: ResourceAllocation[]
 }
 
-export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
+export const ResourceDetailCards = ({
+  resource,
+  resourceAllocation,
+}: ResourceDetailCardsProps) => {
   const { department, startDate, terminationDate } = resource
   const duration = getDurationText(startDate, terminationDate)
+  const currentDate = new Date()
+  const currentAllocation = resourceAllocation.filter(
+    (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
+  )
+  const pastAllocation = resourceAllocation.filter(
+    (ra) => ra.endDate && new Date(ra.endDate) < currentDate,
+  )
 
   return (
     <CardsDiv>
@@ -45,29 +60,32 @@ export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
           Status: {terminationDate ? 'Terminated' : 'Active'}
         </CardDetailsDiv>
         <CardDetailsDiv>Department: {department.name}</CardDetailsDiv>
-        <CardDetailsDiv>
-          Hire Date: {startDate.toString().split('T')[0]}
-        </CardDetailsDiv>
+        <CardDetailsDiv>Hire Date: {formatDate(startDate)}</CardDetailsDiv>
         <CardDetailsDiv>
           Termination Date:{' '}
-          {terminationDate ? terminationDate.toString().split('T')[0] : 'N/A'}
+          {terminationDate ? formatDate(terminationDate) : 'N/A'}
         </CardDetailsDiv>
         <CardDetailsDiv>Length Of Service: {duration}</CardDetailsDiv>
       </CardDiv>
       <CardDiv>
         <CardTitleDiv>Project Information</CardTitleDiv>
         <CardDetailsDiv>
-          Current Project(s):{' '}
-          <ul>
-            <li>Recon</li>
-          </ul>
+          <div>Current Project(s):</div>
+          {currentAllocation.length ? (
+            <CurrentResourceAllocationDetail
+              currentAllocation={currentAllocation}
+            />
+          ) : (
+            <div />
+          )}
         </CardDetailsDiv>
         <CardDetailsDiv>
-          Past Project(s):{' '}
-          <ul>
-            <li>Duzy Admin</li>
-            <li>Work OS</li>
-          </ul>
+          <div>Past Project(s):</div>
+          {pastAllocation.length ? (
+            <PastResourceAllocationDetail pastAllocation={pastAllocation} />
+          ) : (
+            <div />
+          )}
         </CardDetailsDiv>
       </CardDiv>
       <CardDiv>

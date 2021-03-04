@@ -15,10 +15,6 @@ import {
 
 const ResourceCardDiv = styled(CardDiv)`
   width: 250px;
-  cursor: pointer;
-  &:hover {
-    outline: 1px solid black;
-  }
 `
 
 type ResourceCardProps = {

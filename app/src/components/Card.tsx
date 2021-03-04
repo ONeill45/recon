@@ -12,6 +12,10 @@ export const CardDiv = styled.div`
   width: 200px;
   padding: 16px;
   margin: 16px;
+  cursor: pointer;
+  &:hover {
+    outline: 1px solid black;
+  }
 `
 
 export const CardDetailsDiv = styled.div`
