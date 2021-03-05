@@ -4,7 +4,7 @@ import { Project } from '../models'
 @Resolver()
 export class ProjectResolver {
   @Query(() => [Project])
-  projects() {
+  async projects() {
     return Project.find()
   }
 
