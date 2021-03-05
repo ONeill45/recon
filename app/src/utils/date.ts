@@ -37,7 +37,7 @@ export const getDuration = (startDate: Date, endDate?: Date) =>
       end: endDate ? new Date(endDate) : new Date(),
     }),
     { format: ['years', 'months'] },
-  )
+  ) || 'Less than 1 month'
 
 export enum DateFormat {
   DATE_ONLY = 'M/d/yyyy',
