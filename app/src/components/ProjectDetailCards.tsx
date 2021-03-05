@@ -34,22 +34,6 @@ export const ProjectDetailCards = ({
         <CardDetailsDiv>Length Of Project: {duration}</CardDetailsDiv>
       </CardDiv>
       <CardDiv>
-        <CardNameDiv>Project Information</CardNameDiv>
-        <CardDetailsDiv>
-          Current Project(s):{' '}
-          <ul>
-            <li>Recon</li>
-          </ul>
-        </CardDetailsDiv>
-        <CardDetailsDiv>
-          Past Project(s):{' '}
-          <ul>
-            <li>Duzy Admin</li>
-            <li>Work OS</li>
-          </ul>
-        </CardDetailsDiv>
-      </CardDiv>
-      <CardDiv>
         <CardNameDiv>Skills Required</CardNameDiv>
         <CardDetailsDiv>JavaScript: 8</CardDetailsDiv>
         <CardDetailsDiv>React: 7</CardDetailsDiv>
