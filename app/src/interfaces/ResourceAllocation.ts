@@ -4,6 +4,7 @@ export interface ResourceAllocation {
   id: string
   startDate: Date
   endDate: Date
+  endReason: String
   percentage: Number
   resource: Resource
   project: Project

@@ -23,6 +23,20 @@ const GET_RESOURCE = gql`
         name
       }
       email
+      resourceAllocation {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
     }
   }
 `

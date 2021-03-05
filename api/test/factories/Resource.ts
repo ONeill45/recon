@@ -1,7 +1,7 @@
 import { Factory } from 'rosie'
 import faker from 'faker'
 import { Resource } from '../../src/models'
-import { DepartmentFactory } from './'
+import { DepartmentFactory, ResourceAllocationFactory } from './'
 import { AuditableEntityFactory } from './AuditableEntity'
 
 export const ResourceFactory = Factory.define<Resource>('Resource')
@@ -16,3 +16,7 @@ export const ResourceFactory = Factory.define<Resource>('Resource')
   .attr('email', () => faker.internet.email())
   .attr('startDate', () => new Date(faker.date.past()).toISOString())
   .attr('terminationDate', null)
+  .attr('resourceAllocation', () => [
+    ResourceAllocationFactory.build({}, { isCurrent: true }),
+    ResourceAllocationFactory.build({}, { isCurrent: false }),
+  ])

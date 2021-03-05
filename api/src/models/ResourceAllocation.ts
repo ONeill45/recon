@@ -21,7 +21,7 @@ export class ResourceAllocation extends BaseEntity implements AuditableEntity {
   id: string
 
   @Field(() => Resource)
-  @ManyToOne(() => Resource, { eager: true })
+  @ManyToOne(() => Resource)
   @JoinColumn({ name: 'resource_id' })
   resource: Resource
 
@@ -38,7 +38,7 @@ export class ResourceAllocation extends BaseEntity implements AuditableEntity {
   @Column({ name: 'end_date', nullable: true })
   endDate: Date | null
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   @Column({ name: 'end_reason', nullable: true })
   endReason: String | null
 

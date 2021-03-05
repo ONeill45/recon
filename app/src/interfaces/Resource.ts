@@ -1,4 +1,4 @@
-import { Department } from './'
+import { Department, ResourceAllocation } from './'
 
 export interface Resource {
   id: string
@@ -11,6 +11,7 @@ export interface Resource {
   email: string
   startDate: Date
   terminationDate: Date
+  resourceAllocation: ResourceAllocation[]
   createdBy: string
   createdDate: Date
   updatedBy: string

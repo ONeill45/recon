@@ -9,9 +9,10 @@ import {
   CardDiv,
   CardDurationDiv,
   CardNameDiv,
+  CurrentResourceAllocationDetail,
   LogoDiv,
   LogoImg,
-} from './Card'
+} from './'
 
 const ResourceCardDiv = styled(CardDiv)`
   width: 250px;
@@ -32,10 +33,14 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
     email,
     startDate,
     terminationDate,
+    resourceAllocation,
   } = resource
   const router = useRouter()
 
   const duration = getDurationText(startDate, terminationDate)
+  const currentAllocation = resourceAllocation.filter(
+    (ra) => !ra.endDate || new Date(ra.endDate) > new Date(),
+  )
   return (
     <ResourceCardDiv
       data-testid="ResourceCardDiv"
@@ -54,7 +59,16 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
         <CardDescriptionDiv>{title}</CardDescriptionDiv>
         <CardDescriptionDiv>{department.name}</CardDescriptionDiv>
         <CardDurationDiv>{duration}</CardDurationDiv>
-        <CardDescriptionDiv>Current Project(s): </CardDescriptionDiv>
+        <CardDescriptionDiv>
+          <div>Current Project(s):</div>
+          {currentAllocation.length ? (
+            <CurrentResourceAllocationDetail
+              currentAllocation={currentAllocation}
+            />
+          ) : (
+            <div />
+          )}
+        </CardDescriptionDiv>
       </CardDetailsDiv>
     </ResourceCardDiv>
   )

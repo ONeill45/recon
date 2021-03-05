@@ -1,18 +1,12 @@
 import { css } from '@emotion/react'
 import styled from '@emotion/styled'
 import { ResourceAllocation } from 'interfaces'
-import { formatDate } from 'utils'
 
-const HeaderDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  padding: 2px;
-`
-const ProjectInfoDiv = styled.div`
+const OuterDiv = styled.div`
   display: grid;
-  grid-template-columns: 20% 50% 30%;
+  grid-template-columns: auto 65%;
   grid-template-rows: auto;
-  padding: 2px;
+  text-align: left;
 `
 const UtilizationBackgroundDiv = styled.div`
   background-color: lightgray;
@@ -27,6 +21,7 @@ type utilizationInnerDivProps = {
 
 const generateUtilizationCSS = ({ percentage }: utilizationInnerDivProps) => {
   const percentageCSS = `width: ${percentage}px;`
+  /* istanbul ignore next */
   switch (true) {
     case percentage <= 30:
       return css`
@@ -65,24 +60,22 @@ export const CurrentResourceAllocationDetail = ({
 }: CurrentResourceAllocationDetailProps) => {
   return (
     <>
-      <HeaderDiv>
+      <OuterDiv>
         <div>Title</div>
         <div>Time Utilization</div>
-        <div>Start Date</div>
-      </HeaderDiv>
-      {currentAllocation.map((ra) => {
-        return (
-          <ProjectInfoDiv key={ra.project.id}>
-            <div>{ra.project.projectName}</div>
-            <UtilizationBackgroundDiv>
-              <UtilizationInnerDiv percentage={ra.percentage}>
-                {ra.percentage}%
-              </UtilizationInnerDiv>
-            </UtilizationBackgroundDiv>
-            <div>{formatDate(ra.startDate)}</div>
-          </ProjectInfoDiv>
-        )
-      })}
+        {currentAllocation.map((ra) => {
+          return (
+            <>
+              <div key={ra.project.id}>{ra.project.projectName}</div>
+              <UtilizationBackgroundDiv>
+                <UtilizationInnerDiv percentage={ra.percentage}>
+                  {ra.percentage}%
+                </UtilizationInnerDiv>
+              </UtilizationBackgroundDiv>
+            </>
+          )
+        })}
+      </OuterDiv>
     </>
   )
 }

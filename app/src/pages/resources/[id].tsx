@@ -18,37 +18,19 @@ const GET_RESOURCE = gql`
         name
       }
       email
-    }
-  }
-`
-
-const GET_RESOURCE_ALLOCATION = gql`
-  query GetResourceAllocationByResourceId($resourceId: String!) {
-    resourceAllocationByResourceId(resourceId: $resourceId) {
-      id
-      startDate
-      endDate
-      percentage
-      project {
+      resourceAllocation {
         id
-        projectName
-        projectType
-        confidence
-        priority
-      }
-      resource {
-        id
-        firstName
-        lastName
-        preferredName
-        title
         startDate
-        terminationDate
-        imageUrl
-        department {
-          name
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
         }
-        email
       }
     }
   }
@@ -56,44 +38,23 @@ const GET_RESOURCE_ALLOCATION = gql`
 
 const Resource = () => {
   const router = useRouter()
-  const resourceId = router.query.id
-  const queryMultiple = () => {
-    const getResourceResponse = useQuery(GET_RESOURCE, {
-      variables: {
-        id: resourceId,
-      },
-    })
-    const getResourceAllocationResponse = useQuery(GET_RESOURCE_ALLOCATION, {
-      variables: {
-        resourceId,
-      },
-    })
-    return [getResourceResponse, getResourceAllocationResponse]
-  }
+  const id = router.query.id
 
-  const [getResourceResponse, getResourceAllocationResponse] = queryMultiple()
+  const { data, loading, error } = useQuery(GET_RESOURCE, {
+    variables: {
+      id,
+    },
+  })
 
-  if (getResourceResponse.loading || getResourceAllocationResponse.loading)
-    return <p>Loading...</p>
-  if (getResourceResponse.error || getResourceAllocationResponse.error)
-    return (
-      <p>
-        Error:{' '}
-        {getResourceResponse.error?.message ||
-          getResourceAllocationResponse.error?.message}
-      </p>
-    )
+  if (loading) return <p>Loading...</p>
+  if (error) return <p>Error: {error.message}</p>
 
-  const { resource } = getResourceResponse.data
-  const { resourceAllocationByResourceId } = getResourceAllocationResponse.data
+  const { resource } = data
 
   return (
     <>
       <ResourceHeader resource={resource} />
-      <ResourceDetailCards
-        resource={resource}
-        resourceAllocation={resourceAllocationByResourceId}
-      />
+      <ResourceDetailCards resource={resource} />
     </>
   )
 }

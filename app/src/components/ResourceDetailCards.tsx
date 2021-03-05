@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { Resource, ResourceAllocation } from 'interfaces'
+import { Resource } from 'interfaces'
 import { formatDate, getDurationText } from 'utils'
 import {
   CurrentResourceAllocationDetail,
@@ -35,14 +35,15 @@ const CardDetailsDiv = styled.div`
 
 type ResourceDetailCardsProps = {
   resource: Resource
-  resourceAllocation: ResourceAllocation[]
 }
 
-export const ResourceDetailCards = ({
-  resource,
-  resourceAllocation,
-}: ResourceDetailCardsProps) => {
-  const { department, startDate, terminationDate } = resource
+export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
+  const {
+    department,
+    startDate,
+    terminationDate,
+    resourceAllocation,
+  } = resource
   const duration = getDurationText(startDate, terminationDate)
   const currentDate = new Date()
   const currentAllocation = resourceAllocation.filter(

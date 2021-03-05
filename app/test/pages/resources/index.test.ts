@@ -8,27 +8,43 @@ import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
 applyMockUseRouter()
 
 const resources = ResourceFactory.buildList(5)
+
+const GET_RESOURCES = gql`
+  {
+    resources {
+      id
+      firstName
+      lastName
+      preferredName
+      title
+      startDate
+      terminationDate
+      imageUrl
+      department {
+        name
+      }
+      email
+      resourceAllocation {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
+    }
+  }
+`
 const mocks = [
   {
     request: {
-      query: gql`
-        {
-          resources {
-            id
-            firstName
-            lastName
-            preferredName
-            title
-            startDate
-            terminationDate
-            imageUrl
-            department {
-              name
-            }
-            email
-          }
-        }
-      `,
+      query: GET_RESOURCES,
     },
     result: {
       data: {
@@ -41,24 +57,7 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: gql`
-        {
-          resources {
-            id
-            firstName
-            lastName
-            preferredName
-            title
-            startDate
-            terminationDate
-            imageUrl
-            department {
-              name
-            }
-            email
-          }
-        }
-      `,
+      query: GET_RESOURCES,
     },
     error: new Error('An error occurred'),
   },
