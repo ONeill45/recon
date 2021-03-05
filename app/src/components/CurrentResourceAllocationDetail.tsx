@@ -8,6 +8,13 @@ const OuterDiv = styled.div`
   grid-template-rows: auto;
   text-align: left;
 `
+const ProjectInfoDiv = styled.div`
+  display: grid;
+  grid-template-columns: auto 65%;
+  grid-template-rows: auto;
+  text-align: left;
+`
+
 const UtilizationBackgroundDiv = styled.div`
   background-color: lightgray;
   width: 100px;
@@ -63,19 +70,19 @@ export const CurrentResourceAllocationDetail = ({
       <OuterDiv>
         <div>Title</div>
         <div>Time Utilization</div>
-        {currentAllocation.map((ra) => {
-          return (
-            <>
-              <div key={ra.project.id}>{ra.project.projectName}</div>
-              <UtilizationBackgroundDiv>
-                <UtilizationInnerDiv percentage={ra.percentage}>
-                  {ra.percentage}%
-                </UtilizationInnerDiv>
-              </UtilizationBackgroundDiv>
-            </>
-          )
-        })}
       </OuterDiv>
+      {currentAllocation.map((ra) => {
+        return (
+          <ProjectInfoDiv key={ra.project.id}>
+            <div>{ra.project.projectName}</div>
+            <UtilizationBackgroundDiv>
+              <UtilizationInnerDiv percentage={ra.percentage}>
+                {ra.percentage}%
+              </UtilizationInnerDiv>
+            </UtilizationBackgroundDiv>
+          </ProjectInfoDiv>
+        )
+      })}
     </>
   )
 }
