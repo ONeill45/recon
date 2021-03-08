@@ -10,8 +10,8 @@ export class ClientResolver {
   }
 
   @Query(() => Client)
-  client( @Arg('id') id: string) {
-    return Client.findOne({id:id})
+  client(@Arg('id') id: string) {
+    return Client.findOne({ id: id })
   }
 
   @Mutation(() => Client)
@@ -19,7 +19,7 @@ export class ClientResolver {
     @Arg('id') id: string,
     @Arg('data') data: UpdateClientInput,
   ) {
-    const client = await Client.findOne({id:id})
+    const client = await Client.findOne({ id })
     if (!client) throw new Error(`Client ${id} not found!`)
     Object.assign(client, data)
     await client.save()
