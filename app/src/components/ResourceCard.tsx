@@ -22,12 +22,12 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
     email,
     startDate,
     terminationDate,
-    resourceAllocation,
+    resourceAllocations,
   } = resource
   const router = useRouter()
 
   const duration = getRelativeTime(startDate, terminationDate)
-  const currentAllocation = resourceAllocation.filter(
+  const currentAllocation = resourceAllocations.filter(
     (ra) => !ra.endDate || new Date(ra.endDate) > new Date(),
   )
 

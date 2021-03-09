@@ -18,7 +18,7 @@ export const GET_ALL_RESOURCES = gql`
         name
       }
       email
-      resourceAllocation {
+      resourceAllocations {
         id
         startDate
         endDate

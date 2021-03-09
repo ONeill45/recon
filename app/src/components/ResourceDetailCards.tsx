@@ -16,14 +16,14 @@ export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
     department,
     startDate,
     terminationDate,
-    resourceAllocation,
+    resourceAllocations,
   } = resource
   const duration = getDuration(startDate, terminationDate)
   const currentDate = new Date()
-  const currentAllocation = resourceAllocation.filter(
+  const currentAllocation = resourceAllocations.filter(
     (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
   )
-  const pastAllocation = resourceAllocation.filter(
+  const pastAllocation = resourceAllocations.filter(
     (ra) => ra.endDate && new Date(ra.endDate) < currentDate,
   )
 

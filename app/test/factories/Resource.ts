@@ -16,7 +16,7 @@ export const ResourceFactory = Factory.define<Resource>('Resource')
   .attr('email', () => faker.internet.email())
   .attr('startDate', () => new Date(faker.date.past()).toISOString())
   .attr('terminationDate', null)
-  .attr('resourceAllocation', () => [
+  .attr('resourceAllocations', () => [
     ResourceAllocationFactory.build({}, { isCurrent: true }),
     ResourceAllocationFactory.build({}, { isCurrent: false }),
   ])

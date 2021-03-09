@@ -11,7 +11,7 @@ export interface Resource {
   email: string
   startDate: Date
   terminationDate: Date
-  resourceAllocation: ResourceAllocation[]
+  resourceAllocations: ResourceAllocation[]
   createdBy: string
   createdDate: Date
   updatedBy: string

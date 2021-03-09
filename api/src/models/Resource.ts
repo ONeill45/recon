@@ -60,7 +60,7 @@ export class Resource extends BaseEntity implements AuditableEntity {
 
   @Field(() => [ResourceAllocation])
   @OneToMany(() => ResourceAllocation, (ra) => ra.resource, { eager: true })
-  resourceAllocation: ResourceAllocation[]
+  resourceAllocations: ResourceAllocation[]
 
   @Field(() => Date)
   @CreateDateColumn({ name: 'created_date' })
