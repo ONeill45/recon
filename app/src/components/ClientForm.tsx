@@ -6,6 +6,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
 import { useMsAccount } from 'utils/hooks'
+import { Client } from 'interfaces'
 
 const CreateClientForm = styled.form`
   margin-top: 30px;
@@ -26,26 +27,43 @@ const CreateClientFormInput = styled.input`
 
 const SubmitButton = styled.button``
 
-const CREATE_CLIENT = gql`
+const UpdateButton = styled.button``
+
+export const CREATE_CLIENT = gql`
   mutation CreateClient($data: CreateClientInput!) {
     createClient(data: $data) {
       id
     }
   }
 `
+export const UPDATE_CLIENT = gql`
+  mutation UpdateClient($id: String!, $data: UpdateClientInput!) {
+    updateClient(id: $id, data: $data) {
+      id
+    }
+  }
+`
+type ClientProps = {
+  client?: Client
+}
 
-export const NewClientForm = () => {
-  const [clientName, setClientName] = React.useState('')
-  const [description, setDescription] = React.useState('')
-  const [logoUrl, setLogoUrl] = React.useState('')
+export const ClientForm = ({ client }: ClientProps) => {
+  const [clientName, setClientName] = React.useState(client?.clientName || '')
+  const [description, setDescription] = React.useState(
+    client?.description || '',
+  )
+  const [logoUrl, setLogoUrl] = React.useState(client?.logoUrl || '')
   const [startDate, setStartDate] = React.useState(new Date())
   const [endDate, setEndDate] = React.useState<Date | null>(null)
+  const id = client ? client.id : null
+
   const router = useRouter()
   const account = useMsAccount()
 
   const [createClient] = useMutation(CREATE_CLIENT)
+  const [updateClient] = useMutation(UPDATE_CLIENT)
 
-  const onSubmit = async (e: React.FormEvent) => {
+  const createNewClient = async (e: React.FormEvent) => {
     e.preventDefault()
     await createClient({
       variables: {
@@ -63,16 +81,36 @@ export const NewClientForm = () => {
     router.push('/clients')
   }
 
+  const updateClientById = async (e: React.FormEvent) => {
+    e.preventDefault()
+    await updateClient({
+      variables: {
+        id: id,
+        data: {
+          clientName,
+          description,
+          logoUrl,
+          startDate,
+          endDate,
+          createdBy: account?.username,
+          updatedBy: account?.username,
+        },
+      },
+    })
+    router.push('/clients')
+  }
+
   return (
     <>
-      <CreateClientForm onSubmit={(e) => onSubmit(e)}>
+      <CreateClientForm>
         <CreateClientFormLabel>
           Client Name
           <CreateClientFormInput
             type="text"
             aria-label="client-name"
             onChange={(e) => setClientName(e.target.value)}
-          />
+            value={clientName}
+          ></CreateClientFormInput>
         </CreateClientFormLabel>
         <CreateClientFormLabel>
           Description
@@ -80,7 +118,8 @@ export const NewClientForm = () => {
             type="text"
             aria-label="description"
             onChange={(e) => setDescription(e.target.value)}
-          />
+            value={description}
+          ></CreateClientFormInput>
         </CreateClientFormLabel>
         <CreateClientFormLabel>
           Logo Url (Optional)
@@ -88,25 +127,32 @@ export const NewClientForm = () => {
             type="text"
             aria-label="logo-url"
             onChange={(e) => setLogoUrl(e.target.value)}
-          />
+            defaultValue={logoUrl}
+          ></CreateClientFormInput>
         </CreateClientFormLabel>
         <CreateClientFormLabel>
           Start Date
           <DatePicker
             selected={startDate}
             onChange={(date: Date) => setStartDate(date)}
-          />
+          ></DatePicker>
         </CreateClientFormLabel>
         <CreateClientFormLabel>
           End Date (Optional)
           <DatePicker
             selected={endDate}
             onChange={(date: Date) => setEndDate(date)}
-          />
+          ></DatePicker>
         </CreateClientFormLabel>
-        <SubmitButton type="submit" name="Submit">
-          Submit
-        </SubmitButton>
+        {id ? (
+          <UpdateButton name="Update" onClick={updateClientById}>
+            Update
+          </UpdateButton>
+        ) : (
+          <SubmitButton name="Submit" onClick={createNewClient}>
+            Submit
+          </SubmitButton>
+        )}
       </CreateClientForm>
     </>
   )
