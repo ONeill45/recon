@@ -27,22 +27,8 @@ export const CardDiv = styled.div<cardProps>`
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
     0 1px 5px 0 rgb(0 0 0 / 12%);
   height: auto;
-  width: 200px;
   padding: 16px;
-  margin: 16px;
   width: 100%;
-  @media all and (min-width: 640px) {
-    max-width: 45%;
-    width: 45%;
-  }
-  @media all and (min-width: 992px) {
-    max-width: 30%;
-    width: 30%;
-  }
-  @media all and (min-width: 1200px) {
-    max-width: 22%;
-    width: 22%;
-  }
   flex-grow: 1;
 `
 export const CardNameDiv = styled.div`

@@ -2,25 +2,11 @@ import React from 'react'
 import styled from '@emotion/styled'
 
 const CardsDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  width: 100%;
+  margin: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: auto;
+  grid-gap: 12px;
 `
-const CardContentDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  &:after {
-    content: '';
-    flex: auto;
-  }
-`
-export const Cards: React.FC = ({ children }) => (
-  <CardsDiv>
-    <CardContentDiv>{children}</CardContentDiv>
-  </CardsDiv>
-)
+
+export const Cards: React.FC = ({ children }) => <CardsDiv>{children}</CardsDiv>
