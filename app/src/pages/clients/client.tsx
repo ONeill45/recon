@@ -35,3 +35,4 @@ export const Client = () => {
     </>
   )
 }
+export default Client
