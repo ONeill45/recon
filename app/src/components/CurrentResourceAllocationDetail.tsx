@@ -38,7 +38,7 @@ const generateUtilizationCSS = ({ percentage }: utilizationInnerDivProps) => {
       `
     case percentage <= 70:
       return css`
-        background-color: blue;
+        background-color: yellow;
         height: 15px;
         ${percentageCSS}
       `

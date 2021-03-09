@@ -42,8 +42,5 @@ export class UpdateClientInput {
   endDate?: Date
 
   @Field()
-  createdBy: string
-
-  @Field()
   updatedBy: string
 }

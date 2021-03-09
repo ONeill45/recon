@@ -52,9 +52,14 @@ export const ClientForm = ({ client }: ClientProps) => {
   const [description, setDescription] = React.useState(
     client?.description || '',
   )
+  console.log(client?.startDate)
   const [logoUrl, setLogoUrl] = React.useState(client?.logoUrl || '')
-  const [startDate, setStartDate] = React.useState(new Date())
-  const [endDate, setEndDate] = React.useState<Date | null>(null)
+  const [startDate, setStartDate] = React.useState(
+    client?.startDate ? new Date(client?.startDate) : new Date(),
+  )
+  const [endDate, setEndDate] = React.useState<Date | null>(
+    client?.endDate ? new Date(client?.endDate) : null,
+  )
   const id = client ? client.id : null
 
   const router = useRouter()
@@ -92,7 +97,6 @@ export const ClientForm = ({ client }: ClientProps) => {
           logoUrl,
           startDate,
           endDate,
-          createdBy: account?.username,
           updatedBy: account?.username,
         },
       },

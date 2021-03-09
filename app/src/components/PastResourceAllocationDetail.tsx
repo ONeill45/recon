@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import { ResourceAllocation } from 'interfaces'
-import { formatDate } from 'utils'
+import { formatDate, DateFormat } from 'utils'
 
 const HeaderDiv = styled.div`
   display: flex;
@@ -31,8 +31,8 @@ export const PastResourceAllocationDetail = ({
         return (
           <ProjectInfoDiv key={ra.project.id}>
             <div>{ra.project.projectName}</div>
-            <div>{formatDate(ra.startDate)}</div>
-            <div>{formatDate(ra.endDate)}</div>
+            <div>{formatDate(ra.startDate, DateFormat.DATE_ONLY)}</div>
+            <div>{formatDate(ra.endDate, DateFormat.DATE_ONLY)}</div>
           </ProjectInfoDiv>
         )
       })}
