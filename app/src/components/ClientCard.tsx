@@ -23,7 +23,7 @@ export const ClientCard = ({ client }: ClientCardProps) => {
   }
 
   return (
-    <CardDiv onClick={viewClient}>
+    <CardDiv clickable={true} onClick={viewClient}>
       <LogoDiv>
         <LogoImg src={logoUrl} />
       </LogoDiv>
