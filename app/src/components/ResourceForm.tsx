@@ -40,20 +40,14 @@ type ResourceProps = {
 
 export const ResourceForm = ({ resource }: ResourceProps) => {
   const [firstName, setFirstName] = React.useState(resource?.firstName || '')
-  const [lastName, setLastName] = React.useState(
-    resource ? resource.lastName : '',
-  )
+  const [lastName, setLastName] = React.useState(resource?.lastName || '')
   const [preferredName, setPreferredName] = React.useState(
-    resource ? resource.preferredName : '',
+    resource?.preferredName || '',
   )
-  const [title, setTitle] = React.useState(resource ? resource.title : '')
-  const [department, setDepartment] = React.useState(
-    resource ? resource.department : '',
-  )
-  const [imageUrl, setImageUrl] = React.useState(
-    resource ? resource.imageUrl : '',
-  )
-  const [email, setEmail] = React.useState(resource ? resource.email : '')
+  const [title, setTitle] = React.useState(resource?.title || '')
+  const [department, setDepartment] = React.useState(resource?.department || '')
+  const [imageUrl, setImageUrl] = React.useState(resource?.imageUrl || '')
+  const [email, setEmail] = React.useState(resource?.email || '')
   const [startDate, setStartDate] = React.useState(new Date())
   const [terminationDate, setTerminationDate] = React.useState<Date | null>(
     null,
