@@ -1,9 +1,10 @@
 import { Connection } from 'typeorm'
+import faker from 'faker'
 
 import '../utils/populateEnvVariables'
 import { connect } from '../../src/database'
 import { Project, Client } from '../../src/models'
-import { ProjectFactory } from '../factories'
+import { ClientFactory, ProjectFactory } from '../factories'
 import { gqlCall } from '../utils/gqlCall'
 
 let connection: Connection
@@ -101,6 +102,72 @@ describe('ProjectResolver', () => {
       expect(response).toMatchObject({
         data: {
           projects: [],
+        },
+      })
+    })
+  })
+  describe('project()', () => {
+    const getProjectQuery = (id: string) => `{
+      project (id: "${id}") {
+        id
+        projectName
+        startDate
+        endDate
+      }
+    }`
+
+    it('should return null if project does not exist', async () => {
+      const response = await gqlCall({
+        source: getProjectQuery(faker.random.uuid()),
+      })
+
+      expect(response).toEqual({
+        data: {
+          project: null,
+        },
+      })
+    })
+
+    it('should return project if it exists', async () => {
+      const client = ClientFactory.build()
+      await Client.insert(client)
+      const project = ProjectFactory.build({ client })
+      await Project.insert(project)
+
+      const { id, projectName, startDate, endDate } = project
+
+      const response = await gqlCall({
+        source: getProjectQuery(id),
+      })
+
+      expect(response).toMatchObject({
+        data: {
+          project: {
+            id,
+            projectName,
+            startDate,
+            endDate,
+          },
+        },
+      })
+    })
+
+    it('should not return a deleted project', async () => {
+      const client = ClientFactory.build()
+      await Client.insert(client)
+      const project = ProjectFactory.build({
+        client,
+        deletedDate: new Date().toISOString(),
+      })
+      await Project.insert(project)
+
+      const response = await gqlCall({
+        source: getProjectQuery(project.id),
+      })
+
+      expect(response).toEqual({
+        data: {
+          project: null,
         },
       })
     })

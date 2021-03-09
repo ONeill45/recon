@@ -48,7 +48,7 @@ services:
       context: app
       dockerfile: Dockerfile
     volumes:
-      - ./app:/usr/src/app
+      - ./app/src:/usr/src/app/src
       - /usr/src/app/.next
     restart: always
     depends_on:

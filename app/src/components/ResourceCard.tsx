@@ -1,25 +1,9 @@
-import styled from '@emotion/styled'
 import { useRouter } from 'next/router'
 
 import { Resource } from 'interfaces'
-import { getDurationText } from '../utils'
-import {
-  CardDescriptionDiv,
-  CardDetailsDiv,
-  CardDiv,
-  CardDurationDiv,
-  CardNameDiv,
-  LogoDiv,
-  LogoImg,
-} from './Card'
-
-const ResourceCardDiv = styled(CardDiv)`
-  width: 250px;
-  cursor: pointer;
-  &:hover {
-    outline: 1px solid black;
-  }
-`
+import { getRelativeTime } from '../utils'
+import { CardDescriptionDiv, CardDiv, CardNameDiv } from './Card'
+import { LogoDiv, LogoImg } from './Logo'
 
 type ResourceCardProps = {
   resource: Resource
@@ -27,11 +11,12 @@ type ResourceCardProps = {
 
 export const ResourceCard = ({ resource }: ResourceCardProps) => {
   const {
+    id,
     firstName,
     lastName,
     preferredName,
     title,
-    department,
+    department: { name: departmentName },
     imageUrl,
     email,
     startDate,
@@ -39,27 +24,26 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
   } = resource
   const router = useRouter()
 
-  const duration = getDurationText(startDate, terminationDate)
+  const duration = getRelativeTime(startDate, terminationDate)
   return (
-    <ResourceCardDiv
+    <CardDiv
       data-testid="ResourceCardDiv"
+      clickable={true}
       onClick={() =>
-        router.push({ pathname: '/resources/[id]', query: { id: resource.id } })
+        router.push({ pathname: '/resources/[id]', query: { id } })
       }
     >
       <LogoDiv>
         <LogoImg src={imageUrl || '/images/default-avatar-500x500.png'} />
       </LogoDiv>
-      <CardDetailsDiv>
-        <CardNameDiv>
-          {preferredName || firstName} {lastName}
-        </CardNameDiv>
-        <CardDescriptionDiv>{email}</CardDescriptionDiv>
-        <CardDescriptionDiv>{title}</CardDescriptionDiv>
-        <CardDescriptionDiv>{department.name}</CardDescriptionDiv>
-        <CardDurationDiv>{duration}</CardDurationDiv>
-        <CardDescriptionDiv>Current Project(s): </CardDescriptionDiv>
-      </CardDetailsDiv>
-    </ResourceCardDiv>
+      <CardNameDiv>
+        {preferredName || firstName} {lastName}
+      </CardNameDiv>
+      <CardDescriptionDiv>{email}</CardDescriptionDiv>
+      <CardDescriptionDiv>{title}</CardDescriptionDiv>
+      <CardDescriptionDiv>{departmentName}</CardDescriptionDiv>
+      <CardDescriptionDiv color="grey">{duration}</CardDescriptionDiv>
+      <CardDescriptionDiv>Current Project(s): </CardDescriptionDiv>
+    </CardDiv>
   )
 }
