@@ -29,16 +29,16 @@ const SubmitButton = styled.button``
 
 const UpdateButton = styled.button``
 
-const CREATE_CLIENT = gql`
+export const CREATE_CLIENT = gql`
   mutation CreateClient($data: CreateClientInput!) {
     createClient(data: $data) {
       id
     }
   }
 `
-const UPDATE_CLIENT = gql`
+export const UPDATE_CLIENT = gql`
   mutation UpdateClient($id: String!, $data: UpdateClientInput!) {
-    updateClient(id:$id, data: $data) {
+    updateClient(id: $id, data: $data) {
       id
     }
   }
@@ -48,12 +48,14 @@ type ClientProps = {
 }
 
 export const ClientForm = ({ client }: ClientProps) => {
-  const [clientName, setClientName] = React.useState(client ? client.clientName : '')
-  const [description, setDescription] = React.useState(client ? client.description : '')
-  const [logoUrl, setLogoUrl] = React.useState(client ? client.logoUrl : '')
+  const [clientName, setClientName] = React.useState(client?.clientName || '')
+  const [description, setDescription] = React.useState(
+    client?.description || '',
+  )
+  const [logoUrl, setLogoUrl] = React.useState(client?.logoUrl || '')
   const [startDate, setStartDate] = React.useState(new Date())
   const [endDate, setEndDate] = React.useState<Date | null>(null)
-  const id  = client ? client.id : null
+  const id = client ? client.id : null
 
   const router = useRouter()
   const account = useMsAccount()
@@ -107,7 +109,7 @@ export const ClientForm = ({ client }: ClientProps) => {
             type="text"
             aria-label="client-name"
             onChange={(e) => setClientName(e.target.value)}
-            value = {clientName}
+            value={clientName}
           ></CreateClientFormInput>
         </CreateClientFormLabel>
         <CreateClientFormLabel>
@@ -116,7 +118,7 @@ export const ClientForm = ({ client }: ClientProps) => {
             type="text"
             aria-label="description"
             onChange={(e) => setDescription(e.target.value)}
-            value = {description}
+            value={description}
           ></CreateClientFormInput>
         </CreateClientFormLabel>
         <CreateClientFormLabel>
@@ -125,7 +127,7 @@ export const ClientForm = ({ client }: ClientProps) => {
             type="text"
             aria-label="logo-url"
             onChange={(e) => setLogoUrl(e.target.value)}
-            defaultValue = {logoUrl}
+            defaultValue={logoUrl}
           ></CreateClientFormInput>
         </CreateClientFormLabel>
         <CreateClientFormLabel>
@@ -142,14 +144,15 @@ export const ClientForm = ({ client }: ClientProps) => {
             onChange={(date: Date) => setEndDate(date)}
           ></DatePicker>
         </CreateClientFormLabel>
-        { id ? <UpdateButton name="Update" onClick={(e) => updateClientById(e)} >
-          Update
-        </UpdateButton> 
-        :
-        <SubmitButton name="Submit" onClick={(e) => createNewClient(e) }>
-          Submit
-        </SubmitButton>
-        }
+        {id ? (
+          <UpdateButton name="Update" onClick={updateClientById}>
+            Update
+          </UpdateButton>
+        ) : (
+          <SubmitButton name="Submit" onClick={createNewClient}>
+            Submit
+          </SubmitButton>
+        )}
       </CreateClientForm>
     </>
   )
