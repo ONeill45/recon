@@ -8,12 +8,15 @@ type plusCircleProps = {
 }
 
 const PlusCircleDiv = styled.div`
-  float: left;
+  float: right;
   padding: 15px 15px;
   &:hover {
     color: orange;
     cursor: pointer;
   }
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
 `
 
 export const PlusCircle = ({ size, route }: plusCircleProps) => {

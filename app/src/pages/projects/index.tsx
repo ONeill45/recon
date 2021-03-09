@@ -32,11 +32,11 @@ const Projects = () => {
   return (
     <>
       <Cards>
-        <PlusCircle size={'50'} route={'/projects/new'} />
         {projects.map((project: Project) => {
           return <ProjectCard project={project} key={project.id} />
         })}
       </Cards>
+      <PlusCircle size={'50'} route={'/projects/new'} />
     </>
   )
 }

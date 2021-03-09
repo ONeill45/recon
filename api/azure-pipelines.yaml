@@ -8,24 +8,50 @@ trigger:
     include:
       - api/*
 
+pool:
+  name: Linux Nodes
+
+variables:
+  - group: cdefense
+
 jobs:
-  - job: Build_Push_Artifacts
-
+  - job: Build_Scan_Push
+    displayName: Build, Scan and Push
     steps:
-      - task: Docker@2
+      - task: Bash@3
+        displayName: 'Download CDefense binary'
         inputs:
-          containerRegistry: "Ascendum ACR"
-          command: "login"
+          targetType: 'inline'
+          script: 'curl https://raw.githubusercontent.com/CloudDefenseAI/cd/master/latest/cd-latest-linux-x64.tar.gz > /tmp/cd-latest-linux-x64.tar.gz && tar -C /tmp -xzf /tmp/cd-latest-linux-x64.tar.gz && chmod +x /tmp/cdefense'
+
+      - task: Bash@3
+        displayName: 'Run CDefense SAST Scan'
+        inputs:
+          targetType: 'inline'
+          script: '/tmp/cdefense sast --lang=node --project-name="Recon API" --api-key=$(cdefenseAPIkey) --path=$(Build.SourcesDirectory)/api'
+        continueOnError: true
 
       - task: Docker@2
+        displayName: Build Container
         inputs:
-          containerRegistry: "Ascendum ACR"
+          containerRegistry: 'Ascendum ACR'
           repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
-          command: "buildAndPush"
-          Dockerfile: "api/Dockerfile"
+          command: build
+          Dockerfile: 'api/Dockerfile'
           tags: |
             $(Build.SourceVersion)
-      - task: Docker@2
+
+      - task: Bash@3
+        displayName: 'Run CDefense Container Scan'
         inputs:
-          containerRegistry: "Ascendum ACR"
-          command: "logout"
+          targetType: 'inline'
+          script: '/tmp/cdefense container --api-key=$(cdefenseAPIKey) --image-name=ascendum.azurecr.io/$(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api:$(Build.SourceVersion) --project-name="Recon API - Docker"'
+
+      - task: Docker@2
+        displayName: Push Container
+        inputs:
+          containerRegistry: 'Ascendum ACR'
+          repository: $(Build.Repository.Name)_$(Build.SourceBranchName)_recon-api
+          command: push
+          tags: |
+            $(Build.SourceVersion)

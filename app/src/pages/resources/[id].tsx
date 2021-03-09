@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { ResourceDetailCards, ResourceHeader } from 'components'
 
-const GET_RESOURCE = gql`
+export const GET_RESOURCE = gql`
   query GetResource($id: String!) {
     resource(id: $id) {
       id

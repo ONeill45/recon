@@ -1,7 +1,6 @@
-import { gql } from '@apollo/client'
 import userEvent from '@testing-library/user-event'
 
-import Resources from 'pages/resources'
+import Resources, { GET_ALL_RESOURCES } from 'pages/resources'
 import { ResourceFactory } from '../../factories'
 import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
 
@@ -9,42 +8,10 @@ applyMockUseRouter()
 
 const resources = ResourceFactory.buildList(5)
 
-const GET_RESOURCES = gql`
-  {
-    resources {
-      id
-      firstName
-      lastName
-      preferredName
-      title
-      startDate
-      terminationDate
-      imageUrl
-      department {
-        name
-      }
-      email
-      resourceAllocation {
-        id
-        startDate
-        endDate
-        endReason
-        percentage
-        project {
-          id
-          projectName
-          projectType
-          confidence
-          priority
-        }
-      }
-    }
-  }
-`
 const mocks = [
   {
     request: {
-      query: GET_RESOURCES,
+      query: GET_ALL_RESOURCES,
     },
     result: {
       data: {
@@ -57,7 +24,7 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: GET_RESOURCES,
+      query: GET_ALL_RESOURCES,
     },
     error: new Error('An error occurred'),
   },

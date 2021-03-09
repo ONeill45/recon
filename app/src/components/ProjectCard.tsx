@@ -1,29 +1,33 @@
+import { useRouter } from 'next/router'
+
 import { Project } from 'interfaces'
-import { getDurationText } from '../utils'
-import {
-  CardDescriptionDiv,
-  CardDetailsDiv,
-  CardDiv,
-  CardDurationDiv,
-  CardNameDiv,
-} from './Card'
+import { getRelativeTime } from '../utils'
+import { CardDescriptionDiv, CardDiv, CardNameDiv } from './Card'
 
 type ProjectCardProps = {
   project: Project
 }
 
 export const ProjectCard = ({ project }: ProjectCardProps) => {
-  const { projectName, client, projectType, startDate, endDate } = project
-
-  const duration = getDurationText(startDate, endDate)
+  const {
+    id,
+    projectName,
+    client: { clientName },
+    projectType,
+    startDate,
+    endDate,
+  } = project
+  const router = useRouter()
+  const relativeTime = getRelativeTime(startDate, endDate)
   return (
-    <CardDiv>
-      <CardDetailsDiv>
-        <CardNameDiv>{projectName}</CardNameDiv>
-        <CardDescriptionDiv>{client.clientName}</CardDescriptionDiv>
-        <CardDescriptionDiv>{projectType}</CardDescriptionDiv>
-        <CardDurationDiv>{duration}</CardDurationDiv>
-      </CardDetailsDiv>
+    <CardDiv
+      clickable={true}
+      onClick={() => router.push({ pathname: '/projects/[id]', query: { id } })}
+    >
+      <CardNameDiv>{projectName}</CardNameDiv>
+      <CardDescriptionDiv>{clientName}</CardDescriptionDiv>
+      <CardDescriptionDiv>{projectType}</CardDescriptionDiv>
+      <CardDescriptionDiv color="grey">{relativeTime}</CardDescriptionDiv>
     </CardDiv>
   )
 }
