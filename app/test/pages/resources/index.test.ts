@@ -7,6 +7,7 @@ import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
 applyMockUseRouter()
 
 const resources = ResourceFactory.buildList(5)
+
 const mocks = [
   {
     request: {

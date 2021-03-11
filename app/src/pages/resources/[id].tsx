@@ -18,15 +18,31 @@ export const GET_RESOURCE = gql`
         name
       }
       email
+      resourceAllocations {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
     }
   }
 `
 
 const Resource = () => {
   const router = useRouter()
+  const id = router.query.id
+
   const { data, loading, error } = useQuery(GET_RESOURCE, {
     variables: {
-      id: router.query.id,
+      id,
     },
   })
 

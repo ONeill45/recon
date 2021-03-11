@@ -2,14 +2,30 @@ import { Resource } from 'interfaces'
 import { formatDate, DateFormat, getDuration } from 'utils'
 import { CardDetailsDiv, CardDiv, CardNameDiv } from './Card'
 import { Cards } from './Cards'
+import {
+  CurrentResourceAllocationDetail,
+  PastResourceAllocationDetail,
+} from 'components'
 
 type ResourceDetailCardsProps = {
   resource: Resource
 }
 
 export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
-  const { department, startDate, terminationDate } = resource
+  const {
+    department,
+    startDate,
+    terminationDate,
+    resourceAllocations,
+  } = resource
   const duration = getDuration(startDate, terminationDate)
+  const currentDate = new Date()
+  const currentAllocation = resourceAllocations.filter(
+    (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
+  )
+  const pastAllocation = resourceAllocations.filter(
+    (ra) => ra.endDate && new Date(ra.endDate) < currentDate,
+  )
 
   return (
     <Cards>
@@ -33,17 +49,22 @@ export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
       <CardDiv>
         <CardNameDiv>Project Information</CardNameDiv>
         <CardDetailsDiv>
-          Current Project(s):{' '}
-          <ul>
-            <li>Recon</li>
-          </ul>
+          <div>Current Project(s):</div>
+          {currentAllocation.length ? (
+            <CurrentResourceAllocationDetail
+              currentAllocation={currentAllocation}
+            />
+          ) : (
+            <div />
+          )}
         </CardDetailsDiv>
         <CardDetailsDiv>
-          Past Project(s):{' '}
-          <ul>
-            <li>Duzy Admin</li>
-            <li>Work OS</li>
-          </ul>
+          <div>Past Project(s):</div>
+          {pastAllocation.length ? (
+            <PastResourceAllocationDetail pastAllocation={pastAllocation} />
+          ) : (
+            <div />
+          )}
         </CardDetailsDiv>
       </CardDiv>
       <CardDiv>

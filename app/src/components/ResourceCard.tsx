@@ -4,6 +4,7 @@ import { Resource } from 'interfaces'
 import { getRelativeTime } from '../utils'
 import { CardDescriptionDiv, CardDiv, CardNameDiv } from './Card'
 import { LogoDiv, LogoImg } from './Logo'
+import { CurrentResourceAllocationDetail } from 'components'
 
 type ResourceCardProps = {
   resource: Resource
@@ -21,10 +22,15 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
     email,
     startDate,
     terminationDate,
+    resourceAllocations,
   } = resource
   const router = useRouter()
 
   const duration = getRelativeTime(startDate, terminationDate)
+  const currentAllocation = resourceAllocations.filter(
+    (ra) => !ra.endDate || new Date(ra.endDate) > new Date(),
+  )
+
   return (
     <CardDiv
       data-testid="ResourceCardDiv"
@@ -43,7 +49,16 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
       <CardDescriptionDiv>{title}</CardDescriptionDiv>
       <CardDescriptionDiv>{departmentName}</CardDescriptionDiv>
       <CardDescriptionDiv color="grey">{duration}</CardDescriptionDiv>
-      <CardDescriptionDiv>Current Project(s): </CardDescriptionDiv>
+      <CardDescriptionDiv>
+        <div>Current Project(s):</div>
+        {currentAllocation.length ? (
+          <CurrentResourceAllocationDetail
+            currentAllocation={currentAllocation}
+          />
+        ) : (
+          <div />
+        )}
+      </CardDescriptionDiv>
     </CardDiv>
   )
 }
