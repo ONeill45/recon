@@ -46,7 +46,7 @@ To bring down the container run:
 docker-compose down
 ```
 
-Add the -v arguement to remove all volumes (this will remove/delete your database).
+Add the -v argument to remove all volumes (this will remove/delete your database).
 
 After everything builds and compiles successfully, the web app will then be running on port 3000, the API will be running on port 5000.
 
