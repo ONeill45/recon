@@ -1,20 +1,15 @@
-import { Project, Resource } from 'interfaces'
+import { Project, Resource, ResourceAllocation } from 'interfaces'
 import React from 'react'
 import { formatDate, DateFormat, getDuration } from 'utils'
 import { CardDetailsDiv, CardDiv, CardNameDiv } from './Card'
 import { Cards } from './Cards'
-import { ResourceCard } from './ResourceCard'
 
 type ProjectDetailCardsProps = {
   project: Project
-  resources: Resource[]
 }
 
-export const ProjectDetailCards = ({
-  project,
-  resources,
-}: ProjectDetailCardsProps) => {
-  const { startDate, endDate } = project
+export const ProjectDetailCards = ({ project }: ProjectDetailCardsProps) => {
+  const { startDate, endDate, resourceAllocations } = project
   const duration = getDuration(startDate, endDate)
 
   return (
@@ -49,8 +44,8 @@ export const ProjectDetailCards = ({
         <CardDetailsDiv>Angular: 1</CardDetailsDiv>
         <CardDetailsDiv>Node: 8</CardDetailsDiv>
       </CardDiv>
-      {resources.map((resource: Resource) => {
-        return <ResourceCard resource={resource} key={resource.id} />
+      {resourceAllocations.map((ra: ResourceAllocation) => {
+        return <div key={ra.id}>{ra.resource.lastName}</div>
       })}
     </Cards>
   )
