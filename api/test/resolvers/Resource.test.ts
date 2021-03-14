@@ -3,8 +3,20 @@ import faker from 'faker'
 import '../utils/populateEnvVariables'
 import { connect, disconnect } from '../../src/database'
 import { gqlCall } from '../utils/gqlCall'
-import { DepartmentFactory, ResourceFactory } from '../factories'
-import { Department, Resource } from '../../src/models'
+import {
+  ClientFactory,
+  DepartmentFactory,
+  ProjectFactory,
+  ResourceAllocationFactory,
+  ResourceFactory,
+} from '../factories'
+import {
+  Client,
+  Department,
+  Project,
+  Resource,
+  ResourceAllocation,
+} from '../../src/models'
 import { uuidRegex } from '../utils/regex'
 import { Connection } from 'typeorm'
 
@@ -46,7 +58,7 @@ describe('ResourceResolver', () => {
     })
     it('should return a populated array if resources exist', async () => {
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({ department })
+      const resource = ResourceFactory().build({ department })
       const {
         id,
         firstName,
@@ -78,7 +90,7 @@ describe('ResourceResolver', () => {
     })
     it('should not return deleted resources', async () => {
       const department = DepartmentFactory.build()
-      const resources = ResourceFactory.buildList(5, {
+      const resources = ResourceFactory().buildList(5, {
         deletedDate: new Date().toISOString(),
         department,
       })
@@ -122,7 +134,7 @@ describe('ResourceResolver', () => {
 
     it('should return resource if it exists', async () => {
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({ department })
+      const resource = ResourceFactory().build({ department })
 
       await Department.insert(department)
       await Resource.insert(resource)
@@ -154,9 +166,90 @@ describe('ResourceResolver', () => {
       })
     })
 
+    it('should return resource with allocations if requested', async () => {
+      const getResourceWithAllocationsQuery = (id: string) => `{
+        resource (id: "${id}") {
+          id
+          firstName
+          lastName
+          title
+          startDate
+          terminationDate
+          resourceAllocations {
+            id
+            project {
+              projectName
+            }
+          }
+        }
+      }`
+      const department = DepartmentFactory.build()
+      const client = ClientFactory.build()
+      const projects = ProjectFactory().buildList(2, { client })
+      const resource = ResourceFactory().build({ department })
+      const resourceAllocations = [
+        ResourceAllocationFactory.build({
+          resource,
+          project: projects[0],
+        }),
+        ResourceAllocationFactory.build({
+          resource,
+          project: projects[1],
+        }),
+      ]
+
+      await Department.insert(department)
+      await Client.insert(client)
+      await Project.insert(projects[0])
+      await Project.insert(projects[1])
+      await Resource.insert(resource)
+      await ResourceAllocation.insert(resourceAllocations[0])
+      await ResourceAllocation.insert(resourceAllocations[1])
+
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        startDate,
+        terminationDate,
+      } = resource
+
+      const response = await gqlCall({
+        source: getResourceWithAllocationsQuery(id),
+      })
+
+      expect(response).toMatchObject({
+        data: {
+          resource: {
+            id,
+            firstName,
+            lastName,
+            title,
+            startDate: new Date(startDate).toISOString(),
+            terminationDate,
+            resourceAllocations: [
+              {
+                id: resourceAllocations[0].id,
+                project: {
+                  projectName: resourceAllocations[0].project.projectName,
+                },
+              },
+              {
+                id: resourceAllocations[1].id,
+                project: {
+                  projectName: resourceAllocations[1].project.projectName,
+                },
+              },
+            ],
+          },
+        },
+      })
+    })
+
     it('should not return a deleted resource', async () => {
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({
+      const resource = ResourceFactory().build({
         deletedDate: new Date().toISOString(),
         department,
       })
@@ -194,7 +287,7 @@ describe('ResourceResolver', () => {
     }`
     it('should return null if resource does not exist', async () => {
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({})
+      const resource = ResourceFactory().build({})
       const {
         firstName,
         lastName,
@@ -245,7 +338,7 @@ describe('ResourceResolver', () => {
     it('should return error if department does not exist', async () => {
       const invalidDepartmentId = faker.random.uuid()
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({
+      const resource = ResourceFactory().build({
         department,
       })
 
@@ -307,7 +400,7 @@ describe('ResourceResolver', () => {
     }`
     it('should return error if resource does not exist', async () => {
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({})
+      const resource = ResourceFactory().build({})
       const {
         id,
         firstName,
@@ -348,7 +441,7 @@ describe('ResourceResolver', () => {
     it('should return error if updated department does not exist', async () => {
       const invalidDepartmentId = faker.random.uuid()
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({
+      const resource = ResourceFactory().build({
         department,
       })
 
@@ -392,7 +485,7 @@ describe('ResourceResolver', () => {
 
     it('should return updated resource', async () => {
       const department = DepartmentFactory.build()
-      const [resource, updatedResource] = ResourceFactory.buildList(2, {
+      const [resource, updatedResource] = ResourceFactory().buildList(2, {
         department,
       })
 
@@ -476,7 +569,7 @@ describe('ResourceResolver', () => {
 
     it('should return updated resource', async () => {
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory.build({ department })
+      const resource = ResourceFactory().build({ department })
       await Department.insert(department)
       await Resource.insert(resource)
 

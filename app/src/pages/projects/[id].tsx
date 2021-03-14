@@ -11,6 +11,7 @@ export const GET_PROJECT = gql`
       startDate
       endDate
       resourceAllocations {
+        id
         startDate
         endDate
         endReason

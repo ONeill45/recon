@@ -2,7 +2,7 @@ import Resource, { GET_RESOURCE } from 'pages/resources/[id]'
 import { ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
-const resource = ResourceFactory.build()
+const resource = ResourceFactory().build()
 
 applyMockUseRouter({ query: { id: resource.id } })
 

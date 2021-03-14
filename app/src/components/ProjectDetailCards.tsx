@@ -1,4 +1,4 @@
-import { Project, Resource, ResourceAllocation } from 'interfaces'
+import { Project, ResourceAllocation } from 'interfaces'
 import React from 'react'
 import { formatDate, DateFormat, getDuration } from 'utils'
 import { CardDetailsDiv, CardDiv, CardNameDiv } from './Card'
@@ -44,9 +44,15 @@ export const ProjectDetailCards = ({ project }: ProjectDetailCardsProps) => {
         <CardDetailsDiv>Angular: 1</CardDetailsDiv>
         <CardDetailsDiv>Node: 8</CardDetailsDiv>
       </CardDiv>
-      {resourceAllocations.map((ra: ResourceAllocation) => {
-        return <div key={ra.id}>{ra.resource.lastName}</div>
-      })}
+      <CardDiv>
+        <CardNameDiv>Resources Allocated</CardNameDiv>
+        {resourceAllocations.map((ra: ResourceAllocation) => (
+          <CardDetailsDiv key={ra.id}>
+            {ra.resource.preferredName || ra.resource.firstName}{' '}
+            {ra.resource.lastName}
+          </CardDetailsDiv>
+        ))}
+      </CardDiv>
     </Cards>
   )
 }

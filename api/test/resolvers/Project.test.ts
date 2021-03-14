@@ -3,8 +3,20 @@ import faker from 'faker'
 
 import '../utils/populateEnvVariables'
 import { connect } from '../../src/database'
-import { Project, Client } from '../../src/models'
-import { ClientFactory, ProjectFactory } from '../factories'
+import {
+  Project,
+  Client,
+  Department,
+  Resource,
+  ResourceAllocation,
+} from '../../src/models'
+import {
+  ClientFactory,
+  DepartmentFactory,
+  ProjectFactory,
+  ResourceAllocationFactory,
+  ResourceFactory,
+} from '../factories'
 import { gqlCall } from '../utils/gqlCall'
 
 let connection: Connection
@@ -49,7 +61,7 @@ describe('ProjectResolver', () => {
       })
     })
     it('should return a populated array if projects exist', async () => {
-      const project = ProjectFactory.build()
+      const project = ProjectFactory().build()
       const {
         id,
         projectName,
@@ -87,7 +99,7 @@ describe('ProjectResolver', () => {
       })
     })
     it('should not return deleted projects', async () => {
-      const projects = ProjectFactory.buildList(5, {
+      const projects = ProjectFactory().buildList(5, {
         deletedDate: new Date().toISOString(),
       })
 
@@ -131,7 +143,7 @@ describe('ProjectResolver', () => {
     it('should return project if it exists', async () => {
       const client = ClientFactory.build()
       await Client.insert(client)
-      const project = ProjectFactory.build({ client })
+      const project = ProjectFactory().build({ client })
       await Project.insert(project)
 
       const { id, projectName, startDate, endDate } = project
@@ -152,10 +164,82 @@ describe('ProjectResolver', () => {
       })
     })
 
+    it('should return project with resource allocations if requested', async () => {
+      const getProjectWithAllocationsQuery = (id: string) => `{
+        project (id: "${id}") {
+          id
+          projectName
+          startDate
+          endDate
+          resourceAllocations {
+            id
+            resource {
+              firstName
+              lastName
+            }
+          }
+        }
+      }`
+      const client = ClientFactory.build()
+      await Client.insert(client)
+      const project = ProjectFactory().build({ client })
+      await Project.insert(project)
+      const department = DepartmentFactory.build()
+      await Department.insert(department)
+      const resources = ResourceFactory().buildList(2, { department })
+      await Resource.insert(resources[0])
+      await Resource.insert(resources[1])
+      const resourceAllocations = [
+        ResourceAllocationFactory.build({
+          resource: resources[0],
+          project,
+        }),
+        ResourceAllocationFactory.build({
+          resource: resources[1],
+          project,
+        }),
+      ]
+      await ResourceAllocation.insert(resourceAllocations[0])
+      await ResourceAllocation.insert(resourceAllocations[1])
+
+      const { id, projectName, startDate, endDate } = project
+
+      const response = await gqlCall({
+        source: getProjectWithAllocationsQuery(id),
+      })
+
+      expect(response).toMatchObject({
+        data: {
+          project: {
+            id,
+            projectName,
+            startDate,
+            endDate,
+            resourceAllocations: [
+              {
+                id: resourceAllocations[0].id,
+                resource: {
+                  firstName: resourceAllocations[0].resource.firstName,
+                  lastName: resourceAllocations[0].resource.lastName,
+                },
+              },
+              {
+                id: resourceAllocations[1].id,
+                resource: {
+                  firstName: resourceAllocations[1].resource.firstName,
+                  lastName: resourceAllocations[1].resource.lastName,
+                },
+              },
+            ],
+          },
+        },
+      })
+    })
+
     it('should not return a deleted project', async () => {
       const client = ClientFactory.build()
       await Client.insert(client)
-      const project = ProjectFactory.build({
+      const project = ProjectFactory().build({
         client,
         deletedDate: new Date().toISOString(),
       })
