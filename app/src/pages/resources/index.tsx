@@ -34,7 +34,7 @@ const Resources = () => {
 
   return (
     <Cards>
-      <PlusCircle size={'50'} route={'/resources/new'} />
+      <PlusCircle size={'50'} route={'/resources/resource'} />
       {resources.map((resource: Resource) => {
         return <ResourceCard resource={resource} key={resource.id} />
       })}

@@ -4,9 +4,9 @@ import { gql, useMutation } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
+import { DepartmentDropDown } from '../components/DepartmentDropDown'
+import { Department } from 'interfaces'
 import { useMsAccount } from 'utils/hooks'
-import { Resource } from 'interfaces'
 
 const CreateResourceForm = styled.form`
   margin-top: 30px;
@@ -34,24 +34,18 @@ const CREATE_RESOURCE = gql`
     }
   }
 `
-type ResourceProps = {
-  resource?: Resource
-}
-
-export const ResourceForm = ({ resource }: ResourceProps) => {
-  const [firstName, setFirstName] = React.useState(resource?.firstName || '')
-  const [lastName, setLastName] = React.useState(resource?.lastName || '')
-  const [preferredName, setPreferredName] = React.useState(
-    resource?.preferredName || '',
-  )
-  const [title, setTitle] = React.useState(resource?.title || '')
-  const [department, setDepartment] = React.useState(resource?.department || '')
-  const [imageUrl, setImageUrl] = React.useState(resource?.imageUrl || '')
-  const [email, setEmail] = React.useState(resource?.email || '')
+export const ResourceForm = () => {
+  const [firstName, setFirstName] = React.useState('')
+  const [lastName, setLastName] = React.useState('')
+  const [preferredName, setPreferredName] = React.useState('')
+  const [title, setTitle] = React.useState('')
+  const [imageUrl, setImageUrl] = React.useState('')
+  const [email, setEmail] = React.useState('')
   const [startDate, setStartDate] = React.useState(new Date())
   const [terminationDate, setTerminationDate] = React.useState<Date | null>(
     null,
   )
+  const [department, setDepartment] = React.useState<Department | null>(null)
 
   const router = useRouter()
   const account = useMsAccount()
@@ -67,12 +61,13 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           lastName,
           preferredName,
           title,
-          department,
+          departmentId: department?.id,
           imageUrl,
           email,
           startDate,
           terminationDate,
           createdBy: account?.username,
+          updatedBy: account?.username,
         },
       },
     })
@@ -116,11 +111,9 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
         </CreateResourceFormLabel>
         <CreateResourceFormLabel>
           Department
-          <CreateResourceFormInput
-            type="text"
-            aria-label="resource-name"
-            onChange={(e) => setDepartment(e.target.value)}
-          ></CreateResourceFormInput>
+          <DepartmentDropDown
+            setDepartment={setDepartment}
+          ></DepartmentDropDown>
         </CreateResourceFormLabel>
         <CreateResourceFormLabel>
           ImageUrl
@@ -141,12 +134,14 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
         <CreateResourceFormLabel>
           Start Date
           <DatePicker
+            selected={startDate}
             onChange={(date: Date) => setStartDate(date)}
           ></DatePicker>
         </CreateResourceFormLabel>
         <CreateResourceFormLabel>
           Termination Date (Optional)
           <DatePicker
+            selected={terminationDate}
             onChange={(date: Date) => setTerminationDate(date)}
           ></DatePicker>
         </CreateResourceFormLabel>
@@ -157,3 +152,5 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
     </>
   )
 }
+
+export default ResourceForm
