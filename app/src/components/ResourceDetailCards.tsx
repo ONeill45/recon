@@ -1,24 +1,16 @@
 import { Resource } from 'interfaces'
-import { formatDate, DateFormat, getDuration } from 'utils'
-import { CardDetailsDiv, CardDiv, CardNameDiv } from './Card'
-import { Cards } from './Cards'
-import {
-  CurrentResourceAllocationDetail,
-  PastResourceAllocationDetail,
-} from 'components'
+import { Sections } from './Sections'
+import { Histogram, Skills } from './Histogram'
+import { ProjectAllocation } from './ProjectAllocation'
+import { ResourceAllocation } from './ResourceAllocation'
+import { SectionContainer, Section, SectionTitle } from './Section'
 
 type ResourceDetailCardsProps = {
   resource: Resource
 }
 
 export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
-  const {
-    department,
-    startDate,
-    terminationDate,
-    resourceAllocations,
-  } = resource
-  const duration = getDuration(startDate, terminationDate)
+  const { resourceAllocations } = resource
   const currentDate = new Date()
   const currentAllocation = resourceAllocations.filter(
     (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
@@ -27,54 +19,40 @@ export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
     (ra) => ra.endDate && new Date(ra.endDate) < currentDate,
   )
 
+  const skillsList: Skills = {
+    skills: [
+      { skillName: 'JavaScript', value: 8 },
+      { skillName: 'Angular', value: 1 },
+      { skillName: 'Node', value: 5 },
+      { skillName: 'React', value: 7 },
+    ],
+  }
+
   return (
-    <Cards>
-      <CardDiv>
-        <CardNameDiv>Resource Information</CardNameDiv>
-        <CardDetailsDiv>
-          Status: {terminationDate ? 'Terminated' : 'Active'}
-        </CardDetailsDiv>
-        <CardDetailsDiv>Department: {department.name}</CardDetailsDiv>
-        <CardDetailsDiv>
-          Hire Date: {formatDate(startDate, DateFormat.DATE_ONLY)}
-        </CardDetailsDiv>
-        <CardDetailsDiv>
-          Termination Date:{' '}
-          {terminationDate
-            ? formatDate(terminationDate, DateFormat.DATE_ONLY)
-            : 'N/A'}
-        </CardDetailsDiv>
-        <CardDetailsDiv>Length Of Service: {duration}</CardDetailsDiv>
-      </CardDiv>
-      <CardDiv>
-        <CardNameDiv>Project Information</CardNameDiv>
-        <CardDetailsDiv>
-          <div>Current Project(s):</div>
-          {currentAllocation.length ? (
-            <CurrentResourceAllocationDetail
+    <Sections>
+      <SectionContainer>
+        <Section>
+          <SectionTitle>Resource Information</SectionTitle>
+          <ResourceAllocation resource={resource} />
+        </Section>
+
+        {skillsList.skills.length > 0 && (
+          <Section>
+            <SectionTitle>Skill Proficiency</SectionTitle>
+            <Histogram skills={skillsList.skills} />
+          </Section>
+        )}
+
+        {(currentAllocation.length > 0 || pastAllocation.length > 0) && (
+          <Section>
+            <SectionTitle>Project Information</SectionTitle>
+            <ProjectAllocation
               currentAllocation={currentAllocation}
+              pastAllocation={pastAllocation}
             />
-          ) : (
-            <div />
-          )}
-        </CardDetailsDiv>
-        <CardDetailsDiv>
-          <div>Past Project(s):</div>
-          {pastAllocation.length ? (
-            <PastResourceAllocationDetail pastAllocation={pastAllocation} />
-          ) : (
-            <div />
-          )}
-        </CardDetailsDiv>
-      </CardDiv>
-      <CardDiv>
-        <CardNameDiv>Skill Proficiency</CardNameDiv>
-        <CardDetailsDiv>JavaScript: 8</CardDetailsDiv>
-        <CardDetailsDiv>React: 7</CardDetailsDiv>
-        <CardDetailsDiv>Vue: 5</CardDetailsDiv>
-        <CardDetailsDiv>Angular: 1</CardDetailsDiv>
-        <CardDetailsDiv>Node: 8</CardDetailsDiv>
-      </CardDiv>
-    </Cards>
+          </Section>
+        )}
+      </SectionContainer>
+    </Sections>
   )
 }
