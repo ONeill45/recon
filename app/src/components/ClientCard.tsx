@@ -26,8 +26,8 @@ export const ClientCard = ({ client }: ClientCardProps) => {
   const viewClient = () => {
     router.push({
       pathname: '/clients/client',
-      query: { id }
-  })
+      query: { id },
+    })
   }
 
   return (
