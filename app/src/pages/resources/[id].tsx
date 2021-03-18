@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { ResourceDetailCards, ResourceHeader } from 'components'
 
-const GET_RESOURCE = gql`
+export const GET_RESOURCE = gql`
   query GetResource($id: String!) {
     resource(id: $id) {
       id
@@ -18,15 +18,31 @@ const GET_RESOURCE = gql`
         name
       }
       email
+      resourceAllocations {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
     }
   }
 `
 
 const Resource = () => {
   const router = useRouter()
+  const id = router.query.id
+
   const { data, loading, error } = useQuery(GET_RESOURCE, {
     variables: {
-      id: router.query.id,
+      id,
     },
   })
 

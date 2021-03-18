@@ -1,16 +1,8 @@
 import { Client } from 'interfaces'
-import { getDurationText } from '../utils'
-import {
-  CardDescriptionDiv,
-  CardDetailsDiv,
-  CardDiv,
-  CardDurationDiv,
-  CardNameDiv,
-  LogoDiv,
-  LogoImg,
-} from './Card'
 import { useRouter } from 'next/router'
-import React from 'react'
+import { getRelativeTime } from '../utils'
+import { CardDescriptionDiv, CardDiv, CardNameDiv } from './Card'
+import { LogoDiv, LogoImg } from './Logo'
 
 type ClientCardProps = {
   client: Client
@@ -21,7 +13,7 @@ export const ClientCard = ({ client }: ClientCardProps) => {
 
   const { id, clientName, description, logoUrl, startDate, endDate } = client
 
-  const duration = getDurationText(startDate, endDate)
+  const duration = getRelativeTime(startDate, endDate)
 
   const viewClient = () => {
     router.push({
@@ -31,15 +23,13 @@ export const ClientCard = ({ client }: ClientCardProps) => {
   }
 
   return (
-    <CardDiv onClick={viewClient}>
+    <CardDiv clickable={true} onClick={viewClient}>
       <LogoDiv>
         <LogoImg src={logoUrl} />
       </LogoDiv>
-      <CardDetailsDiv>
-        <CardNameDiv>{clientName}</CardNameDiv>
-        <CardDescriptionDiv>{description}</CardDescriptionDiv>
-        <CardDurationDiv>{duration}</CardDurationDiv>
-      </CardDetailsDiv>
+      <CardNameDiv>{clientName}</CardNameDiv>
+      <CardDescriptionDiv>{description}</CardDescriptionDiv>
+      <CardDescriptionDiv color="grey">{duration}</CardDescriptionDiv>
     </CardDiv>
   )
 }

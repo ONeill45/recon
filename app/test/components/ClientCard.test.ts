@@ -1,4 +1,4 @@
-import { getDurationText } from 'utils'
+import { getRelativeTime } from 'utils'
 import { ClientCard } from 'components'
 import { ClientFactory } from '../factories'
 import { render } from '../testUtils'
@@ -15,6 +15,6 @@ describe('<ClientCard />', () => {
     expect(getByRole('img')).toHaveProperty('src', logoUrl)
     expect(getByText(clientName)).toBeVisible()
     expect(getByText(description)).toBeVisible()
-    expect(getByText(getDurationText(startDate, endDate))).toBeVisible()
+    expect(getByText(getRelativeTime(startDate, endDate))).toBeVisible()
   })
 })

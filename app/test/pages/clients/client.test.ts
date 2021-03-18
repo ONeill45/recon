@@ -31,7 +31,7 @@ const mocks_withoutId = [
       },
     },
     result: {
-      data: {}
+      data: {},
     },
   },
 ]
@@ -61,7 +61,7 @@ describe('Client page test', () => {
   it('should fetch client by Id', async () => {
     const { getByLabelText } = await render(Client, {}, mocks)
 
-    expect(getByLabelText(`client-name`)).toHaveValue(client.clientName)
+    expect(getByLabelText('client-name')).toHaveValue(client.clientName)
   })
   it('should show error message when an error occurs', async () => {
     const { getByText } = await render(Client, {}, errorMocks)
@@ -70,11 +70,10 @@ describe('Client page test', () => {
   })
 
   it('should render new client page when client id is not passed', async () => {
-    applyMockUseRouter({ query: { id: null} })
-    
+    applyMockUseRouter({ query: { id: null } })
+
     const { getByRole } = await render(Client, {}, mocks_withoutId)
 
     expect(getByRole('button', { name: 'Submit' })).toBeVisible()
   })
-
 })

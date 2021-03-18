@@ -34,10 +34,12 @@ services:
       context: api
       dockerfile: Dockerfile
     volumes:
-      - ./api:/usr/src/api
+      - ./api/src:/usr/src/api/src
       - /usr/src/api/node_modules
     env_file:
-      - api/.env.docker
+      - ./api/.env
+    environment:
+      - POSTGRES_HOST=host.docker.internal
     restart: always
     depends_on:
       - db
@@ -48,7 +50,7 @@ services:
       context: app
       dockerfile: Dockerfile
     volumes:
-      - ./app:/usr/src/app
+      - ./app/src:/usr/src/app/src
       - /usr/src/app/.next
     restart: always
     depends_on:

@@ -163,7 +163,7 @@ describe('updateClient()', () => {
       source: updateClientMutation,
       variableValues: {
         data: {
-         clientName,
+          clientName,
           description,
           logoUrl,
           startDate,
@@ -220,7 +220,6 @@ describe('updateClient()', () => {
           logoUrl,
           startDate: new Date(startDate).toISOString(),
           endDate,
-          updatedBy,
         },
       },
     })

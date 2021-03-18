@@ -4,9 +4,6 @@ This app is built with [NextJS](https://nextjs.org/docs)
 
 **How to use:**
 
-```
-$ npm install
-$ npm run dev
-```
+The app can be accessed at http://localhost:3000. See README in the root directory for insturctions on how to run.
 
-The app can be accessed at http://localhost:3000
+To run the App tests, make sure you are in the /app directory in your terminal and run the `npm run test` command.

@@ -3,7 +3,7 @@ import { gql, useQuery } from '@apollo/client'
 import { Cards, PlusCircle, ResourceCard } from 'components'
 import { Resource } from 'interfaces'
 
-const GET_ALL_RESOURCES = gql`
+export const GET_ALL_RESOURCES = gql`
   {
     resources {
       id
@@ -18,6 +18,20 @@ const GET_ALL_RESOURCES = gql`
         name
       }
       email
+      resourceAllocations {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
     }
   }
 `
