@@ -48,3 +48,18 @@ VALUES(uuid_generate_v4(), '2020-01-01', '2020-09-28', 'Project Ended', 100, now
 (uuid_generate_v4(), '2020-11-20', null, null, 50, now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', null, null, (SELECT id FROM public.resource WHERE first_name = 'Michelle' AND last_name = 'Ching'), (SELECT id FROM public.project WHERE project_name = 'Cortex v6')),
 (uuid_generate_v4(), '2021-02-01', null, null, 100, now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', null, null, (SELECT id FROM public.resource WHERE first_name = 'Pankti' AND last_name = 'Patel'), (SELECT id FROM public.project WHERE project_name = 'Recon'));
 
+INSERT INTO public.skill_category
+(id, skill_category_name)
+VALUES(uuid_generate_v4(), 'Technical');
+
+INSERT INTO public.skill
+(id, skill_name, category_id)
+VALUES(uuid_generate_v4(), 'React', (SELECT id FROM public.skill_category WHERE skill_category_name = 'Technical'));
+
+INSERT INTO public.resource_skill
+(id, resource_id, skill_id, skill_value)
+VALUES(uuid_generate_v4(), (SELECT id FROM public.resource WHERE email = 'craig.samad@ascendum.com'), (SELECT id FROM public.skill WHERE skill_name = 'React'), 75);
+
+INSERT INTO public.project_skill
+(id, project_id, skill_id, skill_value)
+VALUES(uuid_generate_v4(), (SELECT id FROM public.project WHERE project_name = 'Recon'), (SELECT id FROM public.skill WHERE skill_name = 'React'), 50);

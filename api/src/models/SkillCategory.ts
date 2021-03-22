@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, BaseEntity, Column } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
+import { SkillCategoryName } from './enums'
 
 @Entity()
 @ObjectType()
@@ -9,6 +10,10 @@ export class SkillCategory extends BaseEntity {
   id: string
 
   @Field(() => String)
-  @Column({ name: 'skill_category_name' })
+  @Column({
+    name: 'skill_category_name',
+    type: 'enum',
+    enum: SkillCategoryName,
+  })
   skillCategoryName: string
 }

@@ -19,14 +19,14 @@ export class ResourceSkill extends BaseEntity {
   @Field(() => Resource)
   @ManyToOne(() => Resource, { eager: true })
   @JoinColumn({ name: 'resource_id' })
-  resourceID: Resource
+  resource: string
 
   @Field(() => Skill)
   @ManyToOne(() => Skill, { eager: true })
   @JoinColumn({ name: 'skill_id' })
-  skillID: Skill
+  skill: string
 
   @Field(() => String)
   @Column({ name: 'skill_value' })
-  skillValue: string
+  skillValue: Number
 }
