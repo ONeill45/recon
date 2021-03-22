@@ -6,6 +6,7 @@ import {
   SubHeaderDiv,
 } from './Header'
 import { LogoDiv, LogoImg } from './Logo'
+import { Pencil } from './Pencil'
 
 type ResourceHeaderProps = {
   resource: Resource
@@ -13,6 +14,7 @@ type ResourceHeaderProps = {
 
 export const ResourceHeader = ({ resource }: ResourceHeaderProps) => {
   const {
+    id,
     firstName,
     lastName,
     preferredName,
@@ -33,6 +35,7 @@ export const ResourceHeader = ({ resource }: ResourceHeaderProps) => {
         <HeaderDescriptionDiv>{email}</HeaderDescriptionDiv>
         <HeaderDescriptionDiv>{title}</HeaderDescriptionDiv>
       </SubHeaderDiv>
+      <Pencil size={'30'} route={'/resources/resource'} id={id}/>
     </HeaderDiv>
   )
 }

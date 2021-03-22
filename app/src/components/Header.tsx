@@ -4,6 +4,7 @@ export const HeaderDiv = styled.div`
   display: flex;
   border-bottom: 1px solid black;
   padding: 10px;
+  position: relative;
 `
 
 export const SubHeaderDiv = styled.div`

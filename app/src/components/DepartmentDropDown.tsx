@@ -1,8 +1,5 @@
 import React from 'react'
-import 'react-dropdown/style.css'
-
 import { gql, useQuery } from '@apollo/client'
-
 import { Department } from 'interfaces'
 import styled from '@emotion/styled'
 
@@ -59,11 +56,9 @@ export const DepartmentDropDown = ({
       onChange={(e) => onChange(e.target.value)}
     >
       {departments.map((item: Department) => (
-        <>
-          <option key={item.id} value={item.name}>
-            {item.name}
-          </option>
-        </>
+        <option key={item.id} value={item.name}>
+          {item.name}
+        </option>
       ))}
     </DepartmentSelect>
   )
