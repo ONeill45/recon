@@ -112,6 +112,7 @@ export const ResourceForm = () => {
         <CreateResourceFormLabel>
           Department
           <DepartmentDropDown
+            department={department}
             setDepartment={setDepartment}
           ></DepartmentDropDown>
         </CreateResourceFormLabel>

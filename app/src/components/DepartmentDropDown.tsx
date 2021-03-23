@@ -30,10 +30,12 @@ export const GET_DEPARTMENT_FROM_ID = gql`
 `
 
 type DepartmentDropDownProps = {
+  department: Department | null
   setDepartment: any
 }
 
 export const DepartmentDropDown = ({
+  department,
   setDepartment,
 }: DepartmentDropDownProps) => {
   const { data, loading, error } = useQuery(GET_ALL_DEPARTMENTS, {
@@ -44,7 +46,10 @@ export const DepartmentDropDown = ({
   if (error) return <p>Error: {error.message}</p>
 
   const { departments } = data
-  setDepartment(departments[0])
+
+  if (department === null) {
+    setDepartment(departments[0])
+  }
 
   const onChange = (departmentName: string) => {
     const department = departments.find((department: Department) => {
