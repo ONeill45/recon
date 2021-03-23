@@ -17,3 +17,8 @@ export enum ProjectType {
   FIXED = 'fixed bid',
   INTERNAL = 'internal',
 }
+
+export enum ResourceStatus {
+  TERMINATED = 'Terminated',
+  ACTIVE = 'Active',
+}

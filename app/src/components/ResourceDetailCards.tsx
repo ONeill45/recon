@@ -47,8 +47,8 @@ export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
           <Section>
             <SectionTitle>Project Information</SectionTitle>
             <ProjectAllocation
-              currentAllocation={currentAllocation}
-              pastAllocation={pastAllocation}
+              currentAllocations={currentAllocation}
+              pastAllocations={pastAllocation}
             />
           </Section>
         )}

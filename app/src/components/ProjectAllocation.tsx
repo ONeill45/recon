@@ -3,10 +3,7 @@ import { formatDate, DateFormat } from 'utils'
 import { ResourceAllocation } from 'interfaces'
 import {
   SectionTable,
-  SectionTableBody,
-  SectionTableHeader,
   SectionTableHeaderRow,
-  SectionTableRow,
   SectionTableHeaderData,
   SectionTableData,
 } from './Section'
@@ -21,31 +18,31 @@ const ProjectAllocationTitle = styled.div`
 `
 
 type ResourceAllocationProps = {
-  currentAllocation: ResourceAllocation[]
-  pastAllocation: ResourceAllocation[]
+  currentAllocations: ResourceAllocation[]
+  pastAllocations: ResourceAllocation[]
 }
 
 export const ProjectAllocation = ({
-  currentAllocation,
-  pastAllocation,
+  currentAllocations,
+  pastAllocations,
 }: ResourceAllocationProps) => {
   return (
     <ProjectAllocationContainer>
-      {currentAllocation.length > 0 && (
+      {currentAllocations && (
         <>
           <ProjectAllocationTitle>Current Project(s) </ProjectAllocationTitle>
           <SectionTable>
-            <SectionTableHeader>
+            <thead>
               <SectionTableHeaderRow>
                 <SectionTableHeaderData>Project Title</SectionTableHeaderData>
                 <SectionTableHeaderData>Time Allocation</SectionTableHeaderData>
                 <SectionTableHeaderData>Start Date</SectionTableHeaderData>
               </SectionTableHeaderRow>
-            </SectionTableHeader>
-            <SectionTableBody>
-              {currentAllocation.map((allocation) => {
+            </thead>
+            <tbody>
+              {currentAllocations.map((allocation: ResourceAllocation) => {
                 return (
-                  <SectionTableRow key={allocation.id}>
+                  <tr key={allocation.id}>
                     <SectionTableData>
                       {allocation.project.projectName}
                     </SectionTableData>
@@ -57,28 +54,28 @@ export const ProjectAllocation = ({
                         ? formatDate(allocation.startDate, DateFormat.DATE_ONLY)
                         : '--'}
                     </SectionTableData>
-                  </SectionTableRow>
+                  </tr>
                 )
               })}
-            </SectionTableBody>
+            </tbody>
           </SectionTable>
         </>
       )}
-      {pastAllocation.length > 0 && (
+      {pastAllocations && (
         <>
           <ProjectAllocationTitle>Past Project(s) </ProjectAllocationTitle>
           <SectionTable>
-            <SectionTableHeader>
+            <thead>
               <SectionTableHeaderRow>
                 <SectionTableHeaderData>Project Title</SectionTableHeaderData>
                 <SectionTableHeaderData>Start Date</SectionTableHeaderData>
                 <SectionTableHeaderData>End Date</SectionTableHeaderData>
               </SectionTableHeaderRow>
-            </SectionTableHeader>
-            <SectionTableBody>
-              {pastAllocation.map((allocation) => {
+            </thead>
+            <tbody>
+              {pastAllocations.map((allocation: ResourceAllocation) => {
                 return (
-                  <SectionTableRow key={allocation.id}>
+                  <tr key={allocation.id}>
                     <SectionTableData>
                       {allocation.project.projectName
                         ? allocation.project.projectName
@@ -94,10 +91,10 @@ export const ProjectAllocation = ({
                         ? formatDate(allocation.endDate, DateFormat.DATE_ONLY)
                         : '--'}
                     </SectionTableData>
-                  </SectionTableRow>
+                  </tr>
                 )
               })}
-            </SectionTableBody>
+            </tbody>
           </SectionTable>
         </>
       )}

@@ -29,15 +29,9 @@ export const SectionTable = styled.table`
   border-collapse: collapse;
 `
 
-export const SectionTableHeader = styled.thead``
-
-export const SectionTableBody = styled.tbody``
-
 export const SectionTableHeaderRow = styled.tr`
   background: #ffe3b8;
 `
-
-export const SectionTableRow = styled.tr``
 
 export const SectionTableHeaderData = styled.th`
   font-weight: bold;

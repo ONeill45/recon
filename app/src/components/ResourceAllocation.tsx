@@ -1,42 +1,39 @@
 import styled from '@emotion/styled'
 import { formatDate, DateFormat, getDuration } from 'utils'
-import { Resource } from 'interfaces'
+import { Resource, ResourceStatus } from 'interfaces'
 import {
   SectionTable,
-  SectionTableBody,
-  SectionTableHeader,
   SectionTableHeaderRow,
-  SectionTableRow,
   SectionTableHeaderData,
   SectionTableData,
 } from './Section'
 
 const ResourceAllocationContainer = styled.div``
 
-type ResourceAllocationProps = {
+type ResourceDetailsProps = {
   resource: Resource
 }
 
-export const ResourceAllocation = ({ resource }: ResourceAllocationProps) => {
+export const ResourceAllocation = ({ resource }: ResourceDetailsProps) => {
   const { department, startDate, terminationDate } = resource
   const duration = getDuration(startDate, terminationDate)
 
   return (
     <ResourceAllocationContainer>
       <SectionTable>
-        <SectionTableHeader>
+        <thead>
           <SectionTableHeaderRow>
-            <SectionTableHeaderData> Status </SectionTableHeaderData>
-            <SectionTableHeaderData> Department </SectionTableHeaderData>
-            <SectionTableHeaderData> Hire Date </SectionTableHeaderData>
-            <SectionTableHeaderData> Termination Date </SectionTableHeaderData>
-            <SectionTableHeaderData> Length of Service </SectionTableHeaderData>
+            <SectionTableHeaderData>Status</SectionTableHeaderData>
+            <SectionTableHeaderData>Department</SectionTableHeaderData>
+            <SectionTableHeaderData>Hire Date</SectionTableHeaderData>
+            <SectionTableHeaderData>Termination Date</SectionTableHeaderData>
+            <SectionTableHeaderData>Length of Service</SectionTableHeaderData>
           </SectionTableHeaderRow>
-        </SectionTableHeader>
-        <SectionTableBody>
-          <SectionTableRow>
+        </thead>
+        <tbody>
+          <tr>
             <SectionTableData>
-              {terminationDate ? 'Terminated' : 'Active'}
+              {terminationDate ? ResourceStatus.TERMINATED : ResourceStatus.ACTIVE}
             </SectionTableData>
             <SectionTableData>{department.name}</SectionTableData>
             <SectionTableData>
@@ -48,8 +45,8 @@ export const ResourceAllocation = ({ resource }: ResourceAllocationProps) => {
                 : 'N/A'}
             </SectionTableData>
             <SectionTableData>{duration}</SectionTableData>
-          </SectionTableRow>
-        </SectionTableBody>
+          </tr>
+        </tbody>
       </SectionTable>
     </ResourceAllocationContainer>
   )
