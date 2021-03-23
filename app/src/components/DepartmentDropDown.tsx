@@ -12,7 +12,7 @@ const DepartmentSelect = styled.select`
   margin: 8px 0;
 `
 
-const GET_ALL_DEPARTMENTS = gql`
+export const GET_ALL_DEPARTMENTS = gql`
   {
     departments {
       id
@@ -60,6 +60,7 @@ export const DepartmentDropDown = ({
 
   return (
     <DepartmentSelect
+      aria-label="department-select"
       defaultValue={departments[0].value}
       onChange={(e) => onChange(e.target.value)}
     >

@@ -27,7 +27,7 @@ const CreateResourceFormInput = styled.input`
 
 const SubmitButton = styled.button``
 
-const CREATE_RESOURCE = gql`
+export const CREATE_RESOURCE = gql`
   mutation CreateResource($data: CreateResourceInput!) {
     createResource(data: $data) {
       id
@@ -81,7 +81,7 @@ export const ResourceForm = () => {
           First Name
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="first-name"
             onChange={(e) => setFirstName(e.target.value)}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -89,7 +89,7 @@ export const ResourceForm = () => {
           Last Name
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="last-name"
             onChange={(e) => setLastName(e.target.value)}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -97,7 +97,7 @@ export const ResourceForm = () => {
           Preferred Name
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="preferred-name"
             onChange={(e) => setPreferredName(e.target.value)}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -105,7 +105,7 @@ export const ResourceForm = () => {
           Title
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="title"
             onChange={(e) => setTitle(e.target.value)}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -120,7 +120,7 @@ export const ResourceForm = () => {
           ImageUrl
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="image-url"
             onChange={(e) => setImageUrl(e.target.value)}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -128,7 +128,7 @@ export const ResourceForm = () => {
           Email
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="email"
             onChange={(e) => setEmail(e.target.value)}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
