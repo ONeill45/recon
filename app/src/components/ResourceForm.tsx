@@ -64,7 +64,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
   const [terminationDate, setTerminationDate] = React.useState<Date | null>(resource?.terminationDate ? new Date(resource?.terminationDate) : null)
   const [department, setDepartment] = React.useState<Department | null>(resource?.department || null)
 
-  const id = resource ? resource.id : null
+  const id = resource?.id
   const [isFormChanged, setIsFormChanged] = React.useState(false)
   
   const router = useRouter()
@@ -120,12 +120,8 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
     setIsFormChanged(true)
   }
 
-  const cancelClicked = () => {
-    if (id) {
-      router.push('/resources/' + id)
-    } else {
-      router.push('/resources')
-    }
+  const cancelClicked = () => { 
+    router.push(id ? '/resources/' + id : '/resources') 
   }
 
   // Added these effects for detecting changes on the date
@@ -147,7 +143,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: any) => setFirstName(e.target.value)}
+            onChange={(e: React.formEvent) => setFirstName(e.target.value)}
             value={firstName}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -156,7 +152,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: any) => setLastName(e.target.value)}
+            onChange={(e: React.formEvent) => setLastName(e.target.value)}
             value={lastName}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -165,7 +161,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: any) => setPreferredName(e.target.value)}
+            onChange={(e: React.formEvent) => setPreferredName(e.target.value)}
             value={preferredName}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -174,7 +170,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: any) => setTitle(e.target.value)}
+            onChange={(e: React.formEvent) => setTitle(e.target.value)}
             value={title}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -189,7 +185,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: any) => setImageUrl(e.target.value)}
+            onChange={(e: React.formEvent) => setImageUrl(e.target.value)}
             value={imageUrl}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -198,7 +194,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: any) => setEmail(e.target.value)}
+            onChange={(e: React.formEvent) => setEmail(e.target.value)}
             value={email}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>

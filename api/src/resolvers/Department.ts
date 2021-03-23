@@ -10,6 +10,6 @@ export class DepartmentResolver {
 
   @Query(() => Department)
   department(@Arg('id') id: string) {
-    return Department.findOne({ id: id })
+    return Department.findOne({ id })
   }
 }

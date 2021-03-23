@@ -38,7 +38,7 @@ export const Pencil = ({ size, route, id }: pencilProps) => {
   return (
     <PencilDiv
       data-testid="PencilDiv"
-      onClick={() => updateItem()}
+      onClick={updateItem}
     >
       <BsPencil size={size} />
     </PencilDiv>
