@@ -10,6 +10,6 @@ export class ProjectResolver {
 
   @Query(() => Project, { nullable: true })
   async project(@Arg('id') id: string): Promise<Project | null> {
-    return Project.findOne(id)
+    return Project.findOne(id, { relations: ['resourceAllocations'] })
   }
 }

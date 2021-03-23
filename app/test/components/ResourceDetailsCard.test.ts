@@ -1,13 +1,17 @@
 import faker from 'faker'
 
 import { ResourceDetailCards } from 'components'
-import { ResourceFactory } from '../factories'
+import { ProjectFactory, ResourceFactory } from '../factories'
 import { render } from '../testUtils'
 import { DateFormat, formatDate, getDuration } from 'utils'
 
 describe('<ResourceDetailCards />', () => {
   it('should initialize resource details for active employee', async () => {
-    const resource = ResourceFactory.build()
+    const projects = ProjectFactory().buildList(2)
+    const resource = ResourceFactory([
+      { project: projects[0], isCurrent: true },
+      { project: projects[1], isCurrent: false },
+    ]).build()
     const {
       department: { name: departmentName },
       startDate,
@@ -22,9 +26,15 @@ describe('<ResourceDetailCards />', () => {
     expect(
       getByText(`Length Of Service: ${getDuration(startDate)}`),
     ).toBeVisible()
+    expect(getByText(projects[0].projectName)).toBeVisible()
+    expect(getByText(projects[1].projectName)).toBeVisible()
   })
   it('should initialize resource details for terminated employee', async () => {
-    const resource = ResourceFactory.build({
+    const projects = ProjectFactory().buildList(2)
+    const resource = ResourceFactory([
+      { project: projects[0], isCurrent: true },
+      { project: projects[1], isCurrent: false },
+    ]).build({
       terminationDate: faker.date.past(),
     })
     const {
@@ -51,5 +61,7 @@ describe('<ResourceDetailCards />', () => {
         `Length Of Service: ${getDuration(startDate, terminationDate)}`,
       ),
     ).toBeVisible()
+    expect(getByText(projects[0].projectName)).toBeVisible()
+    expect(getByText(projects[1].projectName)).toBeVisible()
   })
 })

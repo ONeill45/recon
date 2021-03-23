@@ -1,5 +1,5 @@
 import { ProjectType } from './Enum'
-import { Client } from './'
+import { Client, ResourceAllocation } from './'
 export interface Project {
   id: string
   projectName: string
@@ -9,6 +9,7 @@ export interface Project {
   projectType: ProjectType
   confidence: number
   priority: number
+  resourceAllocations: ResourceAllocation[]
   createdBy: string
   createdDate: Date
   updatedBy: string

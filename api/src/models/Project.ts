@@ -8,11 +8,12 @@ import {
   BaseEntity,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
 import { ProjectType } from './enums'
-import { Client } from './'
+import { Client, ResourceAllocation } from './'
 
 @Entity()
 @ObjectType()
@@ -49,6 +50,10 @@ export class Project extends BaseEntity implements AuditableEntity {
   @Field(() => Number)
   @Column({ name: 'priority' })
   priority: Number
+
+  @Field(() => [ResourceAllocation])
+  @OneToMany(() => ResourceAllocation, (ra) => ra.project)
+  resourceAllocations: ResourceAllocation[]
 
   @Field(() => Date)
   @CreateDateColumn({ name: 'created_date' })
