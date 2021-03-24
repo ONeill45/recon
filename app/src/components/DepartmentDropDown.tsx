@@ -53,7 +53,7 @@ export const DepartmentDropDown = ({
   return (
     <DepartmentSelect
       defaultValue={departments[0].value}
-      onChange={(e: React.FormEvent) => onChange(e.target.value)}
+      onChange={(e: React.FormEvent<HTMLSelectElement>) => onChange(e.currentTarget.value)}
     >
       {departments.map((item: Department) => (
         <option key={item.id} value={item.name}>

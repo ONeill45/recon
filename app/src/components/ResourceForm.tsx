@@ -9,7 +9,7 @@ import { Resource, Department } from 'interfaces'
 import { useMsAccount } from 'utils/hooks'
 
 const CreateResourceForm = styled.form`
-  margin: 2rem 0;
+  margin: 1rem 0;
   padding-left: 35%;
 `
 const CreateResourceFormLabel = styled.label`
@@ -25,13 +25,14 @@ const CreateResourceFormInput = styled.input`
   margin: 0.5rem 0;
 `
 
+const ButtonContainer = styled.div`
+  text-align: center;
+  margin-bottom: 1rem;
+`
+
 const CancelButton = styled.button`
   margin-right: 1rem;
 `
-
-const SaveButton = styled.button``
-
-const SubmitButton = styled.button``
 
 const CREATE_RESOURCE = gql`
   mutation CreateResource($data: CreateResourceInput!) {
@@ -120,7 +121,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
     setIsFormChanged(true)
   }
 
-  const cancelClicked = () => { 
+  const cancelClicked = () => {
     router.push(id ? '/resources/' + id : '/resources') 
   }
 
@@ -137,13 +138,13 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   return (
     <>
-      <CreateResourceForm onChange={() => formChange()}>
+      <CreateResourceForm onChange={formChange}>
         <CreateResourceFormLabel>
           First Name
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: React.formEvent) => setFirstName(e.target.value)}
+            onChange={(e: React.FormEvent<HTMLInputElement>) => setFirstName(e.currentTarget.value)}
             value={firstName}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -152,7 +153,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: React.formEvent) => setLastName(e.target.value)}
+            onChange={(e: React.FormEvent<HTMLInputElement>) => setLastName(e.currentTarget.value)}
             value={lastName}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -161,7 +162,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: React.formEvent) => setPreferredName(e.target.value)}
+            onChange={(e: React.FormEvent<HTMLInputElement>) => setPreferredName(e.currentTarget.value)}
             value={preferredName}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -170,7 +171,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: React.formEvent) => setTitle(e.target.value)}
+            onChange={(e: React.FormEvent<HTMLInputElement>) => setTitle(e.currentTarget.value)}
             value={title}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -185,7 +186,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: React.formEvent) => setImageUrl(e.target.value)}
+            onChange={(e: React.FormEvent<HTMLInputElement>) => setImageUrl(e.currentTarget.value)}
             value={imageUrl}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -194,7 +195,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           <CreateResourceFormInput
             type="text"
             aria-label="resource-name"
-            onChange={(e: React.formEvent) => setEmail(e.target.value)}
+            onChange={(e: React.FormEvent<HTMLInputElement>) => setEmail(e.currentTarget.value)}
             value={email}
           ></CreateResourceFormInput>
         </CreateResourceFormLabel>
@@ -212,19 +213,21 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
             onChange={(date: Date) => setTerminationDate(date)}
           ></DatePicker>
         </CreateResourceFormLabel>
-        <CancelButton onClick={() => cancelClicked()}>
+      </CreateResourceForm>
+      <ButtonContainer>
+        <CancelButton name="Cancel" onClick={cancelClicked}>
           Cancel
         </CancelButton>
         {id ? (
-            <SaveButton name="Save" disabled={!isFormChanged} onClick={updateExistingResource}>
+            <button name="Save" disabled={!isFormChanged} onClick={updateExistingResource}>
               Save
-            </SaveButton>
+            </button>
         ) : (
-          <SubmitButton name="Submit" onClick={createNewResource}>
+          <button name="Submit" onClick={createNewResource}>
             Submit
-          </SubmitButton>
+          </button>
         )}
-      </CreateResourceForm>
+      </ButtonContainer>
     </>
   )
 }
