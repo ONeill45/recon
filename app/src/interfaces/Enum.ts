@@ -17,3 +17,9 @@ export enum ProjectType {
   FIXED = 'fixed bid',
   INTERNAL = 'internal',
 }
+
+export enum Priority {
+  HIGH = 'High',
+  MEDIUM = 'Medium',
+  LOW = 'Low',
+}

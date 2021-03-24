@@ -18,6 +18,7 @@ import {
   ResourceFactory,
 } from '../factories'
 import { gqlCall } from '../utils/gqlCall'
+import { uuidRegex } from '../utils/regex'
 
 let connection: Connection
 beforeAll(async () => {
@@ -44,7 +45,7 @@ describe('ProjectResolver', () => {
         priority
         confidence
         client {
-          clientName
+          id
         }
       }
     }`
@@ -62,6 +63,10 @@ describe('ProjectResolver', () => {
     })
     it('should return a populated array if projects exist', async () => {
       const project = ProjectFactory().build()
+      await Client.insert(project.client)
+      project.client = project.client.id
+      await Project.insert(project)
+
       const {
         id,
         projectName,
@@ -72,9 +77,7 @@ describe('ProjectResolver', () => {
         confidence,
         client,
       } = project
-      const { clientName } = client
-      await Client.insert(client)
-      await Project.insert(project)
+
       const response = await gqlCall({
         source: query,
       })
@@ -91,7 +94,7 @@ describe('ProjectResolver', () => {
               priority,
               confidence,
               client: {
-                clientName,
+                id: client,
               },
             },
           ],
@@ -254,6 +257,197 @@ describe('ProjectResolver', () => {
           project: null,
         },
       })
+    })
+  })
+})
+
+describe('createProject()', () => {
+  const createProjectMutation = `
+  mutation CreateProject($data: CreateProjectInput!) {
+    createProject (data: $data) {
+      id
+      projectName
+      startDate
+      endDate
+      priority
+      confidence
+      projectType
+      createdBy
+      updatedBy
+    }
+  }`
+  it('should create a project and return it', async () => {
+    const {
+      projectName,
+      startDate,
+      endDate,
+      priority,
+      confidence,
+      projectType,
+      createdBy,
+      updatedBy,
+      client,
+    } = ProjectFactory().build()
+
+    await Client.insert(client)
+
+    const response = await gqlCall({
+      source: createProjectMutation,
+      variableValues: {
+        data: {
+          projectName,
+          startDate,
+          endDate,
+          priority,
+          confidence,
+          client: client.id,
+          projectType,
+          createdBy,
+          updatedBy,
+        },
+      },
+    })
+
+    expect(response).toMatchObject({
+      data: {
+        createProject: {
+          id: expect.stringMatching(uuidRegex),
+          projectName,
+          startDate,
+          endDate,
+          priority,
+          confidence,
+          projectType,
+          createdBy,
+          updatedBy,
+        },
+      },
+    })
+  })
+})
+
+describe('updateProject()', () => {
+  const updateProjectMutation = `
+  mutation updateProject($data: UpdateProjectInput!, $id: String!) {
+    updateProject (data: $data, id: $id) {
+      id
+      projectName
+      projectType
+      priority
+      confidence
+      startDate
+      endDate
+      updatedBy
+    }
+  }`
+
+  it('should return error if Project does not exist', async () => {
+    const {
+      id,
+      projectName,
+      client,
+      priority,
+      confidence,
+      projectType,
+      startDate,
+      endDate,
+      updatedBy,
+    } = ProjectFactory().build()
+
+    const { data, errors } = await gqlCall({
+      source: updateProjectMutation,
+      variableValues: {
+        id,
+        data: {
+          projectName,
+          client: client.id,
+          priority,
+          confidence,
+          projectType,
+          startDate,
+          endDate,
+          updatedBy,
+        },
+      },
+    })
+
+    expect(data).toBeNull()
+    expect(errors).toHaveLength(1)
+    const notFoundError = errors![0].originalError!
+    expect(notFoundError.message).toEqual(`Project ${id} not found!`)
+  })
+
+  it('should return updated project', async () => {
+    const [project, updatedProject] = ProjectFactory().buildList(2)
+    await Client.insert(project.client)
+    await Client.insert(updatedProject.client)
+    await Project.insert(project)
+    project.client = project.client.id
+    updatedProject.client = updatedProject.client.id
+
+    const { id } = project
+    const {
+      projectName,
+      projectType,
+      priority,
+      confidence,
+      startDate,
+      endDate,
+      updatedBy,
+    } = updatedProject
+
+    const response = await gqlCall({
+      source: updateProjectMutation,
+      variableValues: {
+        id,
+        data: {
+          projectName,
+          projectType,
+          client: updatedProject.client,
+          priority,
+          confidence,
+          startDate,
+          endDate,
+          updatedBy,
+        },
+      },
+    })
+
+    expect(response).toMatchObject({
+      data: {
+        updateProject: {
+          id,
+          projectName,
+          projectType,
+          priority,
+          confidence,
+          startDate: new Date(startDate).toISOString(),
+          endDate,
+          updatedBy,
+        },
+      },
+    })
+
+    const dbClient = await Project.findOne(id)
+
+    expect({
+      id: dbClient.id,
+      projectName: dbClient.projectName,
+      projectType: dbClient.projectType,
+      confidence: dbClient.confidence,
+      priority: dbClient.priority,
+      startDate: dbClient.startDate,
+      endDate: dbClient.endDate,
+      updatedBy: dbClient.updatedBy,
+    }).toMatchObject({
+      id,
+      projectName,
+      projectType,
+      confidence,
+      priority,
+      startDate: new Date(startDate),
+      endDate,
+      updatedBy,
     })
   })
 })
