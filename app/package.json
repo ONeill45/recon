@@ -11,9 +11,9 @@
     "test": "jest -c test/jest.config.js --no-cache --runInBand --forceExit --detectOpenHandles"
   },
   "dependencies": {
+    "@apollo/client": "^3.3.7",
     "@azure/msal-browser": "^2.10.0",
     "@azure/msal-react": "^1.0.0-alpha.3",
-    "@apollo/client": "^3.3.7",
     "@emotion/react": "^11.1.4",
     "@emotion/styled": "^11.0.0",
     "axios": "^0.21.1",
@@ -23,6 +23,7 @@
     "react": "16.13.1",
     "react-datepicker": "^3.4.1",
     "react-dom": "16.13.1",
+    "react-dropdown": "^1.9.2",
     "react-icons": "^4.1.0"
   },
   "devDependencies": {
