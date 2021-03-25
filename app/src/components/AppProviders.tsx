@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../styles/globals.css'
 import { ThemeProvider } from '@emotion/react'
 import { ApolloProvider } from '@apollo/client'
@@ -6,6 +6,7 @@ import { MsalProvider } from '@azure/msal-react'
 import { PublicClientApplication, Configuration } from '@azure/msal-browser'
 import client from '../lib/apolloClient'
 import { loadEnvironmentVariable } from 'utils/functions'
+import { themeLight, themeDark } from '../styles/theme'
 
 const getMsalConfig = (): Configuration => ({
   auth: {
@@ -24,16 +25,14 @@ const getMsalConfig = (): Configuration => ({
     cacheLocation: 'localStorage',
   },
 })
-const theme = {
-  fontFamily: 'Avenir Book, Arial, Verdana, sans-serif',
-}
 
 export const AppProviders: React.FC = ({ children }) => {
   const msalInstance = new PublicClientApplication(getMsalConfig())
+  const [darkTheme, setDarkTheme] = useState(true)
 
   return (
     <MsalProvider instance={msalInstance}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={darkTheme ? themeDark : themeLight}>
         <ApolloProvider client={client}>{children}</ApolloProvider>
       </ThemeProvider>
     </MsalProvider>
