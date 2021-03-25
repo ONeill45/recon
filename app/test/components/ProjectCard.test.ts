@@ -9,7 +9,7 @@ applyMockUseRouter()
 
 describe('<ProjectCard />', () => {
   it('should initialize project details', async () => {
-    const project = ProjectFactory.build()
+    const project = ProjectFactory().build()
     const {
       projectName,
       client: { clientName },
@@ -25,7 +25,7 @@ describe('<ProjectCard />', () => {
     expect(getByText(getRelativeTime(startDate, endDate))).toBeVisible()
   })
   it('should route to appropriate project page when its card is clicked', async () => {
-    const project = ProjectFactory.build()
+    const project = ProjectFactory().build()
     const { id, projectName } = project
 
     const { getByText } = await render(ProjectCard, { project })
