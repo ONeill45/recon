@@ -64,7 +64,6 @@ describe('ProjectResolver', () => {
     it('should return a populated array if projects exist', async () => {
       const project = ProjectFactory().build()
       await Client.insert(project.client)
-      project.client = project.client.id
       await Project.insert(project)
 
       const {
@@ -94,7 +93,7 @@ describe('ProjectResolver', () => {
               priority,
               confidence,
               client: {
-                id: client,
+                id: client.id,
               },
             },
           ],
@@ -382,8 +381,6 @@ describe('updateProject()', () => {
     await Client.insert(project.client)
     await Client.insert(updatedProject.client)
     await Project.insert(project)
-    project.client = project.client.id
-    updatedProject.client = updatedProject.client.id
 
     const { id } = project
     const {
@@ -403,7 +400,7 @@ describe('updateProject()', () => {
         data: {
           projectName,
           projectType,
-          client: updatedProject.client,
+          client: updatedProject.client.id,
           priority,
           confidence,
           startDate,
