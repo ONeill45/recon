@@ -299,7 +299,7 @@ describe('createProject()', () => {
           endDate,
           priority,
           confidence,
-          client: client.id,
+          clientId: client.id,
           projectType,
           createdBy,
           updatedBy,
@@ -322,6 +322,44 @@ describe('createProject()', () => {
         },
       },
     })
+  })
+
+  it('should return error if client does not exist', async () => {
+    const invalidClientId = faker.random.uuid()
+    const {
+      projectName,
+      startDate,
+      endDate,
+      priority,
+      confidence,
+      projectType,
+      createdBy,
+      updatedBy,
+      client,
+    } = ProjectFactory().build()
+
+    await Client.insert(client)
+
+    const { errors } = await gqlCall({
+      source: createProjectMutation,
+      variableValues: {
+        data: {
+          projectName,
+          startDate,
+          endDate,
+          priority,
+          confidence,
+          clientId: invalidClientId,
+          projectType,
+          createdBy,
+          updatedBy,
+        },
+      },
+    })
+
+    expect(errors).toHaveLength(1)
+
+    expect(errors[0].message).toEqual(`Client ${invalidClientId} not found!`)
   })
 })
 
@@ -359,7 +397,7 @@ describe('updateProject()', () => {
         id,
         data: {
           projectName,
-          client: client.id,
+          clientId: client.id,
           priority,
           confidence,
           projectType,
@@ -374,6 +412,46 @@ describe('updateProject()', () => {
     expect(errors).toHaveLength(1)
     const notFoundError = errors![0].originalError!
     expect(notFoundError.message).toEqual(`Project ${id} not found!`)
+  })
+
+  it('should return error if client does not exist', async () => {
+    const invalidClientId = faker.random.uuid()
+    const project = ProjectFactory().build()
+    const {
+      id,
+      projectName,
+      startDate,
+      endDate,
+      priority,
+      confidence,
+      projectType,
+      updatedBy,
+      client,
+    } = project
+
+    await Client.insert(client)
+    await Project.insert(project)
+
+    const { errors } = await gqlCall({
+      source: updateProjectMutation,
+      variableValues: {
+        id,
+        data: {
+          projectName,
+          clientId: invalidClientId,
+          priority,
+          confidence,
+          projectType,
+          startDate,
+          endDate,
+          updatedBy,
+        },
+      },
+    })
+
+    expect(errors).toHaveLength(1)
+
+    expect(errors[0].message).toEqual(`Client ${invalidClientId} not found!`)
   })
 
   it('should return updated project', async () => {
@@ -400,7 +478,7 @@ describe('updateProject()', () => {
         data: {
           projectName,
           projectType,
-          client: updatedProject.client.id,
+          clientId: updatedProject.client.id,
           priority,
           confidence,
           startDate,

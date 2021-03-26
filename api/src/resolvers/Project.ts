@@ -18,7 +18,7 @@ export class ProjectResolver {
   async createProject(@Arg('data') data: CreateProjectInput) {
     const { clientId } = data
     const client = await Client.findOne(clientId)
-    if (!client) throw new Error(`Client ${client} not found!`)
+    if (!client) throw new Error(`Client ${clientId} not found!`)
 
     const project = Project.create({ client, ...data })
     await project.save()
@@ -35,7 +35,7 @@ export class ProjectResolver {
 
     const { clientId } = data
     const client = await Client.findOne(clientId)
-    if (!client) throw new Error(`Client ${client} not found!`)
+    if (!client) throw new Error(`Client ${clientId} not found!`)
 
     Object.assign(project, { client, ...data })
     await project.save()

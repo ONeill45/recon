@@ -3,7 +3,7 @@ import { render } from '../testUtils'
 import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
-import { CREATE_NEW_PROJECT } from 'components'
+import { CREATE_PROJECT } from 'components'
 import { applyMockUseMsal, applyMockUseRouter } from '../testUtils'
 import { ProjectForm, UPDATE_PROJECT } from '../../src/components/ProjectForm'
 import { ProjectFactory } from '../factories'
@@ -19,7 +19,7 @@ describe('<ProjectForm />', () => {
     const mocks = [
       {
         request: {
-          query: CREATE_NEW_PROJECT,
+          query: CREATE_PROJECT,
         },
         result: {
           data: {

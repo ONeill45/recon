@@ -12,11 +12,11 @@ import { Priority } from '../interfaces/Enum'
 const ProjectTypeValues = Object.entries(ProjectType).map((a) => a[1])
 const PriorityValues = Object.entries(Priority).map((a) => a[1])
 
-const CreateClientForm = styled.form`
+const CreateProjectForm = styled.form`
   margin-top: 30px;
   padding-left: 35%;
 `
-const CreateClientFormLabel = styled.label`
+const CreateProjectFormLabel = styled.label`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -44,7 +44,7 @@ export const GET_ALL_CLIENTS = gql`
   }
 `
 
-export const CREATE_NEW_PROJECT = gql`
+export const CREATE_PROJECT = gql`
   mutation CreateProject($data: CreateProjectInput!) {
     createProject(data: $data) {
       id
@@ -89,11 +89,11 @@ export const ProjectForm = ({ project }: ProjectProps) => {
   const router = useRouter()
   const account = useMsAccount()
 
-  const [createProject] = useMutation(CREATE_NEW_PROJECT)
+  const [createProject] = useMutation(CREATE_PROJECT)
   const [updateProject] = useMutation(UPDATE_PROJECT)
 
   const handleClientInput = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setClient(clients.find((client: Client) => e.target.value === client.id).id)
+    setClient(clients.find((client: Client) => e.target.value === client.id))
   }
 
   const createNewProject = async (e: React.FormEvent) => {
@@ -164,7 +164,6 @@ export const ProjectForm = ({ project }: ProjectProps) => {
   }, [clients])
 
   if (project) {
-    // update button should be disabled unless the user has made changes
     React.useEffect(() => {
       const client = clients.find((c: Client) => c.id === project.client.id)
       if (
@@ -197,31 +196,33 @@ export const ProjectForm = ({ project }: ProjectProps) => {
 
   return (
     <>
-      <CreateClientForm>
-        <CreateClientFormLabel>
+      <CreateProjectForm>
+        <CreateProjectFormLabel>
           Name
           <CreateProjectFormInput
             type="text"
             aria-label="project-name"
-            onChange={(e) => setProjectName(e.target.value)}
+            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+              setProjectName(e.currentTarget.value)
+            }
             value={projectName}
           />
-        </CreateClientFormLabel>
-        <CreateClientFormLabel>
+        </CreateProjectFormLabel>
+        <CreateProjectFormLabel>
           Start Date
           <DatePicker
             selected={startDate}
             onChange={(date: Date) => setStartDate(date)}
           />
-        </CreateClientFormLabel>
-        <CreateClientFormLabel>
+        </CreateProjectFormLabel>
+        <CreateProjectFormLabel>
           End Date (Optional)
           <DatePicker
             selected={endDate}
             onChange={(date: Date) => setEndDate(date)}
           />
-        </CreateClientFormLabel>
-        <CreateClientFormLabel>
+        </CreateProjectFormLabel>
+        <CreateProjectFormLabel>
           Client
           <CreateProjectFormInputSelect
             value={client?.id}
@@ -238,12 +239,14 @@ export const ProjectForm = ({ project }: ProjectProps) => {
               )
             })}
           </CreateProjectFormInputSelect>
-        </CreateClientFormLabel>
-        <CreateClientFormLabel>
+        </CreateProjectFormLabel>
+        <CreateProjectFormLabel>
           Project Type
           <CreateProjectFormInputSelect
             value={projectType}
-            onChange={(e) => setProjectType(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setProjectType(e.target.value)
+            }
             aria-label="project-type"
           >
             {ProjectTypeValues.map((projectType: ProjectType) => {
@@ -254,12 +257,14 @@ export const ProjectForm = ({ project }: ProjectProps) => {
               )
             })}
           </CreateProjectFormInputSelect>
-        </CreateClientFormLabel>
-        <CreateClientFormLabel>
+        </CreateProjectFormLabel>
+        <CreateProjectFormLabel>
           Priority
           <CreateProjectFormInputSelect
             value={priority}
-            onChange={(e) => setPriority(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+              setPriority(e.target.value)
+            }
             aria-label="priority"
           >
             {PriorityValues.map((priorityValue: Priority) => {
@@ -270,8 +275,8 @@ export const ProjectForm = ({ project }: ProjectProps) => {
               )
             })}
           </CreateProjectFormInputSelect>
-        </CreateClientFormLabel>
-        <CreateClientFormLabel>
+        </CreateProjectFormLabel>
+        <CreateProjectFormLabel>
           Confidence - {confidence}%
           <CreateProjectFormInput
             aria-label="confidence"
@@ -279,9 +284,11 @@ export const ProjectForm = ({ project }: ProjectProps) => {
             value={confidence}
             min="0"
             max="100"
-            onChange={(e) => setConfidence(Number(e.target.value))}
+            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+              setConfidence(Number(e.currentTarget.value))
+            }
           />
-        </CreateClientFormLabel>
+        </CreateProjectFormLabel>
         {project ? (
           <button
             name="Submit"
@@ -295,7 +302,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
             Submit
           </button>
         )}
-      </CreateClientForm>
+      </CreateProjectForm>
     </>
   )
 }
