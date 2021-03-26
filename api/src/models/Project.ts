@@ -29,7 +29,7 @@ export class Project extends BaseEntity implements AuditableEntity {
   @Field(() => Client)
   @ManyToOne(() => Client, { eager: true })
   @JoinColumn({ name: 'client_id' })
-  client: string
+  client: Client
 
   @Field(() => Date)
   @Column({ name: 'start_date' })
@@ -54,7 +54,7 @@ export class Project extends BaseEntity implements AuditableEntity {
     enum: Priority,
     default: Priority.HIGH,
   })
-  priority: string
+  priority: Priority
 
   @Field(() => [ResourceAllocation])
   @OneToMany(() => ResourceAllocation, (ra) => ra.project)

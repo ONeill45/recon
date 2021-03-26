@@ -7,7 +7,7 @@ export class CreateProjectInput {
   projectName: string
 
   @Field()
-  client: string
+  clientId: string
 
   @Field()
   startDate: Date
@@ -37,7 +37,7 @@ export class UpdateProjectInput {
   projectName: string
 
   @Field()
-  client: string
+  clientId: string
 
   @Field()
   startDate: Date

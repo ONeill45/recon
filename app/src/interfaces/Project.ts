@@ -8,7 +8,7 @@ export interface Project {
   endDate: Date
   projectType: ProjectType
   confidence: number
-  priority: number
+  priority: Priority
   resourceAllocations: ResourceAllocation[]
   createdBy: string
   createdDate: Date

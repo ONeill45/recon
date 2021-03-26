@@ -105,7 +105,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
     }
     const data = {
       projectName,
-      client: client.id,
+      clientId: client.id,
       startDate,
       endDate,
       projectType,
@@ -130,7 +130,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
     }
     const data = {
       projectName,
-      client: client.id,
+      clientId: client.id,
       startDate,
       endDate,
       projectType,

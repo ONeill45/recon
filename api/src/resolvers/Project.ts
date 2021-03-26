@@ -1,5 +1,5 @@
 import { Arg, Query, Mutation, Resolver } from 'type-graphql'
-import { Project } from '../models'
+import { Client, Project } from '../models'
 import { CreateProjectInput, UpdateProjectInput } from '../inputs/Project'
 
 @Resolver()
@@ -16,7 +16,11 @@ export class ProjectResolver {
 
   @Mutation(() => Project)
   async createProject(@Arg('data') data: CreateProjectInput) {
-    const project = Project.create(data)
+    const { clientId } = data
+    const client = await Client.findOne(clientId)
+    if (!client) throw new Error(`Client ${client} not found!`)
+
+    const project = Project.create({ client, ...data })
     await project.save()
     return project
   }
@@ -28,7 +32,12 @@ export class ProjectResolver {
   ) {
     const project = await Project.findOne({ id })
     if (!project) throw new Error(`Project ${id} not found!`)
-    Object.assign(project, data)
+
+    const { clientId } = data
+    const client = await Client.findOne(clientId)
+    if (!client) throw new Error(`Client ${client} not found!`)
+
+    Object.assign(project, { client, ...data })
     await project.save()
     return project
   }
