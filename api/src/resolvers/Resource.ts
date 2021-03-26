@@ -1,4 +1,5 @@
 import { Resolver, Query, Mutation, Arg } from 'type-graphql'
+import { ILike } from 'typeorm'
 import { Department, Resource } from '../models'
 import { CreateResourceInput, UpdateResourceInput } from '../inputs'
 @Resolver()
@@ -11,6 +12,30 @@ export class ResourceResolver {
   @Query(() => Resource, { nullable: true })
   async resource(@Arg('id') id: string): Promise<Resource | null> {
     return Resource.findOne(id, { relations: ['resourceAllocations'] })
+  }
+
+  @Query(() => [Resource])
+  async searchResource(@Arg('searchItem') searchItem: string): Promise<Resource | null> {
+    const foundResource = await Resource.find(
+      {
+        relations: ['resourceAllocations'],
+        where: [
+          {
+            firstName: ILike(`${searchItem}%`)
+          },
+          {
+            lastName: ILike(`${searchItem}%`)
+          },
+          {
+            preferredName: ILike(`${searchItem}%`)
+          },
+          {
+            email: ILike(`${searchItem}%`)
+          },
+        ]
+      }
+    );
+    return foundResource
   }
 
   @Mutation(() => Resource)

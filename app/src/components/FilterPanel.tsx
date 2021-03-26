@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import { useState } from 'react'
 import { css } from '@emotion/react'
 import { FiFilter } from 'react-icons/fi'
-
 import { FilterCategory, SearchBar } from './'
 
 type displayProps = {
@@ -46,7 +45,12 @@ const filterCategoryProperties = [
   },
 ]
 
-export const FilterPanel = () => {
+type FilterPanelProps = {
+  setSearchText?: any
+  searchQuery?: any
+}
+
+export const FilterPanel = ({ setSearchText, searchQuery }: FilterPanelProps) => {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -64,7 +68,7 @@ export const FilterPanel = () => {
         data-testid="ExpandedFilterPanel"
         displayed={expanded}
       >
-        <SearchBar />
+        <SearchBar searchQuery={searchQuery} setSearchText={setSearchText} />
         {filterCategoryProperties.map((property) => (
           <FilterCategory key={property.title} title={property.title} />
         ))}
