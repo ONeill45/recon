@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client'
 
 import Projects from 'pages/projects'
-import { ProjectFactory } from '../factories'
-import { render } from '../testUtils/render'
+import { ProjectFactory } from '../../factories'
+import { render } from '../../testUtils/render'
 
-const projects = ProjectFactory.buildList(5)
+const projects = ProjectFactory().buildList(5)
 
 const mocks = [
   {

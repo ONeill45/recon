@@ -21,7 +21,7 @@ export const Client = () => {
 
   const { data, loading, error } = useQuery(GET_CLIENT_FROM_ID, {
     fetchPolicy: 'network-only',
-    variables: { id: id },
+    variables: { id },
     skip: !id,
   })
 

@@ -9,9 +9,9 @@ export class ClientResolver {
     return Client.find()
   }
 
-  @Query(() => Client)
-  client(@Arg('id') id: string) {
-    return Client.findOne({ id: id })
+  @Query(() => Client, { nullable: true })
+  client(@Arg('id') id: string): Promise<Client | null> {
+    return Client.findOne({ id })
   }
 
   @Mutation(() => Client)

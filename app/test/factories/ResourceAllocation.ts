@@ -1,7 +1,6 @@
 import { Factory } from 'rosie'
 import faker from 'faker'
 import { ResourceAllocation } from '../../src/interfaces'
-import { ProjectFactory } from './'
 import { AuditableEntityFactory } from './AuditableEntity'
 
 export const ResourceAllocationFactory = Factory.define<ResourceAllocation>(
@@ -10,7 +9,8 @@ export const ResourceAllocationFactory = Factory.define<ResourceAllocation>(
   .option('isCurrent', true)
   .extend(AuditableEntityFactory)
   .attr('id', () => faker.random.uuid())
-  .attr('project', () => ProjectFactory.build())
+  .attr('resource', null)
+  .attr('project', null)
   .attr('startDate', () => new Date(faker.date.past()).toISOString())
   .attr('endDate', ['isCurrent'], (isCurrent) =>
     isCurrent ? null : new Date(faker.date.recent().toISOString()),

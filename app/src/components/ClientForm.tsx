@@ -59,7 +59,7 @@ export const ClientForm = ({ client }: ClientProps) => {
   const [endDate, setEndDate] = React.useState<Date | null>(
     client?.endDate ? new Date(client?.endDate) : null,
   )
-  const id = client ? client.id : null
+  const id = client?.id
 
   const router = useRouter()
   const account = useMsAccount()
@@ -89,7 +89,7 @@ export const ClientForm = ({ client }: ClientProps) => {
     e.preventDefault()
     await updateClient({
       variables: {
-        id: id,
+        id,
         data: {
           clientName,
           description,

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { registerEnumType } from 'type-graphql'
 
 export enum DepartmentNames {
@@ -21,4 +22,14 @@ export enum ProjectType {
 
 registerEnumType(ProjectType, {
   name: 'ProjectType',
+})
+
+export enum Priority {
+  HIGH = 'High',
+  MEDIUM = 'Medium',
+  LOW = 'Low',
+}
+
+registerEnumType(Priority, {
+  name: 'Priority',
 })
