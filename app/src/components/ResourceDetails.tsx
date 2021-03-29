@@ -8,18 +8,18 @@ import {
   SectionTableData,
 } from './Section'
 
-const ResourceAllocationContainer = styled.div``
+const ResourceDetailsContainer = styled.div``
 
 type ResourceDetailsProps = {
   resource: Resource
 }
 
-export const ResourceAllocation = ({ resource }: ResourceDetailsProps) => {
+export const ResourceDetails = ({ resource }: ResourceDetailsProps) => {
   const { department, startDate, terminationDate } = resource
   const duration = getDuration(startDate, terminationDate)
 
   return (
-    <ResourceAllocationContainer>
+    <ResourceDetailsContainer>
       <SectionTable>
         <thead>
           <SectionTableHeaderRow>
@@ -33,7 +33,9 @@ export const ResourceAllocation = ({ resource }: ResourceDetailsProps) => {
         <tbody>
           <tr>
             <SectionTableData>
-              {terminationDate ? ResourceStatus.TERMINATED : ResourceStatus.ACTIVE}
+              {terminationDate
+                ? ResourceStatus.TERMINATED
+                : ResourceStatus.ACTIVE}
             </SectionTableData>
             <SectionTableData>{department.name}</SectionTableData>
             <SectionTableData>
@@ -48,6 +50,6 @@ export const ResourceAllocation = ({ resource }: ResourceDetailsProps) => {
           </tr>
         </tbody>
       </SectionTable>
-    </ResourceAllocationContainer>
+    </ResourceDetailsContainer>
   )
 }

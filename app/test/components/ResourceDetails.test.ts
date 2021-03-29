@@ -1,15 +1,15 @@
 import faker from 'faker'
-import { ResourceAllocation } from 'components'
+import { ResourceDetails } from 'components'
 import { ResourceFactory } from '../factories'
 import { render } from '../testUtils'
 import { DateFormat, formatDate, getDuration } from 'utils'
 
 describe('<ResourceAllocation />', () => {
   it('should initialize resource details for active employee', async () => {
-    const resource = ResourceFactory.build()
+    const resource = ResourceFactory().build()
     const { department, startDate } = resource
 
-    const { getByText } = await render(ResourceAllocation, { resource })
+    const { getByText } = await render(ResourceDetails, { resource })
     expect(getByText('Status')).toBeVisible()
     expect(getByText('Department')).toBeVisible()
     expect(getByText('Hire Date')).toBeVisible()
@@ -23,12 +23,12 @@ describe('<ResourceAllocation />', () => {
     expect(getByText(getDuration(startDate))).toBeVisible()
   })
   it('should initialize resource details for terminated employee', async () => {
-    const resource = ResourceFactory.build({
+    const resource = ResourceFactory().build({
       terminationDate: faker.date.past(),
     })
     const { department, startDate, terminationDate } = resource
 
-    const { getByText } = await render(ResourceAllocation, { resource })
+    const { getByText } = await render(ResourceDetails, { resource })
     expect(getByText('Status')).toBeVisible()
     expect(getByText('Department')).toBeVisible()
     expect(getByText('Hire Date')).toBeVisible()

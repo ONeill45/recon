@@ -2,7 +2,7 @@ import { Resource } from 'interfaces'
 import { Sections } from './Sections'
 import { Histogram, Skills } from './Histogram'
 import { ProjectAllocation } from './ProjectAllocation'
-import { ResourceAllocation } from './ResourceAllocation'
+import { ResourceDetails } from './ResourceDetails'
 import { SectionContainer, Section, SectionTitle } from './Section'
 
 type ResourceDetailCardsProps = {
@@ -33,7 +33,7 @@ export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
       <SectionContainer>
         <Section>
           <SectionTitle>Resource Information</SectionTitle>
-          <ResourceAllocation resource={resource} />
+          <ResourceDetails resource={resource} />
         </Section>
 
         {skillsList.skills.length > 0 && (
