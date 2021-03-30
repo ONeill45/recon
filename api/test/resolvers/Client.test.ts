@@ -6,6 +6,7 @@ import { Client } from '../../src/models'
 import { ClientFactory } from '../factories'
 import { gqlCall } from '../utils/gqlCall'
 import { uuidRegex } from '../utils/regex'
+import faker from 'faker'
 
 let connection: Connection
 beforeAll(async () => {
@@ -81,6 +82,72 @@ describe('ClientResolver', () => {
           clients: [],
         },
       })
+    })
+  })
+})
+
+describe('client()', () => {
+  const getClientQuery = (id: string) => `{
+    client (id: "${id}") {
+      id
+      clientName
+      description
+      logoUrl
+      startDate
+      endDate
+    }
+  }`
+
+  it('should return null if client does not exist', async () => {
+    const response = await gqlCall({
+      source: getClientQuery(faker.random.uuid()),
+    })
+
+    expect(response).toEqual({
+      data: {
+        client: null,
+      },
+    })
+  })
+
+  it('should return client if it exists', async () => {
+    const client = ClientFactory.build()
+    await Client.insert(client)
+
+    const { id, clientName, description, logoUrl, startDate, endDate } = client
+
+    const response = await gqlCall({
+      source: getClientQuery(id),
+    })
+
+    expect(response).toMatchObject({
+      data: {
+        client: {
+          id,
+          clientName,
+          description,
+          logoUrl,
+          startDate,
+          endDate,
+        },
+      },
+    })
+  })
+
+  it('should not return a deleted client', async () => {
+    const client = ClientFactory.build({
+      deletedDate: new Date().toISOString(),
+    })
+    await Client.insert(client)
+
+    const response = await gqlCall({
+      source: getClientQuery(client.id),
+    })
+
+    expect(response).toEqual({
+      data: {
+        client: null,
+      },
     })
   })
 })

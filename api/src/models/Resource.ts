@@ -63,7 +63,7 @@ export class Resource extends BaseEntity implements AuditableEntity {
   terminationDate: Date | null
 
   @Field(() => [ResourceAllocation])
-  @OneToMany(() => ResourceAllocation, (ra) => ra.resource, { eager: true })
+  @OneToMany(() => ResourceAllocation, (ra) => ra.resource)
   resourceAllocations: ResourceAllocation[]
 
   @Field(() => Date)

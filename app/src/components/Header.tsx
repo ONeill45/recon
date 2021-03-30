@@ -21,3 +21,15 @@ export const HeaderDescriptionDiv = styled.div`
   font-size: 12px;
   padding: 4px;
 `
+
+export const PencilIcon = styled.img`
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+  &:hover {
+    background-color: #999;
+  }
+`

@@ -5,12 +5,12 @@ import { CreateResourceInput, UpdateResourceInput } from '../inputs'
 export class ResourceResolver {
   @Query(() => [Resource])
   async resources() {
-    return Resource.find()
+    return Resource.find({ relations: ['resourceAllocations'] })
   }
 
   @Query(() => Resource, { nullable: true })
   async resource(@Arg('id') id: string): Promise<Resource | null> {
-    return Resource.findOne(id)
+    return Resource.findOne(id, { relations: ['resourceAllocations'] })
   }
 
   @Mutation(() => Resource)
