@@ -15,6 +15,8 @@ const PlusCircleDiv = styled.div`
     cursor: pointer;
   }
   position: fixed;
+  right: 10px;
+  bottom: 70px;
   right: 50px;
   bottom: 50px;
 `
