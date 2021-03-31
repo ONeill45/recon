@@ -1,11 +1,11 @@
+import React from 'react'
 import { gql, useQuery } from '@apollo/client'
+import { useRouter } from 'next/router'
+import { ResourceForm } from 'components'
 
-import { Cards, PlusCircle, ResourceCard } from 'components'
-import { Resource } from 'interfaces'
-
-export const GET_ALL_RESOURCES = gql`
-  {
-    resources {
+export const GET_RESOURCE = gql`
+  query GetResource($id: String!) {
+    resource(id: $id) {
       id
       firstName
       lastName
@@ -36,24 +36,26 @@ export const GET_ALL_RESOURCES = gql`
   }
 `
 
-const Resources = () => {
-  const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
+const Resource = () => {
+  const router = useRouter()
+  const { id } = router.query
+
+  const { data, loading, error } = useQuery(GET_RESOURCE, {
     fetchPolicy: 'network-only',
+    variables: { id },
+    skip: !id,
   })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
-  const { resources } = data
+  const { resource } = data || {}
 
   return (
-    <Cards>
-      <PlusCircle size={'50'} route={'/resources/resource'} />
-      {resources.map((resource: Resource) => {
-        return <ResourceCard resource={resource} key={resource.id} />
-      })}
-    </Cards>
+    <>
+      <ResourceForm resource={resource} />
+    </>
   )
 }
 
-export default Resources
+export default Resource

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import styled from '@emotion/styled'
 
 const SectionDiv = styled.div`
@@ -9,6 +9,6 @@ const SectionDiv = styled.div`
   margin: 2rem 0;
 `
 
-export const Sections: React.FC = ({ children }) => (
+export const Sections: FC = ({ children }) => (
   <SectionDiv>{children}</SectionDiv>
 )
