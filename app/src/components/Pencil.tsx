@@ -23,23 +23,14 @@ export const Pencil = ({ size, route, id }: pencilProps) => {
   const router = useRouter()
 
   const updateItem = () => {
-    if (id) {
-      router.push({
-        pathname: route,
-        query: { id },
-      })
-    } else {
-      router.push({
-        pathname: route
-      })
-    }
+    router.push({
+      pathname: route,
+      query: id ? { id } : null,
+    })
   }
 
   return (
-    <PencilDiv
-      data-testid="PencilDiv"
-      onClick={updateItem}
-    >
+    <PencilDiv data-testid="PencilDiv" onClick={updateItem}>
       <BsPencil size={size} />
     </PencilDiv>
   )

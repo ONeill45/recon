@@ -37,20 +37,19 @@ export const GET_RESOURCE = gql`
 `
 
 const Resource = () => {
-
   const router = useRouter()
   const { id } = router.query
 
   const { data, loading, error } = useQuery(GET_RESOURCE, {
     fetchPolicy: 'network-only',
-    variables: { id: id },
+    variables: { id },
     skip: !id,
   })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
-  const { resource = {} } = data ? data : {}
+  const { resource } = data || {}
 
   return (
     <>

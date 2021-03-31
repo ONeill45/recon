@@ -35,7 +35,7 @@ export const ResourceHeader = ({ resource }: ResourceHeaderProps) => {
         <HeaderDescriptionDiv>{email}</HeaderDescriptionDiv>
         <HeaderDescriptionDiv>{title}</HeaderDescriptionDiv>
       </SubHeaderDiv>
-      <Pencil size={'30'} route={'/resources/resource'} id={id}/>
+      <Pencil size={'30'} route={'/resources/resource'} id={id} />
     </HeaderDiv>
   )
 }
