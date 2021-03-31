@@ -1,8 +1,5 @@
-import React from 'react'
-import 'react-dropdown/style.css'
-
+import React, { FormEvent } from 'react'
 import { gql, useQuery } from '@apollo/client'
-
 import { Department } from 'interfaces'
 import styled from '@emotion/styled'
 
@@ -62,14 +59,14 @@ export const DepartmentDropDown = ({
     <DepartmentSelect
       aria-label="department-select"
       defaultValue={departments[0].value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={(e: FormEvent<HTMLSelectElement>) =>
+        onChange(e.currentTarget.value)
+      }
     >
       {departments.map((item: Department) => (
-        <>
-          <option key={item.id} value={item.name}>
-            {item.name}
-          </option>
-        </>
+        <option key={item.id} value={item.name}>
+          {item.name}
+        </option>
       ))}
     </DepartmentSelect>
   )

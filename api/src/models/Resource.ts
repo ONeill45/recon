@@ -33,8 +33,8 @@ export class Resource extends BaseEntity implements AuditableEntity {
   @Column({ name: 'preferred_name', nullable: true })
   preferredName: string | null
 
-  @Field(() => String)
-  @Column({ name: 'title' })
+  @Field(() => String, { nullable: true })
+  @Column({ name: 'title', nullable: true })
   title: string | null
 
   @Field(() => String, { nullable: true })

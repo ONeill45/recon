@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { FormEvent, useState } from 'react'
 import { gql, useMutation } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
@@ -48,18 +48,16 @@ type ClientProps = {
 }
 
 export const ClientForm = ({ client }: ClientProps) => {
-  const [clientName, setClientName] = React.useState(client?.clientName || '')
-  const [description, setDescription] = React.useState(
-    client?.description || '',
-  )
-  const [logoUrl, setLogoUrl] = React.useState(client?.logoUrl || '')
-  const [startDate, setStartDate] = React.useState(
+  const [clientName, setClientName] = useState(client?.clientName || '')
+  const [description, setDescription] = useState(client?.description || '')
+  const [logoUrl, setLogoUrl] = useState(client?.logoUrl || '')
+  const [startDate, setStartDate] = useState(
     client?.startDate ? new Date(client?.startDate) : new Date(),
   )
-  const [endDate, setEndDate] = React.useState<Date | null>(
+  const [endDate, setEndDate] = useState<Date | null>(
     client?.endDate ? new Date(client?.endDate) : null,
   )
-  const id = client ? client.id : null
+  const id = client?.id
 
   const router = useRouter()
   const account = useMsAccount()
@@ -67,7 +65,7 @@ export const ClientForm = ({ client }: ClientProps) => {
   const [createClient] = useMutation(CREATE_CLIENT)
   const [updateClient] = useMutation(UPDATE_CLIENT)
 
-  const createNewClient = async (e: React.FormEvent) => {
+  const createNewClient = async (e: FormEvent) => {
     e.preventDefault()
     await createClient({
       variables: {
@@ -85,11 +83,11 @@ export const ClientForm = ({ client }: ClientProps) => {
     router.push('/clients')
   }
 
-  const updateClientById = async (e: React.FormEvent) => {
+  const updateClientById = async (e: FormEvent) => {
     e.preventDefault()
     await updateClient({
       variables: {
-        id: id,
+        id,
         data: {
           clientName,
           description,
