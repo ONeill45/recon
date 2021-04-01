@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router'
-import React, { FormEvent, useEffect, useState } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { gql, useMutation, useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import { DepartmentDropDown } from '../components/DepartmentDropDown'
 import { Resource, Department } from 'interfaces'
 import { useMsAccount } from 'utils/hooks'
 
@@ -34,7 +33,22 @@ const CancelButton = styled.button`
   margin-right: 1rem;
 `
 
-const CREATE_RESOURCE = gql`
+const DepartmentSelect = styled.select`
+  width: 50%;
+  padding: 5px 10px;
+  margin: 8px 0;
+`
+
+export const GET_ALL_DEPARTMENTS = gql`
+  {
+    departments {
+      id
+      name
+    }
+  }
+`
+
+export const CREATE_RESOURCE = gql`
   mutation CreateResource($data: CreateResourceInput!) {
     createResource(data: $data) {
       id
@@ -69,9 +83,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
   const [terminationDate, setTerminationDate] = useState<Date | null>(
     resource?.terminationDate ? new Date(resource?.terminationDate) : null,
   )
-  const [department, setDepartment] = useState<Department | null>(
-    resource?.department || null,
-  )
+  const [department, setDepartment] = useState(resource?.department || null)
 
   const id = resource?.id
   const [isFormChanged, setIsFormChanged] = useState(false)
@@ -81,6 +93,14 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   const [createResource] = useMutation(CREATE_RESOURCE)
   const [updateResource] = useMutation(UPDATE_RESOURCE)
+
+  const handleDepartmentInput = (e: ChangeEvent<HTMLSelectElement>) => {
+    setDepartment(
+      departments.find(
+        (department: Department) => e.target.value === department.id,
+      ),
+    )
+  }
 
   const createNewResource = async (e: FormEvent) => {
     e.preventDefault()
@@ -144,6 +164,27 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
     setIsFormChanged(false)
   }, [])
 
+  const { data, error } = useQuery(GET_ALL_DEPARTMENTS, {
+    fetchPolicy: 'network-only',
+  })
+
+  const { departments = [] } = data || {}
+
+  useEffect(() => {
+    if (departments.length) {
+      if (resource) {
+        const department = departments.find(
+          (d: Department) => d.id === resource.department.id,
+        )
+        setDepartment(department)
+      } else {
+        setDepartment(departments[0])
+      }
+    }
+  }, [departments])
+
+  if (error) return <p>Error: {error.message}</p>
+
   return (
     <>
       <CreateResourceForm onChange={formChange}>
@@ -151,7 +192,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           First Name
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="first-name"
             onChange={(e: FormEvent<HTMLInputElement>) =>
               setFirstName(e.currentTarget.value)
             }
@@ -162,7 +203,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           Last Name
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="last-name"
             onChange={(e: FormEvent<HTMLInputElement>) =>
               setLastName(e.currentTarget.value)
             }
@@ -173,7 +214,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           Preferred Name
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="preferred-name"
             onChange={(e: FormEvent<HTMLInputElement>) =>
               setPreferredName(e.currentTarget.value)
             }
@@ -184,7 +225,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           Title
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="title"
             onChange={(e: FormEvent<HTMLInputElement>) =>
               setTitle(e.currentTarget.value)
             }
@@ -193,15 +234,27 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
         </CreateResourceFormLabel>
         <CreateResourceFormLabel>
           Department
-          <DepartmentDropDown
-            setDepartment={setDepartment}
-          ></DepartmentDropDown>
+          <DepartmentSelect
+            value={department?.id}
+            aria-label="department-select"
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+              handleDepartmentInput(event)
+            }
+          >
+            {departments.map((department: Department) => {
+              return (
+                <option key={department.id} value={department.id}>
+                  {department.name}
+                </option>
+              )
+            })}
+          </DepartmentSelect>
         </CreateResourceFormLabel>
         <CreateResourceFormLabel>
           ImageUrl
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="image-url"
             onChange={(e: FormEvent<HTMLInputElement>) =>
               setImageUrl(e.currentTarget.value)
             }
@@ -212,7 +265,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           Email
           <CreateResourceFormInput
             type="text"
-            aria-label="resource-name"
+            aria-label="email"
             onChange={(e: FormEvent<HTMLInputElement>) =>
               setEmail(e.currentTarget.value)
             }

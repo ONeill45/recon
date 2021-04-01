@@ -15,6 +15,7 @@ export const GET_RESOURCE = gql`
       terminationDate
       imageUrl
       department {
+        id
         name
       }
       email
