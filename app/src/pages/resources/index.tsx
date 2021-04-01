@@ -57,7 +57,7 @@ const Resources = () => {
             return <ResourceCard resource={resource} key={resource.id} />
           })}
         </Cards>
-        <PlusCircle size="50" route="/resources/new" />
+        <PlusCircle size={'50'} route={'/resources/resource'} />
       </div>
       <Footer />
     </>

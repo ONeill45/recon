@@ -4,6 +4,7 @@ export const HeaderDiv = styled.div`
   display: flex;
   border-bottom: 1px solid black;
   padding: 10px;
+  position: relative;
 `
 
 export const SubHeaderDiv = styled.div`
@@ -19,4 +20,16 @@ export const HeaderNameDiv = styled.div`
 export const HeaderDescriptionDiv = styled.div`
   font-size: 12px;
   padding: 4px;
+`
+
+export const PencilIcon = styled.img`
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 5px;
+  height: 35px;
+  width: 35px;
+  cursor: pointer;
+  &:hover {
+    background-color: #999;
+  }
 `

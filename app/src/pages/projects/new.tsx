@@ -1,7 +1,12 @@
 import React from 'react'
+import { ProjectForm } from 'components'
 
-const NewProject = () => {
-  return <></>
+export const NewProject = () => {
+  return (
+    <>
+      <ProjectForm />
+    </>
+  )
 }
 
 export default NewProject

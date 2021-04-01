@@ -2,6 +2,7 @@ const mockUseRouter = {
   pathname: '/home',
   push: jest.fn(),
   reload: jest.fn(),
+  prefetch: jest.fn(),
 }
 
 const applyMockUseRouter = (options?: {}) =>

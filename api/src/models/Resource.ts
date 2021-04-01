@@ -22,7 +22,7 @@ export class Resource extends BaseEntity implements AuditableEntity {
   id: string
 
   @Field(() => String)
-  @Column({ name: 'first_name', nullable: true })
+  @Column({ name: 'first_name' })
   firstName: string
 
   @Field(() => String)
@@ -33,9 +33,9 @@ export class Resource extends BaseEntity implements AuditableEntity {
   @Column({ name: 'preferred_name', nullable: true })
   preferredName: string | null
 
-  @Field(() => String)
-  @Column()
-  title: string
+  @Field(() => String, { nullable: true })
+  @Column({ name: 'title', nullable: true })
+  title: string | null
 
   @Field(() => String, { nullable: true })
   @Column({ name: 'image_url', nullable: true })
@@ -46,9 +46,13 @@ export class Resource extends BaseEntity implements AuditableEntity {
   @JoinColumn({ name: 'department_id' })
   department: Department
 
-  @Field(() => String)
-  @Column()
-  email: string
+  @Field(() => String, { nullable: true })
+  @Column({ name: 'email', nullable: true })
+  email: string | null
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: 'department_id', nullable: true })
+  department_id: string | null
 
   @Field(() => Date)
   @Column({ name: 'start_date' })

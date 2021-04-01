@@ -4,10 +4,16 @@ import { buildSchema } from 'type-graphql'
 
 import { connect } from './database'
 import { ClientResolver, ResourceResolver, ProjectResolver } from './resolvers'
+import { DepartmentResolver } from './resolvers/Department'
 
 export const createSchema = async () =>
   buildSchema({
-    resolvers: [ClientResolver, ResourceResolver, ProjectResolver],
+    resolvers: [
+      ClientResolver,
+      ResourceResolver,
+      ProjectResolver,
+      DepartmentResolver,
+    ],
   })
 
 async function main() {

@@ -12,7 +12,7 @@ import {
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
-import { ProjectType } from './enums'
+import { Priority, ProjectType } from './enums'
 import { Client, ResourceAllocation } from './'
 
 @Entity()
@@ -47,9 +47,14 @@ export class Project extends BaseEntity implements AuditableEntity {
   @Column({ name: 'confidence' })
   confidence: Number
 
-  @Field(() => Number)
-  @Column({ name: 'priority' })
-  priority: Number
+  @Field(() => String)
+  @Column({
+    name: 'priority',
+    type: 'enum',
+    enum: Priority,
+    default: Priority.HIGH,
+  })
+  priority: Priority
 
   @Field(() => [ResourceAllocation])
   @OneToMany(() => ResourceAllocation, (ra) => ra.project)
