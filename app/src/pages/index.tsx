@@ -2,7 +2,6 @@
 import React, { useState } from 'react'
 import styles from '../styles/Home.module.css'
 import { Button, FilterPanel, FullPageSpinner, Spinner } from '../components'
-import Footer from '../components/Footer'
 
 const Home = () => {
   const [showSpinner, setShowSpinner] = useState(false)
@@ -25,7 +24,6 @@ const Home = () => {
           {showSpinner ? <FullPageSpinner /> : <div />}
         </main>
       </div>
-      <Footer />
     </>
   )
 }

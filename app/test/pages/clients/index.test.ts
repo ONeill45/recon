@@ -58,10 +58,6 @@ describe('Client page test', () => {
     const { getByText } = await render(Clients, {}, mocks)
     expect(getByText('Filters')).toBeVisible()
   })
-  it('should render clients page and display the footer', async () => {
-    const { getByText } = await render(Clients, {}, mocks)
-    expect(getByText('Powered by')).toBeVisible()
-  })
   it('should fetch all clients and display their cards', async () => {
     const { getByText } = await render(Clients, {}, mocks)
 

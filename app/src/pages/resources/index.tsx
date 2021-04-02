@@ -3,7 +3,6 @@ import { gql, useQuery } from '@apollo/client'
 import { Cards, FilterPanel, PlusCircle, ResourceCard } from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
-import Footer from 'components/Footer'
 
 export const GET_ALL_RESOURCES = gql`
   {
@@ -59,7 +58,6 @@ const Resources = () => {
         </Cards>
         <PlusCircle size={'50'} route={'/resources/resource'} />
       </div>
-      <Footer />
     </>
   )
 }
