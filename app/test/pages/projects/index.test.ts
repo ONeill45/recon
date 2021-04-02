@@ -64,6 +64,10 @@ describe('Projects page test', () => {
 
     expect(getByText('Loading...')).toBeVisible()
   })
+  it('should render projects page and display filter sidebar', async () => {
+    const { getByText } = await render(Projects, {}, mocks)
+    expect(getByText('Filters')).toBeVisible()
+  })
   it('should fetch all projects and display their cards', async () => {
     const { getByText } = await render(Projects, {}, mocks)
 
