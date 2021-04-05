@@ -1,2 +1,6 @@
 export * from './Client'
 export * from './Resource'
+export * from './SkillCategory'
+export * from './Skill'
+export * from './ResourceSkill'
+export * from './ProjectSkill'

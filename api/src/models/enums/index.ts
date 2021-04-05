@@ -24,6 +24,18 @@ registerEnumType(ProjectType, {
   name: 'ProjectType',
 })
 
+export enum SkillCategoryName {
+  TECHNICAL = 'Technical',
+  RELATIONSHIP = 'Relationship',
+  COMMUNICATION = 'Communication',
+  LEADERSHIP = 'Leadership',
+  ANALYTICAL = 'Analytical',
+}
+
+registerEnumType(SkillCategoryName, {
+  name: 'SkillCategoryEnum',
+})
+
 export enum Priority {
   HIGH = 'High',
   MEDIUM = 'Medium',
