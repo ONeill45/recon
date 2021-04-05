@@ -1,5 +1,5 @@
 import { Query, Resolver, Arg, Mutation } from 'type-graphql'
-import { ResourceSkill } from '../models'
+import { ResourceSkill, Resource, Skill } from '../models'
 import { ResourceSkillInput } from '../inputs/ResourceSkill'
 
 @Resolver()
@@ -16,7 +16,15 @@ export class ResourceSkillResolver {
 
   @Mutation(() => ResourceSkill)
   async createResourceSkill(@Arg('data') data: ResourceSkillInput) {
-    const resourceSkill = ResourceSkill.create(data)
+    const { resourceId, skillId } = data
+
+    const resource = await Resource.findOne(resourceId)
+    if (!resource) throw new Error(`Resource ${resourceId} not found!`)
+
+    const skill = await Skill.findOne(skillId)
+    if (!skill) throw new Error(`Skill ${skillId} not found!`)
+
+    const resourceSkill = ResourceSkill.create({ resource, skill, ...data })
     await resourceSkill.save()
     return resourceSkill
   }
