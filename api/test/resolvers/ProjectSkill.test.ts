@@ -60,7 +60,7 @@ describe('projectSkillResolver', () => {
       const client = ClientFactory.build()
       await Client.insert(client)
 
-      const project = ProjectFactory.build()
+      const project = ProjectFactory().build()
       project.client = client.id
       await Project.insert(project)
 
@@ -96,7 +96,7 @@ describe('projectSkillResolver', () => {
       const client = ClientFactory.build()
       await Client.insert(client)
 
-      const project = ProjectFactory.build()
+      const project = ProjectFactory().build()
       project.client = client.id
       await Project.insert(project)
 

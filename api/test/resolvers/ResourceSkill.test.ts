@@ -57,7 +57,7 @@ describe('resouceSkillResolver', () => {
       const department = DepartmentFactory.build()
       await Department.insert(department)
 
-      const resource = ResourceFactory.build()
+      const resource = ResourceFactory().build()
       resource.department = department.id
       await Resource.insert(resource)
 
@@ -93,7 +93,7 @@ describe('resouceSkillResolver', () => {
       const department = DepartmentFactory.build()
       await Department.insert(department)
 
-      const resource = ResourceFactory.build()
+      const resource = ResourceFactory().build()
       resource.department = department.id
       await Resource.insert(resource)
 

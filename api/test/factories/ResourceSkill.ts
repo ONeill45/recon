@@ -10,6 +10,6 @@ export const ResourceSkillFactory = Factory.define<ResourceSkill>(
 )
   .extend(AuditableEntityFactory)
   .attr('id', () => faker.random.uuid())
-  .attr('resource', () => ResourceFactory.build())
+  .attr('resource', () => ResourceFactory().build())
   .attr('skill', () => SkillFactory.build())
   .attr('skillValue', () => faker.random.number())
