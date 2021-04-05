@@ -1,12 +1,45 @@
 import { Query, Resolver, Mutation, Arg } from 'type-graphql'
 import { Client } from '../models'
 import { CreateClientInput, UpdateClientInput } from '../inputs'
+import { ILike } from 'typeorm'
 
 @Resolver()
 export class ClientResolver {
   @Query(() => [Client])
   clients() {
     return Client.find()
+  }
+
+  @Query(() => [Client])
+  async searchClients(@Arg('searchItem') searchItem: string) {
+    const foundClient = await Client.find({
+      relations: ['clientAllocations'],
+      where: [
+        {
+          clientName: ILike(`${searchItem}%`),
+        },
+        {
+          description: ILike(`${searchItem}%`),
+        },
+      ],
+    })
+    return foundClient
+  }
+
+  @Query(() => [Client])
+  async searchClient(@Arg('searchItem') searchItem: string) {
+    const foundClient = await Client.find({
+      // relations: ['clientAllocations'],
+      where: [
+        {
+          clientName: ILike(`${searchItem}%`),
+        },
+        {
+          description: ILike(`${searchItem}%`),
+        },
+      ],
+    })
+    return foundClient
   }
 
   @Query(() => Client, { nullable: true })
@@ -16,7 +49,7 @@ export class ClientResolver {
 
   @Mutation(() => Client)
   async updateClient(
-    @Arg('id') id: string,
+  @Arg('id') id: string,
     @Arg('data') data: UpdateClientInput,
   ) {
     const client = await Client.findOne({ id })
