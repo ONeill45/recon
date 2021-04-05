@@ -54,6 +54,10 @@ describe('Client page test', () => {
     const { getByText } = await render(Clients, {}, mocks, false)
     expect(getByText('Loading...')).toBeVisible()
   })
+  it('should render clients page and display filter sidebar', async () => {
+    const { getByText } = await render(Clients, {}, mocks)
+    expect(getByText('Filters')).toBeVisible()
+  })
   it('should fetch all clients and display their cards', async () => {
     const { getByText } = await render(Clients, {}, mocks)
 

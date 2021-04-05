@@ -1,10 +1,10 @@
 import { gql } from '@apollo/client'
 
 import Projects from 'pages/projects'
-import { ProjectFactory } from '../factories'
-import { render } from '../testUtils/render'
+import { ProjectFactory } from '../../factories'
+import { render } from '../../testUtils/render'
 
-const projects = ProjectFactory.buildList(5)
+const projects = ProjectFactory().buildList(5)
 
 const mocks = [
   {
@@ -63,6 +63,10 @@ describe('Projects page test', () => {
     const { getByText } = await render(Projects, {}, mocks, false)
 
     expect(getByText('Loading...')).toBeVisible()
+  })
+  it('should render projects page and display filter sidebar', async () => {
+    const { getByText } = await render(Projects, {}, mocks)
+    expect(getByText('Filters')).toBeVisible()
   })
   it('should fetch all projects and display their cards', async () => {
     const { getByText } = await render(Projects, {}, mocks)

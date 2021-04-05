@@ -54,14 +54,19 @@ describe('<ClientForm />', () => {
         },
         result: {
           data: {
-            id: client.id
+            id: client.id,
           },
         },
       },
     ]
- 
-    const { getByLabelText } = await render(ClientForm, {client}, mocks, false)
-    
+
+    const { getByLabelText } = await render(
+      ClientForm,
+      { client },
+      mocks,
+      false,
+    )
+
     expect(getByLabelText('client-name')).toHaveValue(client.clientName)
     expect(getByLabelText('description')).toHaveValue(client.description)
 
