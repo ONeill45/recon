@@ -23,5 +23,5 @@ export class Skill extends BaseEntity {
   @Field(() => SkillCategory)
   @ManyToOne(() => SkillCategory, { eager: true })
   @JoinColumn({ name: 'category_id' })
-  skillCategory: string
+  skillCategory: SkillCategory
 }

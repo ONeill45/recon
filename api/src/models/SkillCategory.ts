@@ -15,5 +15,5 @@ export class SkillCategory extends BaseEntity {
     type: 'enum',
     enum: SkillCategoryName,
   })
-  skillCategoryName: string
+  skillCategoryName: SkillCategoryName
 }

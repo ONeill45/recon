@@ -1,12 +1,11 @@
 import { InputType, Field } from 'type-graphql'
-
 @InputType()
 export class ResourceSkillInput {
   @Field()
-  resource: string
+  resourceId: string
 
   @Field()
-  skill: string
+  skillId: string
 
   @Field()
   skillValue: Number

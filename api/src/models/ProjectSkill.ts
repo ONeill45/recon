@@ -19,12 +19,12 @@ export class ProjectSkill extends BaseEntity {
   @Field(() => Project)
   @ManyToOne(() => Project, { eager: true })
   @JoinColumn({ name: 'project_id' })
-  project: string
+  project: Project
 
   @Field(() => Skill)
   @ManyToOne(() => Skill, { eager: true })
   @JoinColumn({ name: 'skill_id' })
-  skill: string
+  skill: Skill
 
   @Field(() => Number)
   @Column({ name: 'skill_value' })

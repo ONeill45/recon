@@ -3,10 +3,10 @@ import { InputType, Field } from 'type-graphql'
 @InputType()
 export class ProjectSkillInput {
   @Field()
-  project: string
+  projectId: string
 
   @Field()
-  skill: string
+  skillId: string
 
   @Field()
   skillValue: Number
