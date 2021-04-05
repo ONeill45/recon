@@ -21,7 +21,7 @@ export class ResourceAllocation extends BaseEntity implements AuditableEntity {
   id: string
 
   @Field(() => Resource)
-  @ManyToOne(() => Resource)
+  @ManyToOne(() => Resource, { eager: true })
   @JoinColumn({ name: 'resource_id' })
   resource: Resource
 

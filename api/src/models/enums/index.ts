@@ -35,3 +35,13 @@ export enum SkillCategoryName {
 registerEnumType(SkillCategoryName, {
   name: 'SkillCategoryEnum',
 })
+
+export enum Priority {
+  HIGH = 'High',
+  MEDIUM = 'Medium',
+  LOW = 'Low',
+}
+
+registerEnumType(Priority, {
+  name: 'Priority',
+})

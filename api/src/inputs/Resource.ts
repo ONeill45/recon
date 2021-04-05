@@ -26,6 +26,9 @@ export class CreateResourceInput {
   @Field()
   startDate: Date
 
+  @Field({ nullable: true })
+  terminationDate: Date
+
   @Field()
   createdBy: string
 

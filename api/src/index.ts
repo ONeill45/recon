@@ -11,6 +11,7 @@ import {
   SkillCategoryResolver,
   ResourceSkillResolver,
   ProjectSkillResolver,
+  DepartmentResolver,
 } from './resolvers'
 
 export const createSchema = async () =>
@@ -23,6 +24,7 @@ export const createSchema = async () =>
       SkillCategoryResolver,
       ResourceSkillResolver,
       ProjectSkillResolver,
+      DepartmentResolver,
     ],
   })
 

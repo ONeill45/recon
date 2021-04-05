@@ -6,7 +6,7 @@ import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
 
 applyMockUseRouter()
 
-const resources = ResourceFactory.buildList(5)
+const resources = ResourceFactory().buildList(5)
 
 const mocks = [
   {
@@ -34,6 +34,10 @@ describe('Resource page test', () => {
   it('should render resource page and display Loading...', async () => {
     const { getByText } = await render(Resources, {}, mocks, false)
     expect(getByText('Loading...')).toBeVisible()
+  })
+  it('should render resource page and display filter sidebar', async () => {
+    const { getByText } = await render(Resources, {}, mocks)
+    expect(getByText('Filters')).toBeVisible()
   })
   it('should fetch all resources and display their cards', async () => {
     const { getByText } = await render(Resources, {}, mocks)

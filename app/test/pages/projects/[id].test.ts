@@ -1,10 +1,15 @@
 import Project, { GET_PROJECT } from 'pages/projects/[id]'
-import { GET_ALL_RESOURCES } from 'pages/resources'
 import { ProjectFactory, ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
-const project = ProjectFactory.build()
-const resources = ResourceFactory.buildList(5)
+const resources = ResourceFactory().buildList(5)
+const project = ProjectFactory([
+  { resource: resources[0], isCurrent: true },
+  { resource: resources[1], isCurrent: true },
+  { resource: resources[2], isCurrent: true },
+  { resource: resources[3], isCurrent: true },
+  { resource: resources[4], isCurrent: false },
+]).build()
 
 applyMockUseRouter({ query: { id: project.id } })
 
@@ -22,16 +27,6 @@ const mocks = [
       },
     },
   },
-  {
-    request: {
-      query: GET_ALL_RESOURCES,
-    },
-    result: {
-      data: {
-        resources,
-      },
-    },
-  },
 ]
 
 const errorMocks = [
@@ -41,28 +36,6 @@ const errorMocks = [
       variables: {
         id: project.id,
       },
-    },
-    error: new Error('An error occurred'),
-  },
-]
-
-const resourceErrorMocks = [
-  {
-    request: {
-      query: GET_PROJECT,
-      variables: {
-        id: project.id,
-      },
-    },
-    result: {
-      data: {
-        project,
-      },
-    },
-  },
-  {
-    request: {
-      query: GET_ALL_RESOURCES,
     },
     error: new Error('An error occurred'),
   },
@@ -80,11 +53,6 @@ describe('Individual project page test', () => {
   })
   it('should show error message when an error occurs', async () => {
     const { getByText } = await render(Project, {}, errorMocks)
-
-    expect(getByText('Error: An error occurred')).toBeVisible()
-  })
-  it('should show error message when a resources error occurs', async () => {
-    const { getByText } = await render(Project, {}, resourceErrorMocks)
 
     expect(getByText('Error: An error occurred')).toBeVisible()
   })

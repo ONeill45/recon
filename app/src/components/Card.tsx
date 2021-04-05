@@ -26,7 +26,7 @@ export const CardDiv = styled.div<cardProps>`
   align-items: center;
   box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
     0 1px 5px 0 rgb(0 0 0 / 12%);
-  height: auto;
+  height: fit-content;
   padding: 16px;
   width: 100%;
   flex-grow: 1;

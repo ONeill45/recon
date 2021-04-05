@@ -1,7 +1,9 @@
 import { gql, useQuery } from '@apollo/client'
 
+import styles from '../../styles/Home.module.css'
+
 import { Client } from 'interfaces'
-import { Cards, PlusCircle, ClientCard } from 'components'
+import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
 
 const GET_ALL_CLIENTS = gql`
   {
@@ -28,12 +30,15 @@ const Clients = () => {
 
   return (
     <>
-      <Cards>
-        {clients.map((client: Client) => {
-          return <ClientCard key={client.id} client={client}></ClientCard>
-        })}
-      </Cards>
-      <PlusCircle size={'50'} route={'/clients/client'} />
+      <div className={styles.container}>
+        <FilterPanel />
+        <Cards>
+          {clients.map((client: Client) => {
+            return <ClientCard key={client.id} client={client} />
+          })}
+        </Cards>
+        <PlusCircle size="50" route="/clients/client" />
+      </div>
     </>
   )
 }
