@@ -108,8 +108,8 @@ describe('resouceSkillResolver', () => {
         source: createResourceSkillMutation,
         variableValues: {
           data: {
-            resource: resource.id,
-            skill: skill.id,
+            resourceId: resource.id,
+            skillId: skill.id,
             skillValue: 50,
           },
         },

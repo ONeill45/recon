@@ -77,7 +77,7 @@ describe('SkillResolver', () => {
         variableValues: {
           data: {
             skillName,
-            skillCategory: skillCategory.id,
+            skillCategoryId: skillCategory.id,
           },
         },
       })

@@ -111,8 +111,8 @@ describe('projectSkillResolver', () => {
         source: createProjectSkillMutation,
         variableValues: {
           data: {
-            project: project.id,
-            skill: skill.id,
+            projectId: project.id,
+            skillId: skill.id,
             skillValue: 50,
           },
         },

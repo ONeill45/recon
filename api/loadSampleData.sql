@@ -31,10 +31,10 @@ VALUES
 INSERT INTO public.project 
 (id, project_name, start_date, end_date, project_type, confidence, priority, created_date, created_by, updated_date, updated_by, deleted_date, deleted_by, client_id)
 VALUES
-(uuid_generate_v4(), 'Duzy Admin', '2019-10-01', '2020-10-01', 'fixed bid', 100, 'High', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'DuzyTV' )),
-(uuid_generate_v4(), 'Work OS', '2021-01-01', null, 'fixed bid', 100, 'Medium', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Anthem' )),
-(uuid_generate_v4(), 'Recon', '2020-12-01', null, 'internal', 100, 'Low', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Ascendum' )),
-(uuid_generate_v4(), 'Cortex v6', '2020-09-01', null, 'fixed bid', 100, 'High', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'CognitiveScale' ));
+(uuid_generate_v4(), 'Duzy Admin', '2019-10-01', '2020-10-01', 'fixed bid', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'DuzyTV' )),
+(uuid_generate_v4(), 'Work OS', '2021-01-01', null, 'fixed bid', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Anthem' )),
+(uuid_generate_v4(), 'Recon', '2020-12-01', null, 'internal', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Ascendum' )),
+(uuid_generate_v4(), 'Cortex v6', '2020-09-01', null, 'fixed bid', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'CognitiveScale' ));
 
 INSERT INTO public.resource
 (id, first_name, last_name, preferred_name, start_date, termination_date, title, email, image_url, department_id, created_date, created_by, updated_date, updated_by, deleted_date, deleted_by)
