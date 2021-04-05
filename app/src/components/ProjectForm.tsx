@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React from 'react'
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
@@ -65,26 +65,24 @@ type ProjectProps = {
 }
 
 export const ProjectForm = ({ project }: ProjectProps) => {
-  const [projectName, setProjectName] = React.useState(
-    project?.projectName || '',
-  )
-  const [client, setClient] = React.useState(project?.client || undefined)
-  const [projectType, setProjectType] = React.useState<string>(
+  const [projectName, setProjectName] = useState(project?.projectName || '')
+  const [client, setClient] = useState(project?.client || undefined)
+  const [projectType, setProjectType] = useState<string>(
     project?.projectType || ProjectTypeValues[0],
   )
-  const [priority, setPriority] = React.useState<string>(
+  const [priority, setPriority] = useState<string>(
     project?.priority || PriorityValues[0],
   )
-  const [confidence, setConfidence] = React.useState(
+  const [confidence, setConfidence] = useState(
     Number(project?.confidence || 50),
   )
-  const [startDate, setStartDate] = React.useState(
+  const [startDate, setStartDate] = useState(
     project?.startDate ? new Date(project.startDate) : new Date(),
   )
-  const [endDate, setEndDate] = React.useState<Date | null>(
+  const [endDate, setEndDate] = useState<Date | null>(
     project?.endDate ? new Date(project.endDate) : null,
   )
-  const [hasMadeChanges, setHasMadeChanges] = React.useState(false)
+  const [hasMadeChanges, setHasMadeChanges] = useState(false)
 
   const router = useRouter()
   const account = useMsAccount()
@@ -92,11 +90,11 @@ export const ProjectForm = ({ project }: ProjectProps) => {
   const [createProject] = useMutation(CREATE_PROJECT)
   const [updateProject] = useMutation(UPDATE_PROJECT)
 
-  const handleClientInput = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleClientInput = (e: ChangeEvent<HTMLSelectElement>) => {
     setClient(clients.find((client: Client) => e.target.value === client.id))
   }
 
-  const createNewProject = async (e: React.FormEvent) => {
+  const createNewProject = async (e: FormEvent) => {
     e.preventDefault()
 
     if (!client) {
@@ -122,7 +120,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
     router.push('/projects')
   }
 
-  const updateExistingProject = async (e: React.FormEvent) => {
+  const updateExistingProject = async (e: FormEvent) => {
     e.preventDefault()
     if (!client) {
       alert('Client cannot be empty')
@@ -152,7 +150,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
 
   const { clients = [] } = data || {}
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (clients.length) {
       if (project) {
         const client = clients.find((c: Client) => c.id === project.client.id)
@@ -164,7 +162,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
   }, [clients])
 
   if (project) {
-    React.useEffect(() => {
+    useEffect(() => {
       const client = clients.find((c: Client) => c.id === project.client.id)
       if (
         projectName !== project.projectName ||
@@ -202,7 +200,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
           <CreateProjectFormInput
             type="text"
             aria-label="project-name"
-            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+            onChange={(e: FormEvent<HTMLInputElement>) =>
               setProjectName(e.currentTarget.value)
             }
             value={projectName}
@@ -227,7 +225,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
           <CreateProjectFormInputSelect
             value={client?.id}
             aria-label="client"
-            onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               handleClientInput(event)
             }
           >
@@ -244,7 +242,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
           Project Type
           <CreateProjectFormInputSelect
             value={projectType}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
               setProjectType(e.target.value)
             }
             aria-label="project-type"
@@ -262,7 +260,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
           Priority
           <CreateProjectFormInputSelect
             value={priority}
-            onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
               setPriority(e.target.value)
             }
             aria-label="priority"
@@ -284,7 +282,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
             value={confidence}
             min="0"
             max="100"
-            onChange={(e: React.FormEvent<HTMLInputElement>) =>
+            onChange={(e: FormEvent<HTMLInputElement>) =>
               setConfidence(Number(e.currentTarget.value))
             }
           />

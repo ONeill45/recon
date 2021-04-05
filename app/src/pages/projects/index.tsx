@@ -1,7 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 
 import { ProjectCard, PlusCircle, Cards, FilterPanel } from 'components'
-import Footer from 'components/Footer'
 import { Project } from 'interfaces'
 
 import styles from '../../styles/Home.module.css'
@@ -32,6 +31,7 @@ const Projects = () => {
   if (error) return <p>Error: {error.message}</p>
 
   const { projects } = data
+
   return (
     <>
       <div className={styles.container}>
@@ -43,7 +43,6 @@ const Projects = () => {
         </Cards>
         <PlusCircle size="50" route="/projects/new" />
       </div>
-      <Footer />
     </>
   )
 }

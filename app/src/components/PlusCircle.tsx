@@ -17,8 +17,6 @@ const PlusCircleDiv = styled.div`
   position: fixed;
   right: 10px;
   bottom: 70px;
-  right: 50px;
-  bottom: 50px;
 `
 
 export const PlusCircle = ({ size, route }: plusCircleProps) => {

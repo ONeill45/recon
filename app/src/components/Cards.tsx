@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { FC } from 'react'
 import styled from '@emotion/styled'
 
 const CardsDiv = styled.div`
@@ -11,4 +11,4 @@ const CardsDiv = styled.div`
   height: 300px;
 `
 
-export const Cards: React.FC = ({ children }) => <CardsDiv>{children}</CardsDiv>
+export const Cards: FC = ({ children }) => <CardsDiv>{children}</CardsDiv>

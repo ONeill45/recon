@@ -20,12 +20,10 @@ describe('<ResourceDetailCards />', () => {
     const { getByText } = await render(ResourceDetailCards, {
       resource,
     })
-    expect(getByText('Status: Active')).toBeVisible()
-    expect(getByText(`Department: ${departmentName}`)).toBeVisible()
-    expect(getByText('Termination Date: N/A')).toBeVisible()
-    expect(
-      getByText(`Length Of Service: ${getDuration(startDate)}`),
-    ).toBeVisible()
+    expect(getByText('Active')).toBeVisible()
+    expect(getByText(`${departmentName}`)).toBeVisible()
+    expect(getByText('N/A')).toBeVisible()
+    expect(getByText(`${getDuration(startDate)}`)).toBeVisible()
     expect(getByText(projects[0].projectName)).toBeVisible()
     expect(getByText(projects[1].projectName)).toBeVisible()
   })
@@ -46,20 +44,13 @@ describe('<ResourceDetailCards />', () => {
     const { getByText } = await render(ResourceDetailCards, {
       resource,
     })
-    expect(getByText('Status: Terminated')).toBeVisible()
-    expect(getByText(`Department: ${departmentName}`)).toBeVisible()
+    expect(getByText('Terminated')).toBeVisible()
+    expect(getByText(`${departmentName}`)).toBeVisible()
     expect(
-      getByText(
-        `Termination Date: ${formatDate(
-          terminationDate,
-          DateFormat.DATE_ONLY,
-        )}`,
-      ),
+      getByText(`${formatDate(terminationDate, DateFormat.DATE_ONLY)}`),
     ).toBeVisible()
     expect(
-      getByText(
-        `Length Of Service: ${getDuration(startDate, terminationDate)}`,
-      ),
+      getByText(`${getDuration(startDate, terminationDate)}`),
     ).toBeVisible()
     expect(getByText(projects[0].projectName)).toBeVisible()
     expect(getByText(projects[1].projectName)).toBeVisible()

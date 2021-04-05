@@ -18,6 +18,11 @@ export enum ProjectType {
   INTERNAL = 'internal',
 }
 
+export enum ResourceStatus {
+  TERMINATED = 'Terminated',
+  ACTIVE = 'Active',
+}
+
 export enum Priority {
   HIGH = 'High',
   MEDIUM = 'Medium',

@@ -35,6 +35,10 @@ describe('Resource page test', () => {
     const { getByText } = await render(Resources, {}, mocks, false)
     expect(getByText('Loading...')).toBeVisible()
   })
+  it('should render resource page and display filter sidebar', async () => {
+    const { getByText } = await render(Resources, {}, mocks)
+    expect(getByText('Filters')).toBeVisible()
+  })
   it('should fetch all resources and display their cards', async () => {
     const { getByText } = await render(Resources, {}, mocks)
 
