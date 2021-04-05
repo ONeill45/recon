@@ -1,3 +1,13 @@
+DELETE FROM public.resource_skill;
+DELETE FROM public.project_skill;
+DELETE FROM public.skill;
+DELETE FROM public.skill_category;
+DELETE FROM public.resource_allocation;
+DELETE FROM public.resource;
+DELETE FROM public.project;
+DELETE FROM public.department;
+DELETE FROM public.client;
+
 INSERT INTO public.client
 (id, client_name, description, logo_url, start_date, end_date, created_date, created_by, updated_date, updated_by, deleted_date, deleted_by)
 VALUES
