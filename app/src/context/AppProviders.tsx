@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import '../styles/globals.css'
 import { ThemeProvider } from '@emotion/react'
 import { ApolloProvider } from '@apollo/client'
 import { MsalProvider } from '@azure/msal-react'

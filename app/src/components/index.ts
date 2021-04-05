@@ -1,4 +1,3 @@
-export * from './AppProviders'
 export * from './Button'
 export * from './Login'
 export * from './Card'

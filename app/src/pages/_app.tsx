@@ -6,7 +6,8 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react'
 
-import { Login, NavBar, AppProviders } from 'components'
+import { Login, NavBar } from 'components'
+import { AppProviders } from '../context'
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
