@@ -1,11 +1,11 @@
-import React, { useState } from 'react'
-import { ThemeProvider } from '@emotion/react'
+import React from 'react'
+
 import { ApolloProvider } from '@apollo/client'
 import { MsalProvider } from '@azure/msal-react'
 import { PublicClientApplication, Configuration } from '@azure/msal-browser'
-import client from '../lib/apolloClient'
+import client from '../../lib/apolloClient'
 import { loadEnvironmentVariable } from 'utils/functions'
-import { themeLight, themeDark } from '../styles/theme'
+import { ThemeProvider } from './ThemeProvider'
 
 const getMsalConfig = (): Configuration => ({
   auth: {
@@ -27,11 +27,10 @@ const getMsalConfig = (): Configuration => ({
 
 export const AppProviders: React.FC = ({ children }) => {
   const msalInstance = new PublicClientApplication(getMsalConfig())
-  const [darkTheme, setDarkTheme] = useState(true)
 
   return (
     <MsalProvider instance={msalInstance}>
-      <ThemeProvider theme={darkTheme ? themeDark : themeLight}>
+      <ThemeProvider>
         <ApolloProvider client={client}>{children}</ApolloProvider>
       </ThemeProvider>
     </MsalProvider>

@@ -7,7 +7,7 @@ import {
 } from '@azure/msal-react'
 
 import { Login, NavBar } from 'components'
-import { AppProviders } from '../context'
+import { AppProviders } from '../utils/context'
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
