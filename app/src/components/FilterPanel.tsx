@@ -44,13 +44,13 @@ const filterCategoryProperties = [
   {
     title: 'Resources',
     children: [
-      { field: 'title', type: 'text', label: 'Title'},
-      { field: 'departmentName', type: 'text', label: 'Department Name'},
-      { field: 'project', type: 'text', label: 'Project'},
+      { field: 'title', type: 'checkbox', label: 'Title'},
+      { field: 'departmentName', type: 'checkbox', label: 'Department Name'},
+      { field: 'project', type: 'checkbox', label: 'Project'},
+      { field: 'clients', type: 'checkbox', label: 'Client'},
+      { field: 'skills', type: 'checkbox', label: 'Skill'},
       { field: 'startDate', type: 'date', label: 'Start Date'},
       { field: 'terminationdate', type: 'date', label: 'Termination Date'},
-      { field: 'clients', type: 'text', label: 'Client'},
-      { field: 'skills', type: 'text', label: 'Skill'}
     ]
   },
 ]

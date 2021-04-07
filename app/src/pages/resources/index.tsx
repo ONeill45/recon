@@ -87,7 +87,7 @@ const Resources = () => {
   const page = 'Resources'
 
   useEffect(() => {
-    setData({})
+    setData({}) 
     setError(null)
     getAllResources({variables: filter})
   }, [filter, getAllResources])
@@ -100,8 +100,6 @@ const Resources = () => {
   }
 
   const { resources } = data
-
-  console.log('= = =     resources = = = == = ', resources)
 
   return (
     <>
