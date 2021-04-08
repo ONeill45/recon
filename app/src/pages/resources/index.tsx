@@ -76,7 +76,7 @@ const Resources = () => {
     fetchPolicy: 'network-only',
   })
 
-  const [searchText, setSearchText] = useState()
+  const [searchText, setSearchText] = useState('')
 
   const searchQuery = useQuery(GET_SEARCHED_RESOURCES, {
     fetchPolicy: 'network-only',

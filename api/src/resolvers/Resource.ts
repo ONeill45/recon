@@ -15,7 +15,7 @@ export class ResourceResolver {
   }
 
   @Query(() => [Resource])
-  async searchResource(@Arg('searchItem') searchItem: string): Promise<Resource | null> {
+  async searchResource(@Arg('searchItem') searchItem: string): Promise<Resource[] | null> {
     const foundResource = await Resource.find(
       {
         relations: ['resourceAllocations'],
