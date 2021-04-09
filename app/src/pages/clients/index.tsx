@@ -4,7 +4,6 @@ import styles from '../../styles/Home.module.css'
 
 import { Client } from 'interfaces'
 import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
-import Footer from 'components/Footer'
 
 const GET_ALL_CLIENTS = gql`
   {
@@ -40,7 +39,6 @@ const Clients = () => {
         </Cards>
         <PlusCircle size="50" route="/clients/client" />
       </div>
-      <Footer />
     </>
   )
 }
