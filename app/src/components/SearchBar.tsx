@@ -1,11 +1,11 @@
 import styled from '@emotion/styled'
-import { css } from '@emotion/react'
+// import { css } from '@emotion/react'
 import { useEffect, useState, FormEvent } from 'react'
 import { SearchList } from 'components'
 
-const isDisplayed = ({ display }: displayProps) => css`
-  display: ${display ? 'block' : 'none'};
-`
+type displayProps = {
+  display: boolean
+}
 
 const SearchInput = styled.input`
   width: 72%;
@@ -17,15 +17,12 @@ const SearchComponentConatainer = styled.div`
 `
 
 const ResultsListContainer = styled.div<displayProps>`
-  ${isDisplayed};
+  display: ${(props: any) =>
+    props.display ? 'block' : 'none' /* istanbul ignore next */};
   position: absolute;
   top: 2.4rem;
   width: 100%;
 `
-
-type displayProps = {
-  display: boolean
-}
 
 type SearchBarProps = {
   setSearchText?: any
@@ -57,15 +54,16 @@ export const SearchBar = ({ setSearchText, searchQuery }: SearchBarProps) => {
   }, [searchQuery])
 
   useEffect(() => {
+    let handler: any
     if (setSearchText) {
-      const handler = setTimeout(() => {
+      handler = setTimeout(() => {
         setSearchText(inputText);
       }, 500);
-  
-      return () => {
-        clearTimeout(handler);
-      };
     }
+
+    return () => {
+      clearTimeout(handler);
+    };
   }, [inputText])
 
   return (
