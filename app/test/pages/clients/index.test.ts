@@ -4,7 +4,7 @@ import Clients from 'pages/clients'
 import { ClientFactory } from '../../factories'
 import { render } from '../../testUtils'
 
-const clients = ClientFactory.buildList(5)
+const clients = ClientFactory().buildList(5)
 const mocks = [
   {
     request: {

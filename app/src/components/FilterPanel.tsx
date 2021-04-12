@@ -44,28 +44,29 @@ const filterCategoryProperties = [
   {
     title: 'Resources',
     children: [
-      { field: 'title', type: 'checkbox', label: 'Title'},
-      { field: 'departmentName', type: 'checkbox', label: 'Department Name'},
-      { field: 'project', type: 'checkbox', label: 'Project'},
-      { field: 'clients', type: 'checkbox', label: 'Client'},
-      { field: 'skills', type: 'checkbox', label: 'Skill'},
-      { field: 'startDate', type: 'date', label: 'Start Date'},
-      { field: 'terminationdate', type: 'date', label: 'Termination Date'},
-    ]
+      { field: 'title', type: 'checkbox', label: 'Title' },
+      { field: 'departmentName', type: 'checkbox', label: 'Department Name' },
+      { field: 'project', type: 'checkbox', label: 'Project' },
+      { field: 'clients', type: 'checkbox', label: 'Client' },
+      { field: 'skills', type: 'checkbox', label: 'Skill' },
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'terminationdate', type: 'date', label: 'Termination Date' },
+    ],
   },
 ]
 
 type FilterPanelProps = {
-  page: String | null | undefined,
-  onFilter: (queryData: {[key: string]: any}) => void;
+  page: String | null | undefined
+  onFilter: (queryData: { [key: string]: any }) => void
 }
 
-export const FilterPanel = ({ page, onFilter }: FilterPanelProps) => {
+export const FilterPanel = (props: FilterPanelProps) => {
+  const { page, onFilter } = props
   const [expanded, setExpanded] = useState(false)
 
   const filterCategories = useMemo(() => {
     if (page) {
-      return filterCategoryProperties.filter(item => item.title === page)
+      return filterCategoryProperties.filter((item) => item.title === page)
     }
     return filterCategoryProperties
   }, [page])
@@ -86,8 +87,13 @@ export const FilterPanel = ({ page, onFilter }: FilterPanelProps) => {
         displayed={expanded}
       >
         <SearchBar />
-        {filterCategories.map((property: { title: string; children: Array<{[key: string]: string}>}) => (
-          <FilterCategory key={property.title} title={property.title} fields={property.children} onChange={onFilter}/>
+        {filterCategories.map((property) => (
+          <FilterCategory
+            key={property.title}
+            title={property.title}
+            fields={property.children}
+            onChange={onFilter}
+          />
         ))}
       </ExpandedFilterPanelDiv>
     </>

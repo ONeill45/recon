@@ -39,8 +39,24 @@ export const GET_ALL_RESOURCES = gql`
 `
 
 export const GET_RESOURCES = gql`
-  query GetAllResource($title: String, $startDate: String, $terminationDate: String, $clients: String, $skills: String, $departmentName: String, $project: String) {
-    resources(title: $title, startDate: $startDate, terminationDate: $terminationDate, clients: $clients, skills: $skills, departmentName: $departmentName, project: $project) {
+  query GetAllResource(
+    $title: String
+    $startDate: String
+    $terminationDate: String
+    $clients: String
+    $skills: String
+    $departmentName: String
+    $project: String
+  ) {
+    resources(
+      title: $title
+      startDate: $startDate
+      terminationDate: $terminationDate
+      clients: $clients
+      skills: $skills
+      departmentName: $departmentName
+      project: $project
+    ) {
       id
       firstName
       lastName
@@ -73,23 +89,29 @@ export const GET_RESOURCES = gql`
 
 const Resources = () => {
   const [filter, setFilter] = useState({})
-  const [error, setError] = useState(null)
-  const [data, setData] = useState({})
+  const [error, setError] = useState<{ [key: string]: any } | undefined>(
+    undefined,
+  )
+  const [data, setData] = useState<{ [key: string]: any }>({})
   // const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
   //   fetchPolicy: 'network-only',
   // })
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
-    onCompleted: (res: Array<{[key: string]: any}>) => {setData(res)},
-    onError: (err: any) => {setError(err)}
+    onCompleted: (res: Array<{ [key: string]: any }>) => {
+      setData(res)
+    },
+    onError: (err: any) => {
+      setError(err)
+    },
   })
 
   const page = 'Resources'
 
   useEffect(() => {
-    setData({}) 
-    setError(null)
-    getAllResources({variables: filter})
+    setData({})
+    setError(undefined)
+    getAllResources({ variables: filter })
   }, [filter, getAllResources])
 
   if (loading) return <p>Loading...</p>
@@ -106,9 +128,10 @@ const Resources = () => {
       <div className={styles.container}>
         <FilterPanel page={page} onFilter={handleOnFilter} />
         <Cards>
-          {resources && resources.map((resource: Resource) => {
-            return <ResourceCard resource={resource} key={resource.id} />
-          })}
+          {resources &&
+            resources.map((resource: Resource) => {
+              return <ResourceCard resource={resource} key={resource.id} />
+            })}
         </Cards>
         <PlusCircle size={'50'} route={'/resources/resource'} />
       </div>

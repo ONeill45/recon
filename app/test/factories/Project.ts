@@ -19,7 +19,7 @@ export const ProjectFactory = (allocations: ResourceAllocationsInput[] = []) =>
     .attr('endDate', null)
     .attr('priority', () => faker.random.objectElement<Priority>(Priority))
     .attr('confidence', () => faker.random.number({ min: 1, max: 100 }))
-    .attr('client', () => ClientFactory.build())
+    .attr('client', () => ClientFactory().build())
     .attr('projectType', () =>
       faker.random.objectElement<ProjectType>(ProjectType),
     )

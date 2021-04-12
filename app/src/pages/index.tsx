@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <>
       <div className={styles.container}>
-        <FilterPanel />
+        <FilterPanel page={null} onFilter={() => {}} />
         <main className={styles.main}>
           <h1 className={styles.title}>Welcome to Recon!</h1>
 
