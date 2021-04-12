@@ -1,7 +1,7 @@
 import styled from '@emotion/styled'
 import React, { useState, useEffect } from 'react'
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
-import { gql, useLazyQuery } from '@apollo/client'
+import { gql, useLazyQuery, useQuery } from '@apollo/client'
 
 type filterCategoryProps = {
   title: string
@@ -124,22 +124,22 @@ export const FilterCategory = ({
     queryData[field] = value
   }
 
-  const [clients, setCleints] = useState<Array<string>>([])
+  // const [clients, setCleints] = useState<Array<string>>([])
   const [projects, setProjects] = useState<Array<string>>([])
   const [departments, setDepartments] = useState<Array<string>>([])
   const [titles, setTitles] = useState<Array<string>>([])
   const [skills, setSkills] = useState<Array<string>>([])
 
-  const [getClients] = useLazyQuery(GET_ALL_CLIENTS_NAME, {
-    fetchPolicy: 'network-only',
-    onCompleted: (res: { [key: string]: any }) => {
-      const _clients =
-        res?.clients &&
-        res.clients.map((item: { clientName: string }) => item.clientName)
-      setCleints(Array.from(new Set(_clients)))
-    },
-    onError: () => {},
-  })
+  // const [getClients] = useLazyQuery(GET_ALL_CLIENTS_NAME, {
+  //   fetchPolicy: 'network-only',
+  //   onCompleted: (res: { [key: string]: any }) => {
+  //     const _clients =
+  //       res?.clients &&
+  //       res.clients.map((item: { clientName: string }) => item.clientName)
+  //     setCleints(Array.from(new Set(_clients)))
+  //   },
+  //   onError: () => {},
+  // })
 
   const [getProjects] = useLazyQuery(GET_ALL_PROJECTS_NAME, {
     fetchPolicy: 'network-only',
@@ -174,15 +174,29 @@ export const FilterCategory = ({
     onError: () => {},
   })
 
-  // const page = 'Resources'
-
   useEffect(() => {
-    getClients()
+    // getClients()
     getProjects()
     getDepartments()
     getResourceTitles()
     setSkills(MockSkills)
   }, [])
+
+  const queryMultiple = () => {
+    const res1 = useQuery(GET_ALL_CLIENTS_NAME, { fetchPolicy: 'network-only' })
+    const res2 = useQuery(GET_ALL_PROJECTS_NAME, {
+      fetchPolicy: 'network-only',
+    })
+    const res3 = useQuery(GET_ALL_DEPARTMENTS_NAME, {
+      fetchPolicy: 'network-only',
+    })
+    const res4 = useQuery(GET_ALL_RESOURCE_TITLE, {
+      fetchPolicy: 'network-only',
+    })
+    return [res1, res2, res3, res4]
+  }
+
+  const [{ data: clients }] = queryMultiple()
 
   const onFilter = () => {
     onChange(queryData)
