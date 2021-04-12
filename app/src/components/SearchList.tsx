@@ -42,12 +42,7 @@ export const SearchList = ({ results }: SearchListProps) => {
       {
         results && results.map((result: Resource) => (
           <ResultsListItem key={result.id} onClick={() => listItemClick(result.id)}>
-            {
-              result.preferredName ? 
-                <span>{result.preferredName}</span> : 
-                <span>{result.firstName}</span>
-            }
-            <span> {result.lastName}</span>
+            {result.preferredName || result.firstName} {result.lastName}
             <ResourceTitle>
               {result.title}
             </ResourceTitle>
