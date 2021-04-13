@@ -87,11 +87,62 @@ export const GET_RESOURCES = gql`
   }
 `
 
+export const GET_ALL_CLIENTS_NAME = gql`
+  {
+    clients {
+      clientName
+    }
+  }
+`
+
+export const GET_ALL_PROJECTS_NAME = gql`
+  {
+    projects {
+      projectName
+    }
+  }
+`
+
+export const GET_ALL_DEPARTMENTS_NAME = gql`
+  {
+    departments {
+      name
+    }
+  }
+`
+
+export const GET_ALL_RESOURCE_TITLE = gql`
+  {
+    resources {
+      title
+    }
+  }
+`
+
+const MockSkills = [
+  'React',
+  'React Native',
+  'Vue',
+  'Angular',
+  'IONIC',
+  'Node',
+  'Ruby on Rails',
+  'CI/CD with Jenkins',
+  'AWS',
+]
+
 const Resources = () => {
   const [filter, setFilter] = useState({})
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
   )
+
+  const [clients, setCleints] = useState<Array<string>>([])
+  const [projects, setProjects] = useState<Array<string>>([])
+  const [departments, setDepartments] = useState<Array<string>>([])
+  const [titles, setTitles] = useState<Array<string>>([])
+  const [skills, setSkills] = useState<Array<string>>([])
+
   const [data, setData] = useState<{ [key: string]: any }>({})
   // const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
   //   fetchPolicy: 'network-only',
@@ -105,6 +156,58 @@ const Resources = () => {
       setError(err)
     },
   })
+
+  const [getClients] = useLazyQuery(GET_ALL_CLIENTS_NAME, {
+    fetchPolicy: 'network-only',
+    onCompleted: (res: { [key: string]: any }) => {
+      const _clients =
+        res?.clients &&
+        res.clients.map((item: { clientName: string }) => item.clientName)
+      setCleints(Array.from(new Set(_clients)))
+    },
+    onError: () => {},
+  })
+
+  const [getProjects] = useLazyQuery(GET_ALL_PROJECTS_NAME, {
+    fetchPolicy: 'network-only',
+    onCompleted: (res: { [key: string]: any }) => {
+      const _projects =
+        res?.projects &&
+        res.projects.map((item: { projectName: string }) => item.projectName)
+      setProjects(Array.from(new Set(_projects)))
+    },
+    onError: () => {},
+  })
+
+  const [getDepartments] = useLazyQuery(GET_ALL_DEPARTMENTS_NAME, {
+    fetchPolicy: 'network-only',
+    onCompleted: (res: { [key: string]: any }) => {
+      const _departments =
+        res?.departments &&
+        res.departments.map((item: { name: string }) => item.name)
+      setDepartments(Array.from(new Set(_departments)))
+    },
+    onError: () => {},
+  })
+
+  const [getResourceTitles] = useLazyQuery(GET_ALL_RESOURCE_TITLE, {
+    fetchPolicy: 'network-only',
+    onCompleted: (res: { [key: string]: any }) => {
+      const _titles =
+        res?.resources &&
+        res.resources.map((item: { title: string }) => item.title)
+      setTitles(Array.from(new Set(_titles)))
+    },
+    onError: () => {},
+  })
+
+  useEffect(() => {
+    getClients()
+    getProjects()
+    getDepartments()
+    getResourceTitles()
+    setSkills(MockSkills)
+  }, [])
 
   const page = 'Resources'
 
@@ -126,7 +229,11 @@ const Resources = () => {
   return (
     <>
       <div className={styles.container}>
-        <FilterPanel page={page} onFilter={handleOnFilter} />
+        <FilterPanel
+          page={page}
+          onFilter={handleOnFilter}
+          filterItems={{ clients, projects, departments, titles, skills }}
+        />
         <Cards>
           {resources &&
             resources.map((resource: Resource) => {

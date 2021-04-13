@@ -24,46 +24,21 @@ const data = {
   field: 'checkbox',
   name: 'software developer',
 }
-const clients = ClientFactory().buildList(5)
-
-const resources = ResourceFactory().buildList(2)
-const projects = ProjectFactory().buildList(5)
-const departmants = DepartmentFactory().buildList(5)
-const mockProjects = [
-  {
-    request: {
-      query: GET_ALL_PROJECTS_NAME,
-    },
-    result: {
-      data: {
-        projects,
-      },
-    },
-  },
-]
 
 describe('<FilterCategory />', () => {
   it('should not show expanded filter category content by default', async () => {
-    const { queryByTestId, getByText } = await render(
-      FilterCategory,
-      {
-        title,
-      },
-      mockProjects,
-    )
+    const { queryByTestId, getByText } = await render(FilterCategory, {
+      title,
+    })
 
     expect(queryByTestId('FilterCategoryContent')).toBeNull()
     expect(getByText(title)).toBeVisible()
   })
 
   it('should show expanded filter category content when header is clicked', async () => {
-    const { getByTestId, getByText } = await render(
-      FilterCategory,
-      {
-        title,
-      },
-      mockProjects,
-    )
+    const { getByTestId, getByText } = await render(FilterCategory, {
+      title,
+    })
 
     userEvent.click(getByText(title))
 

@@ -35,7 +35,7 @@ const Projects = () => {
   return (
     <>
       <div className={styles.container}>
-        <FilterPanel page={null} onFilter={() => {}} />
+        <FilterPanel onFilter={() => {}} />
         <Cards>
           {projects.map((project: Project) => {
             return <ProjectCard project={project} key={project.id} />

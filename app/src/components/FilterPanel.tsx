@@ -56,12 +56,13 @@ const filterCategoryProperties = [
 ]
 
 type FilterPanelProps = {
-  page: String | null | undefined
+  page?: String | null | undefined
+  filterItems?: { [key: string]: any } | undefined
   onFilter: (queryData: { [key: string]: any }) => void
 }
 
 export const FilterPanel = (props: FilterPanelProps) => {
-  const { page, onFilter } = props
+  const { page, onFilter, filterItems } = props
   const [expanded, setExpanded] = useState(false)
 
   const filterCategories = useMemo(() => {
@@ -92,6 +93,7 @@ export const FilterPanel = (props: FilterPanelProps) => {
             key={property.title}
             title={property.title}
             fields={property.children}
+            filterItems={filterItems}
             onChange={onFilter}
           />
         ))}
