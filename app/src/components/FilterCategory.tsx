@@ -127,7 +127,7 @@ export const FilterCategory = ({
     if (item.type === 'checkbox' && selectRenderItems(item.field)) {
       const items = selectRenderItems(item.field)
 
-      if (items) {
+      if (items && items.length) {
         return (
           <>
             <FilterItemDiv>
