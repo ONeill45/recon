@@ -6,6 +6,8 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Resource, Department } from 'interfaces'
 import { useMsAccount } from 'utils/hooks'
+import { Toast } from 'components'
+import { useToast } from 'hooks'
 
 const CreateResourceForm = styled.form`
   margin: 1rem 0;
@@ -24,19 +26,15 @@ const CreateResourceFormInput = styled.input`
   margin: 0.5rem 0;
 `
 
-const ButtonContainer = styled.div`
-  text-align: center;
-  margin-bottom: 1rem;
-`
-
-const CancelButton = styled.button`
-  margin-right: 1rem;
-`
-
 const DepartmentSelect = styled.select`
   width: 50%;
-  padding: 5px 10px;
-  margin: 8px 0;
+  padding: 0.3rem 0.6rem;
+  margin: 0.5rem 0;
+`
+
+const SubmitButton = styled.button`
+  display: block;
+  margin-top: 1rem;
 `
 
 export const GET_ALL_DEPARTMENTS = gql`
@@ -86,13 +84,22 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
   const [department, setDepartment] = useState(resource?.department || null)
 
   const id = resource?.id
-  const [isFormChanged, setIsFormChanged] = useState(false)
+  const [hasFormChanged, setHasFormChanged] = useState(false)
 
   const router = useRouter()
   const account = useMsAccount()
 
   const [createResource] = useMutation(CREATE_RESOURCE)
   const [updateResource] = useMutation(UPDATE_RESOURCE)
+
+  const { 
+    setDisplayToast,
+    setToastMessage, 
+    setUpdateSuccess, 
+    displayToast, 
+    toastMessage, 
+    updateSuccess 
+  } = useToast()
 
   const handleDepartmentInput = (e: ChangeEvent<HTMLSelectElement>) => {
     setDepartment(
@@ -126,42 +133,49 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   const updateExistingResource = async (e: FormEvent) => {
     e.preventDefault()
-    await updateResource({
-      variables: {
-        id: id,
-        data: {
-          firstName,
-          lastName,
-          preferredName,
-          title,
-          departmentId: department?.id,
-          imageUrl,
-          email,
-          startDate,
-          terminationDate,
-          updatedBy: account?.username,
+
+    const mutationVariables = {
+        firstName,
+        lastName,
+        preferredName,
+        title,
+        departmentId: department?.id,
+        imageUrl,
+        email,
+        startDate,
+        terminationDate,
+        updatedBy: account?.username,
+    }
+
+    try {
+      const { data } = await updateResource({
+        variables: {
+          id: id,
+          data: mutationVariables
         },
-      },
-    })
-  }
+      })
 
-  const formChange = () => {
-    setIsFormChanged(true)
-  }
-
-  const cancelClicked = () => {
-    router.push(id ? '/resources/' + id : '/resources')
+      if (data) {
+        setToastMessage('Successfully updated Resource!')
+        setUpdateSuccess(true)
+        setDisplayToast(true)
+      }
+    } catch {
+      setToastMessage('Oops! Something went wrong.')
+      setUpdateSuccess(false)
+      setDisplayToast(true)
+    }
   }
 
   // Added these effects for detecting changes on the date
   // pickers since they do not trigger a change event on the
   // <CreateResourceForm> component when they are modified
   useEffect(() => {
-    setIsFormChanged(true)
+    setHasFormChanged(true)
   }, [startDate, terminationDate])
 
   useEffect(() => {
-    setIsFormChanged(false)
+    setHasFormChanged(false)
   }, [])
 
   const { data, error } = useQuery(GET_ALL_DEPARTMENTS, {
@@ -187,124 +201,125 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   return (
     <>
-      <CreateResourceForm onChange={formChange}>
+      <Toast 
+        message={toastMessage} 
+        success={updateSuccess} 
+        display={displayToast} 
+        setDisplayToast={setDisplayToast}
+      />      
+      <CreateResourceForm onChange={() => setHasFormChanged(true)}>
         <CreateResourceFormLabel>
           First Name
-          <CreateResourceFormInput
-            type="text"
-            aria-label="first-name"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setFirstName(e.currentTarget.value)
-            }
-            value={firstName}
-          ></CreateResourceFormInput>
         </CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="first-name"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setFirstName(e.currentTarget.value)
+          }
+          value={firstName}
+        ></CreateResourceFormInput>
         <CreateResourceFormLabel>
           Last Name
-          <CreateResourceFormInput
-            type="text"
-            aria-label="last-name"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setLastName(e.currentTarget.value)
-            }
-            value={lastName}
-          ></CreateResourceFormInput>
         </CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="last-name"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setLastName(e.currentTarget.value)
+          }
+          value={lastName}
+        ></CreateResourceFormInput>
         <CreateResourceFormLabel>
           Preferred Name
-          <CreateResourceFormInput
-            type="text"
-            aria-label="preferred-name"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setPreferredName(e.currentTarget.value)
-            }
-            value={preferredName}
-          ></CreateResourceFormInput>
         </CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="preferred-name"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setPreferredName(e.currentTarget.value)
+          }
+          value={preferredName}
+        ></CreateResourceFormInput>
         <CreateResourceFormLabel>
           Title
-          <CreateResourceFormInput
-            type="text"
-            aria-label="title"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setTitle(e.currentTarget.value)
-            }
-            value={title}
-          ></CreateResourceFormInput>
         </CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="title"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setTitle(e.currentTarget.value)
+          }
+          value={title}
+        ></CreateResourceFormInput>
         <CreateResourceFormLabel>
           Department
-          <DepartmentSelect
-            value={department?.id}
-            aria-label="department-select"
-            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-              handleDepartmentInput(event)
-            }
-          >
-            {departments.map((department: Department) => {
-              return (
-                <option key={department.id} value={department.id}>
-                  {department.name}
-                </option>
-              )
-            })}
-          </DepartmentSelect>
         </CreateResourceFormLabel>
+        <DepartmentSelect
+          value={department?.id}
+          aria-label="department-select"
+          onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+            handleDepartmentInput(event)
+          }
+        >
+          {departments.map((department: Department) => {
+            return (
+              <option key={department.id} value={department.id}>
+                {department.name}
+              </option>
+            )
+          })}
+        </DepartmentSelect>
         <CreateResourceFormLabel>
           ImageUrl
-          <CreateResourceFormInput
-            type="text"
-            aria-label="image-url"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setImageUrl(e.currentTarget.value)
-            }
-            value={imageUrl}
-          ></CreateResourceFormInput>
         </CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="image-url"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setImageUrl(e.currentTarget.value)
+          }
+          value={imageUrl}
+        ></CreateResourceFormInput>
         <CreateResourceFormLabel>
           Email
-          <CreateResourceFormInput
-            type="text"
-            aria-label="email"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setEmail(e.currentTarget.value)
-            }
-            value={email}
-          ></CreateResourceFormInput>
         </CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="email"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setEmail(e.currentTarget.value)
+          }
+          value={email}
+        ></CreateResourceFormInput>
         <CreateResourceFormLabel>
           Start Date
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date) => setStartDate(date)}
-          ></DatePicker>
         </CreateResourceFormLabel>
+        <DatePicker
+          selected={startDate}
+          onChange={(date: Date) => setStartDate(date)}
+        ></DatePicker>
         <CreateResourceFormLabel>
           Termination Date (Optional)
-          <DatePicker
-            selected={terminationDate}
-            onChange={(date: Date) => setTerminationDate(date)}
-          ></DatePicker>
         </CreateResourceFormLabel>
-      </CreateResourceForm>
-      <ButtonContainer>
-        <CancelButton name="Cancel" onClick={cancelClicked}>
-          Cancel
-        </CancelButton>
+        <DatePicker
+          selected={terminationDate}
+          onChange={(date: Date) => setTerminationDate(date)}
+        ></DatePicker>
         {id ? (
-          <button
-            name="Save"
-            disabled={!isFormChanged}
+          <SubmitButton
+            name="Update"
+            disabled={!hasFormChanged}
             onClick={updateExistingResource}
           >
-            Save
-          </button>
+            Update
+          </SubmitButton>
         ) : (
-          <button name="Submit" onClick={createNewResource}>
+          <SubmitButton name="Submit" onClick={createNewResource}>
             Submit
-          </button>
+          </SubmitButton>
         )}
-      </ButtonContainer>
+      </CreateResourceForm>
     </>
   )
 }

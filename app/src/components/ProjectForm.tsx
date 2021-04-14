@@ -8,19 +8,21 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { useMsAccount } from 'utils/hooks'
 import { Client, ProjectType, Project } from 'interfaces'
 import { Priority } from '../interfaces/Enum'
+import { Toast } from 'components'
+import { useToast } from 'hooks'
 
 const ProjectTypeValues = Object.entries(ProjectType).map((a) => a[1])
 const PriorityValues = Object.entries(Priority).map((a) => a[1])
 
 const CreateProjectForm = styled.form`
-  margin-top: 30px;
+  margin: 1rem 0;
   padding-left: 35%;
 `
 const CreateProjectFormLabel = styled.label`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 10px 0 10px 0;
+  padding: 0.6rem 0;
 `
 
 const CreateProjectFormInput = styled.input`
@@ -33,6 +35,11 @@ const CreateProjectFormInputSelect = styled.select`
   width: 50%;
   padding: 5px 10px;
   margin: 8px 0;
+`
+
+const SubmitButton = styled.button`
+  display: block;
+  margin-top: 1rem;
 `
 
 export const GET_ALL_CLIENTS = gql`
@@ -82,13 +89,22 @@ export const ProjectForm = ({ project }: ProjectProps) => {
   const [endDate, setEndDate] = useState<Date | null>(
     project?.endDate ? new Date(project.endDate) : null,
   )
-  const [hasMadeChanges, setHasMadeChanges] = useState(false)
+  const [hasMadeChanges, setHasFormChanged] = useState(false)
 
   const router = useRouter()
   const account = useMsAccount()
 
   const [createProject] = useMutation(CREATE_PROJECT)
   const [updateProject] = useMutation(UPDATE_PROJECT)
+
+  const { 
+    setDisplayToast,
+    setToastMessage, 
+    setUpdateSuccess, 
+    displayToast, 
+    toastMessage, 
+    updateSuccess 
+  } = useToast()
 
   const handleClientInput = (e: ChangeEvent<HTMLSelectElement>) => {
     setClient(clients.find((client: Client) => e.target.value === client.id))
@@ -126,7 +142,7 @@ export const ProjectForm = ({ project }: ProjectProps) => {
       alert('Client cannot be empty')
       return
     }
-    const data = {
+    const mutationVariables = {
       projectName,
       clientId: client.id,
       startDate,
@@ -136,12 +152,26 @@ export const ProjectForm = ({ project }: ProjectProps) => {
       confidence,
       updatedBy: account?.username,
     }
-    await updateProject({
-      variables: {
-        id: project?.id,
-        data,
-      },
-    })
+
+    try {
+      const { data } = await updateProject({
+        variables: {
+          id: project?.id,
+          data: mutationVariables,
+        },
+      })
+
+      if (data) {
+        setToastMessage('Successfully updated Project!')
+        setUpdateSuccess(true)
+        setDisplayToast(true)
+      }
+    } catch {
+      setToastMessage('Oops! Something went wrong.')
+      setUpdateSuccess(false)
+      setDisplayToast(true)
+    }
+
   }
 
   const { data, error } = useQuery(GET_ALL_CLIENTS, {
@@ -161,40 +191,33 @@ export const ProjectForm = ({ project }: ProjectProps) => {
     }
   }, [clients])
 
-  if (project) {
-    useEffect(() => {
-      const client = clients.find((c: Client) => c.id === project.client.id)
-      if (
-        projectName !== project.projectName ||
-        projectType !== project.projectType ||
-        confidence !== project.confidence ||
-        priority !== project.priority ||
-        (client && client !== project.client) ||
-        new Date(startDate).getTime() !==
-          new Date(project.startDate).getTime() ||
-        (endDate ? new Date(endDate).getTime() : null) !==
-          (project?.endDate ? new Date(project.endDate).getTime() : null)
-      ) {
-        setHasMadeChanges(true)
-      } else {
-        setHasMadeChanges(false)
-      }
-    }, [
-      projectName,
-      startDate,
-      endDate,
-      client,
-      projectType,
-      confidence,
-      priority,
-    ])
+
+  // Added these effects for detecting changes on the date
+  // pickers since they do not trigger a change event on the
+  // <CreateProjectForm> component when they are modified
+  useEffect(() => {
+    setHasFormChanged(true)
+  }, [startDate, endDate])
+
+  useEffect(() => {
+    setHasFormChanged(false)
+  }, [])
+
+  const formChange = () => {
+    setHasFormChanged(true)
   }
 
   if (error) return <p>Error: {error.message}</p>
 
   return (
     <>
-      <CreateProjectForm>
+      <Toast 
+        message={toastMessage} 
+        success={updateSuccess} 
+        display={displayToast} 
+        setDisplayToast={setDisplayToast}
+      />
+      <CreateProjectForm onChange={formChange}>
         <CreateProjectFormLabel>
           Name
           <CreateProjectFormInput
@@ -288,17 +311,17 @@ export const ProjectForm = ({ project }: ProjectProps) => {
           />
         </CreateProjectFormLabel>
         {project ? (
-          <button
+          <SubmitButton
             name="Submit"
             onClick={updateExistingProject}
-            disabled={hasMadeChanges ? false : true}
+            disabled={!hasMadeChanges}
           >
             Update
-          </button>
+          </SubmitButton>
         ) : (
-          <button name="Submit" onClick={createNewProject}>
+          <SubmitButton name="Submit" onClick={createNewProject}>
             Submit
-          </button>
+          </SubmitButton>
         )}
       </CreateProjectForm>
     </>

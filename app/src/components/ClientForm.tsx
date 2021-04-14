@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { FormEvent, useState } from 'react'
+import React, { FormEvent, useState, useEffect } from 'react'
 import { gql, useMutation } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
@@ -7,27 +7,30 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 import { useMsAccount } from 'utils/hooks'
 import { Client } from 'interfaces'
+import { Toast } from 'components'
+import { useToast } from 'hooks'
 
 const CreateClientForm = styled.form`
-  margin-top: 30px;
+  margin: 1rem 0;
   padding-left: 35%;
 `
 const CreateClientFormLabel = styled.label`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 10px 0 10px 0;
+  padding: 0.6rem 0;
 `
 
 const CreateClientFormInput = styled.input`
   width: 50%;
-  padding: 5px 10px;
-  margin: 8px 0;
+  padding: 0.3rem 0.6rem;
+  margin: 0.5rem 0;
 `
 
-const SubmitButton = styled.button``
-
-const UpdateButton = styled.button``
+const SubmitButton = styled.button`
+  display: block;
+  margin-top: 1rem;
+`
 
 export const CREATE_CLIENT = gql`
   mutation CreateClient($data: CreateClientInput!) {
@@ -57,6 +60,7 @@ export const ClientForm = ({ client }: ClientProps) => {
   const [endDate, setEndDate] = useState<Date | null>(
     client?.endDate ? new Date(client?.endDate) : null,
   )
+  const [hasFormChanged, setHasFormChanged] = useState(false)
   const id = client?.id
 
   const router = useRouter()
@@ -64,6 +68,15 @@ export const ClientForm = ({ client }: ClientProps) => {
 
   const [createClient] = useMutation(CREATE_CLIENT)
   const [updateClient] = useMutation(UPDATE_CLIENT)
+
+  const { 
+    setDisplayToast,
+    setToastMessage, 
+    setUpdateSuccess, 
+    displayToast, 
+    toastMessage, 
+    updateSuccess 
+  } = useToast()
 
   const createNewClient = async (e: FormEvent) => {
     e.preventDefault()
@@ -85,70 +98,101 @@ export const ClientForm = ({ client }: ClientProps) => {
 
   const updateClientById = async (e: FormEvent) => {
     e.preventDefault()
-    await updateClient({
-      variables: {
-        id,
-        data: {
-          clientName,
-          description,
-          logoUrl,
-          startDate,
-          endDate,
-          updatedBy: account?.username,
+
+    const mutationVariables = {
+      clientName,
+      description,
+      logoUrl,
+      startDate,
+      endDate,
+      updatedBy: account?.username,
+    }
+
+    try {
+      const { data } = await updateClient({
+        variables: {
+          id: id,
+          data: mutationVariables
         },
-      },
-    })
-    router.push('/clients')
+      })
+
+      if (data) {
+        setToastMessage('Successfully updated Client!')
+        setUpdateSuccess(true)
+        setDisplayToast(true)
+      }
+    } catch {
+      setToastMessage('Oops! Something went wrong.')
+      setUpdateSuccess(false)
+      setDisplayToast(true)
+    }
   }
+
+    // Added these effects for detecting changes on the date
+  // pickers since they do not trigger a change event on the
+  // <CreateResourceForm> component when they are modified
+  useEffect(() => {
+    setHasFormChanged(true)
+  }, [startDate, endDate])
+
+  useEffect(() => {
+    setHasFormChanged(false)
+  }, [])
 
   return (
     <>
-      <CreateClientForm>
+      <Toast 
+        message={toastMessage} 
+        success={updateSuccess} 
+        display={displayToast} 
+        setDisplayToast={setDisplayToast}
+      />  
+      <CreateClientForm onChange={() => setHasFormChanged(true)}>
         <CreateClientFormLabel>
           Client Name
-          <CreateClientFormInput
+        </CreateClientFormLabel>
+        <CreateClientFormInput
             type="text"
             aria-label="client-name"
-            onChange={(e) => setClientName(e.target.value)}
+            onChange={(e: FormEvent<HTMLInputElement>) => setClientName(e.currentTarget.value)}
             value={clientName}
           ></CreateClientFormInput>
-        </CreateClientFormLabel>
         <CreateClientFormLabel>
           Description
-          <CreateClientFormInput
+        </CreateClientFormLabel>
+        <CreateClientFormInput
             type="text"
             aria-label="description"
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e: FormEvent<HTMLInputElement>) => setDescription(e.currentTarget.value)}
             value={description}
           ></CreateClientFormInput>
-        </CreateClientFormLabel>
         <CreateClientFormLabel>
           Logo Url (Optional)
-          <CreateClientFormInput
+        </CreateClientFormLabel>
+        <CreateClientFormInput
             type="text"
             aria-label="logo-url"
-            onChange={(e) => setLogoUrl(e.target.value)}
+            onChange={(e: FormEvent<HTMLInputElement>) => setLogoUrl(e.currentTarget.value)}
             defaultValue={logoUrl}
           ></CreateClientFormInput>
-        </CreateClientFormLabel>
         <CreateClientFormLabel>
           Start Date
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date) => setStartDate(date)}
-          ></DatePicker>
         </CreateClientFormLabel>
+        <DatePicker
+          selected={startDate}
+          onChange={(date: Date) => setStartDate(date)}
+        ></DatePicker>
         <CreateClientFormLabel>
           End Date (Optional)
-          <DatePicker
-            selected={endDate}
-            onChange={(date: Date) => setEndDate(date)}
-          ></DatePicker>
         </CreateClientFormLabel>
+        <DatePicker
+          selected={endDate}
+          onChange={(date: Date) => setEndDate(date)}
+        ></DatePicker>
         {id ? (
-          <UpdateButton name="Update" onClick={updateClientById}>
+          <SubmitButton name="Update" disabled={!hasFormChanged} onClick={updateClientById}>
             Update
-          </UpdateButton>
+          </SubmitButton>
         ) : (
           <SubmitButton name="Submit" onClick={createNewClient}>
             Submit

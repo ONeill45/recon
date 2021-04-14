@@ -29,3 +29,5 @@ export * from './PlusCircle'
 export * from './SearchBar'
 export * from './Spinner'
 export * from './UserSelect'
+export * from './Toast'
+
