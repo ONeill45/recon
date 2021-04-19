@@ -1,4 +1,18 @@
-export const themeLight = {
+interface Theme {
+  text: string
+  background: string
+  buttonText: string
+  buttonTextHover: string
+  buttonBorder: string
+  buttonBg: string
+  buttonBgHover: string
+}
+
+export interface EmotionComponentProps {
+  theme?: Theme
+}
+
+export const themeLight: Theme = {
   text: '#000',
   background: '#fff',
   buttonText: '#000',
@@ -8,7 +22,7 @@ export const themeLight = {
   buttonBgHover: 'rgba(0, 0, 0, 1)',
 }
 
-export const themeDark = {
+export const themeDark: Theme = {
   text: '#fff',
   background: '#121212',
   buttonText: '#fff',

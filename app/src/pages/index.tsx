@@ -4,10 +4,11 @@ import styled from '@emotion/styled'
 import styles from '../styles/Home.module.css'
 import { Button, FullPageSpinner, Spinner } from '../components'
 import { useTheme } from '../utils/context'
+import { EmotionComponentProps } from 'styles/theme'
 
-const Main = styled.main`
-  background-color: ${(props) => props.theme.background};
-  color: ${(props) => props.theme.text};
+const Main = styled.main<EmotionComponentProps>`
+  background-color: ${({ theme }) => theme.background};
+  color: ${({ theme }) => theme.text};
   min-height: 85vh;
   padding: 5rem 0;
   flex: 1;
