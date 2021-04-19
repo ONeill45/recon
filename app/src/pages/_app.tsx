@@ -6,7 +6,7 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react'
 
-import { Login, NavBar } from 'components'
+import { Login, Layout } from 'components'
 import { AppProviders } from '../utils/context'
 
 const App = ({ Component, pageProps }: AppProps) => {
@@ -17,9 +17,10 @@ const App = ({ Component, pageProps }: AppProps) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <AppProviders>
-        <NavBar />
         <AuthenticatedTemplate>
-          <Component {...pageProps} />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </AuthenticatedTemplate>
         <UnauthenticatedTemplate>
           <Login />
