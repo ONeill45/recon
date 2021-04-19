@@ -37,6 +37,10 @@ export const ExpandedFilterPanelDiv = styled.div<displayProps>`
 const filterCategoryProperties = [
   {
     title: 'Clients',
+    children: [
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'endDate', type: 'date', label: 'endYear' },
+    ],
   },
   {
     title: 'Projects',
@@ -46,7 +50,14 @@ const filterCategoryProperties = [
   },
 ]
 
-export const FilterPanel = () => {
+type FilterPanelProps = {
+  page?: String | null | undefined
+  filterItems?: { [key: string]: any } | undefined
+  onFilter: (queryData: { [key: string]: any }) => void
+}
+
+export const FilterPanel = (props: FilterPanelProps) => {
+  const { page, filterItems, onFilter } = props
   const [expanded, setExpanded] = useState(false)
 
   return (

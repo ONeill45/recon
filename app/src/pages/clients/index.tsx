@@ -27,11 +27,12 @@ const Clients = () => {
   if (error) return <p>Error: {error.message}</p>
 
   const { clients } = data
+  const page = 'Clients'
 
   return (
     <>
       <div className={styles.container}>
-        <FilterPanel />
+        <FilterPanel page={page} onFilter={} />
         <Cards>
           {clients.map((client: Client) => {
             return <ClientCard key={client.id} client={client} />
