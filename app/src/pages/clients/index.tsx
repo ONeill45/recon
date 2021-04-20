@@ -18,6 +18,18 @@ const GET_ALL_CLIENTS = gql`
   }
 `
 
+const GET_ALL_CLIENTS_WITH_FILTER = gql`
+  query GetAllClient($startDate: String, $endDate: String) {
+    clients(startDate: $startDate, endDate: $endDate) {
+      id
+      clientName
+      description
+      logoUrl
+      startDate
+      endDate
+    }
+  }
+`
 const Clients = () => {
   const { data, loading, error } = useQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
@@ -29,10 +41,14 @@ const Clients = () => {
   const { clients } = data
   const page = 'Clients'
 
+  const onClickFilter = (value: any) => {
+    console.log(' = == = =    value = = = ', value)
+  }
+
   return (
     <>
       <div className={styles.container}>
-        <FilterPanel page={page} onFilter={} />
+        <FilterPanel page={page} onFilter={onClickFilter} />
         <Cards>
           {clients.map((client: Client) => {
             return <ClientCard key={client.id} client={client} />

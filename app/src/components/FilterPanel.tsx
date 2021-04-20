@@ -1,3 +1,4 @@
+import React, { useMemo } from 'react'
 import styled from '@emotion/styled'
 import { useState } from 'react'
 import { css } from '@emotion/react'
@@ -29,7 +30,7 @@ const isDisplayed = ({ displayed }: displayProps) => css`
 
 export const ExpandedFilterPanelDiv = styled.div<displayProps>`
   ${isDisplayed};
-  width: 250px;
+  width: 400px;
   background-color: orange;
   flex-direction: column;
 `
@@ -53,12 +54,19 @@ const filterCategoryProperties = [
 type FilterPanelProps = {
   page?: String | null | undefined
   filterItems?: { [key: string]: any } | undefined
-  onFilter: (queryData: { [key: string]: any }) => void
+  onFilter?: (queryData: { [key: string]: any }) => void
 }
 
 export const FilterPanel = (props: FilterPanelProps) => {
   const { page, filterItems, onFilter } = props
   const [expanded, setExpanded] = useState(false)
+
+  const filterCategories = useMemo(() => {
+    if (page) {
+      return filterCategoryProperties.filter((item) => item.title === page)
+    }
+    return filterCategoryProperties
+  }, [page])
 
   return (
     <>
@@ -76,8 +84,14 @@ export const FilterPanel = (props: FilterPanelProps) => {
         displayed={expanded}
       >
         <SearchBar />
-        {filterCategoryProperties.map((property) => (
-          <FilterCategory key={property.title} title={property.title} />
+        {filterCategories.map((property) => (
+          <FilterCategory
+            key={property.title}
+            title={property.title}
+            fields={property.children}
+            filterItems={filterItems}
+            onChange={onFilter}
+          />
         ))}
       </ExpandedFilterPanelDiv>
     </>
