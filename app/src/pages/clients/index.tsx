@@ -1,4 +1,5 @@
-import { gql, useQuery } from '@apollo/client'
+import React, { useState, useEffect } from 'react'
+import { gql, useLazyQuery } from '@apollo/client'
 
 import styles from '../../styles/Home.module.css'
 
@@ -6,19 +7,6 @@ import { Client } from 'interfaces'
 import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
 
 const GET_ALL_CLIENTS = gql`
-  {
-    clients {
-      id
-      clientName
-      description
-      logoUrl
-      startDate
-      endDate
-    }
-  }
-`
-
-const GET_ALL_CLIENTS_WITH_FILTER = gql`
   query GetAllClient($startDate: String, $endDate: String) {
     clients(startDate: $startDate, endDate: $endDate) {
       id
@@ -31,9 +19,28 @@ const GET_ALL_CLIENTS_WITH_FILTER = gql`
   }
 `
 const Clients = () => {
-  const { data, loading, error } = useQuery(GET_ALL_CLIENTS, {
+  // const { data, loading, error } = useQuery(GET_ALL_CLIENTS, {
+  //   fetchPolicy: 'network-only',
+  // })
+
+  const [data, setData] = useState<{ [key: string]: any }>({})
+  const [error, setError] = useState<{ [key: string]: any }>({})
+
+  const [filter, setFilter] = useState({})
+
+  const [getAllClients, { loading }] = useLazyQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
+    onCompleted: (res: Array<{ [key: string]: any }>) => {
+      setData(res)
+    },
+    onError: (err: any) => {
+      setError(err)
+    },
   })
+
+  useEffect(() => {
+    getAllClients({ variables: filter })
+  }, [filter, getAllClients])
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
@@ -42,7 +49,7 @@ const Clients = () => {
   const page = 'Clients'
 
   const onClickFilter = (value: any) => {
-    console.log(' = == = =    value = = = ', value)
+    setFilter(value)
   }
 
   return (
