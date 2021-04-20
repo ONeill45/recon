@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import Clients from 'pages/clients'
+import Clients, { GET_ALL_CLIENTS } from 'pages/clients'
 import { ClientFactory } from '../../factories'
 import { render } from '../../testUtils'
 
@@ -8,18 +8,7 @@ const clients = ClientFactory.buildList(5)
 const mocks = [
   {
     request: {
-      query: gql`
-        {
-          clients {
-            id
-            clientName
-            description
-            logoUrl
-            startDate
-            endDate
-          }
-        }
-      `,
+      query: GET_ALL_CLIENTS,
     },
     result: {
       data: {
@@ -32,18 +21,7 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: gql`
-        {
-          clients {
-            id
-            clientName
-            description
-            logoUrl
-            startDate
-            endDate
-          }
-        }
-      `,
+      query: GET_ALL_CLIENTS,
     },
     error: new Error('An error occurred'),
   },
@@ -55,7 +33,7 @@ describe('Client page test', () => {
     expect(getByText('Loading...')).toBeVisible()
   })
   it('should render clients page and display filter sidebar', async () => {
-    const { getByText } = await render(Clients, {}, mocks)
+    const { getByText, getByTestId } = await render(Clients, {}, mocks)
     expect(getByText('Filters')).toBeVisible()
   })
   it('should fetch all clients and display their cards', async () => {

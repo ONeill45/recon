@@ -6,16 +6,27 @@ import styles from '../../styles/Home.module.css'
 import { Client } from 'interfaces'
 import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
 
+// export const GET_ALL_CLIENTS = gql`
+//   query GetAllClient($startDate: String, $endDate: String) {
+//     clients(startDate: $startDate, endDate: $endDate) {
+//       id
+//       clientName
+//       description
+//       logoUrl
+//       startDate
+//       endDate
+//     }
+//   }
+// `
+
 const GET_ALL_CLIENTS = gql`
-  query GetAllClient($startDate: String, $endDate: String) {
-    clients(startDate: $startDate, endDate: $endDate) {
-      id
-      clientName
-      description
-      logoUrl
-      startDate
-      endDate
-    }
+  clients {
+    id
+    clientName
+    description
+    logoUrl
+    startDate
+    endDate
   }
 `
 const Clients = () => {

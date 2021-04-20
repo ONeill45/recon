@@ -117,7 +117,7 @@ export const FilterCategory = ({
           )}
           <FilterSubmitDIv>
             <FilterSubmitButton type="button" onClick={onFilter}>
-              Filter
+              Search
             </FilterSubmitButton>
           </FilterSubmitDIv>
           {/* this is just an example and will be removed/replaced later */}
