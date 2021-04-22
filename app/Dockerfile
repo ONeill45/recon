@@ -24,6 +24,7 @@ RUN npm i
 COPY public public/
 COPY src src/
 COPY test test/
+COPY .env.example .env
 COPY next-env.d.ts ./
 COPY next.config.js ./
 COPY .babelrc ./
