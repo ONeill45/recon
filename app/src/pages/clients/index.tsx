@@ -20,13 +20,15 @@ import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
 // `
 
 const GET_ALL_CLIENTS = gql`
-  clients {
-    id
-    clientName
-    description
-    logoUrl
-    startDate
-    endDate
+  {
+    clients {
+      id
+      clientName
+      description
+      logoUrl
+      startDate
+      endDate
+    }
   }
 `
 const Clients = () => {
@@ -50,7 +52,7 @@ const Clients = () => {
   })
 
   useEffect(() => {
-    getAllClients({ variables: filter })
+    getAllClients()
   }, [filter, getAllClients])
 
   if (loading) return <p>Loading...</p>
