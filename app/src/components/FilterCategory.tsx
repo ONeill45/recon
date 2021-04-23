@@ -66,11 +66,11 @@ export const FilterCategory = ({
     [key: string]: any
   }) => {
     if (target && target.checked === true) {
-      if (!queryData[field]) {
-        queryData[field] = [name]
-      } else {
-        queryData[field] = queryData[field].concat(name)
-      }
+      // if (!queryData[field]) {
+      queryData[field] = name
+      // } else {
+      //   queryData[field] = queryData[field].concat(name)
+      // }
     } else {
       queryData[field] = queryData[field].filter(
         (item: string) => item !== name,
