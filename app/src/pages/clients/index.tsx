@@ -6,22 +6,9 @@ import styles from '../../styles/Home.module.css'
 import { Client } from 'interfaces'
 import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
 
-// export const GET_ALL_CLIENTS = gql`
-//   query GetAllClient($startDate: String, $endDate: String) {
-//     clients(startDate: $startDate, endDate: $endDate) {
-//       id
-//       clientName
-//       description
-//       logoUrl
-//       startDate
-//       endDate
-//     }
-//   }
-// `
-
-const GET_ALL_CLIENTS = gql`
-  {
-    clients {
+export const GET_ALL_CLIENTS = gql`
+  query GetAllClient($startDate: String, $endDate: String) {
+    clients(startDate: $startDate, endDate: $endDate) {
       id
       clientName
       description
@@ -31,13 +18,26 @@ const GET_ALL_CLIENTS = gql`
     }
   }
 `
+
+// const GET_ALL_CLIENTS = gql`
+//   {
+//     clients {
+//       id
+//       clientName
+//       description
+//       logoUrl
+//       startDate
+//       endDate
+//     }
+//   }
+// `
 const Clients = () => {
   // const { data, loading, error } = useQuery(GET_ALL_CLIENTS, {
   //   fetchPolicy: 'network-only',
   // })
 
   const [data, setData] = useState<{ [key: string]: any }>({})
-  const [error, setError] = useState<{ [key: string]: any }>({})
+  const [error, setError] = useState<{ [key: string]: any } | null>(null)
 
   const [filter, setFilter] = useState({})
 
@@ -70,9 +70,10 @@ const Clients = () => {
       <div className={styles.container}>
         <FilterPanel page={page} onFilter={onClickFilter} />
         <Cards>
-          {clients.map((client: Client) => {
-            return <ClientCard key={client.id} client={client} />
-          })}
+          {clients &&
+            clients.map((client: Client) => {
+              return <ClientCard key={client.id} client={client} />
+            })}
         </Cards>
         <PlusCircle size="50" route="/clients/client" />
       </div>

@@ -5,7 +5,11 @@ import { CreateClientInput, UpdateClientInput } from '../inputs'
 @Resolver()
 export class ClientResolver {
   @Query(() => [Client])
-  clients() {
+  clients(
+    @Arg('startDate') startDate: string,
+    @Arg('endDate') endDate: string,
+  ) {
+    const where = {}
     return Client.find()
   }
 
