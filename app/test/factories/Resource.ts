@@ -26,7 +26,7 @@ export const ResourceFactory = (allocations: ProjectAllocationsInput[] = []) =>
       if (allocations.length) {
         return allocations.map((allocation) => {
           const { project, isCurrent } = allocation
-          return ResourceAllocationFactory.build({ project }, { isCurrent })
+          return ResourceAllocationFactory().build({ project }, { isCurrent })
         })
       } else return []
     })

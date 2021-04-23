@@ -11,24 +11,24 @@ export class ResourceResolver {
 
     const where: { [key: string]: any } = {}
 
-    if (filter?.title) where.title = Like(`%${filter.title}%`)
-    if (filter?.startDate) {
-      where.startDate = LessThan(new Date(filter.startDate))
-    }
-    if (filter?.terminationDate) {
-      where.terminationDate = MoreThan(new Date(filter.terminationDate))
-    }
-    if (filter?.clients) {
-      where.clients = Like(`%${filter.clients}%`)
-    }
-    if (filter?.project) {
-      where.project = Like(`%${filter.project}%`)
-    }
-    if (filter?.departmentName) {
-      where.department = {
-        name: Like(`%${filter.departmentName}%`),
-      }
-    }
+    // if (filter?.title) where.title = Like(`%${filter.title}%`)
+    // if (filter?.startDate) {
+    //   where.startDate = LessThan(new Date(filter.startDate))
+    // }
+    // if (filter?.terminationDate) {
+    //   where.terminationDate = MoreThan(new Date(filter.terminationDate))
+    // }
+    // if (filter?.clients) {
+    //   where.clients = Like(`%${filter.clients}%`)
+    // }
+    // if (filter?.project) {
+    //   where.project = Like(`%${filter.project}%`)
+    // }
+    // if (filter?.departmentName) {
+    //   where.department = {
+    //     name: Like(`%${filter.departmentName}%`),
+    //   }
+    // }
 
     return Resource.find({
       where: where,

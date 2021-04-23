@@ -48,7 +48,7 @@ describe('Individual project page test', () => {
   })
   it('should fetch the requested project and display more details', async () => {
     const mockProps = {
-      request: { query: { id: 2134 } },
+      request: { query: { id: 21 } },
     }
     const { getByText } = await render(Project, mockProps, mocks)
 
