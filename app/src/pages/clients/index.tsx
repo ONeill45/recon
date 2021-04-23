@@ -19,23 +19,7 @@ export const GET_ALL_CLIENTS = gql`
   }
 `
 
-// const GET_ALL_CLIENTS = gql`
-//   {
-//     clients {
-//       id
-//       clientName
-//       description
-//       logoUrl
-//       startDate
-//       endDate
-//     }
-//   }
-// `
 const Clients = () => {
-  // const { data, loading, error } = useQuery(GET_ALL_CLIENTS, {
-  //   fetchPolicy: 'network-only',
-  // })
-
   const [data, setData] = useState<{ [key: string]: any }>({})
   const [error, setError] = useState<{ [key: string]: any } | null>(null)
 
@@ -52,7 +36,7 @@ const Clients = () => {
   })
 
   useEffect(() => {
-    getAllClients()
+    getAllClients({ variables: filter })
   }, [filter, getAllClients])
 
   if (loading) return <p>Loading...</p>
