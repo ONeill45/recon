@@ -18,7 +18,7 @@ export const ResourceFactory = (allocations: ProjectAllocationsInput[] = []) =>
     .attr('preferredName', null)
     .attr('title', () => faker.name.jobTitle())
     .attr('imageUrl', () => faker.image.people())
-    .attr('department', () => DepartmentFactory.build())
+    .attr('department', () => DepartmentFactory().build())
     .attr('email', () => faker.internet.email())
     .attr('startDate', () => new Date(faker.date.past()).toISOString())
     .attr('terminationDate', null)
