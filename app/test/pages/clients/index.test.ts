@@ -9,8 +9,8 @@ const mocks = [
   {
     request: {
       query: gql`
-        query GetAllClient($startDate: String, $endDate: String) {
-          clients(startDate: $startDate, endDate: $endDate) {
+        query GetAllClient($startDate: String, $terminationDate: String) {
+          clients(startDate: $startDate, terminationDate: $terminationDate) {
             id
             clientName
             description
@@ -33,8 +33,8 @@ const errorMocks = [
   {
     request: {
       query: gql`
-        query GetAllClient($startDate: String, $endDate: String) {
-          clients(startDate: $startDate, endDate: $endDate) {
+        query GetAllClient($startDate: String, $terminationDate: String) {
+          clients(startDate: $startDate, terminationDate: $terminationDate) {
             id
             clientName
             description

@@ -7,8 +7,8 @@ import { Client } from 'interfaces'
 import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
 
 export const GET_ALL_CLIENTS = gql`
-  query GetAllClient($startDate: String, $endDate: String) {
-    clients(startDate: $startDate, endDate: $endDate) {
+  query GetAllClient($startDate: String, $terminationDate: String) {
+    clients(startDate: $startDate, terminationDate: $terminationDate) {
       id
       clientName
       description

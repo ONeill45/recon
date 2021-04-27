@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client'
-import Project from 'pages/projects/[id]'
+// import { gql } from '@apollo/client'
+import Project, { GET_PROJECT } from 'pages/projects/[id]'
 import { ProjectFactory, ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
@@ -17,28 +17,7 @@ applyMockUseRouter({ query: { id: project.id } })
 const mocks = [
   {
     request: {
-      query: gql`
-        query GetProject($id: String!) {
-          project(id: $id) {
-            id
-            projectName
-            startDate
-            endDate
-            resourceAllocations {
-              id
-              startDate
-              endDate
-              endReason
-              percentage
-              resource {
-                firstName
-                lastName
-                preferredName
-              }
-            }
-          }
-        }
-      `,
+      query: GET_PROJECT,
       variables: {
         id: project.id,
       },
@@ -54,28 +33,7 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: gql`
-        query GetProject($id: String!) {
-          project(id: $id) {
-            id
-            projectName
-            startDate
-            endDate
-            resourceAllocations {
-              id
-              startDate
-              endDate
-              endReason
-              percentage
-              resource {
-                firstName
-                lastName
-                preferredName
-              }
-            }
-          }
-        }
-      `,
+      query: GET_PROJECT,
       variables: {
         id: project.id,
       },

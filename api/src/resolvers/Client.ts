@@ -13,8 +13,8 @@ export class ClientResolver {
     if (filter?.startDate) {
       where.startDate = LessThan(new Date(filter.startDate))
     }
-    if (filter?.endDate) {
-      where.startDate = MoreThan(new Date(filter.endDate))
+    if (filter?.terminationDate) {
+      where.startDate = MoreThan(new Date(filter.terminationDate))
     }
     return Client.find({ where: {} })
   }

@@ -6,5 +6,5 @@ export class GetClientsWithFilter {
   startDate: string
 
   @Field({ nullable: true })
-  endDate: string
+  terminationDate: string
 }
