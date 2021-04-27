@@ -40,6 +40,14 @@ const filterCategoryProperties = [
   },
   {
     title: 'Projects',
+    children: [
+      { field: 'clientNames', type: 'checkbox', label: 'Client Name' },
+      { field: 'confidence', type: 'number', label: 'Confidence' },
+      { field: 'priorities', type: 'checkbox', label: 'Priority' },
+      { field: 'projectTypes', type: 'checkbox', label: 'Project Type' },
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'endDate', type: 'date', label: 'End Date' },
+    ],
   },
   {
     title: 'Resources',
@@ -88,14 +96,15 @@ export const FilterPanel = (props: FilterPanelProps) => {
         displayed={expanded}
       >
         <SearchBar />
-        {filterCategories.map((property) => (
-          <FilterCategory
-            key={property.title}
-            title={property.title}
-            fields={property.children}
-            filterItems={filterItems}
-            onChange={onFilter}
-          />
+        {filterCategories.map((property: any) => (
+          <div key={property.title}>
+            <FilterCategory
+              title={property.title}
+              fields={property.children}
+              filterItems={filterItems}
+              onChange={onFilter}
+            />
+          </div>
         ))}
       </ExpandedFilterPanelDiv>
     </>

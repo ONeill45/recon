@@ -120,6 +120,95 @@ describe('ProjectResolver', () => {
       })
     })
   })
+
+  // describe('searchProjects()', () => {
+  //   const getSearchProjectQuery = `
+  //     query searchProjects(
+  //       $projectType: String
+  //       $client: String
+  //       $priority: String
+  //       $confidence: String
+  //       $startDate: DateTime
+  //       $endDate: DateTime
+  //     )
+  //     {
+  //       projects(
+  //         projectType: $projectType
+  //         client: $client
+  //         priority: $priority
+  //         confidence: $confidence
+  //         startDate: $startDate
+  //         endDate: $endDate
+  //       )
+  //       {
+  //         id
+  //         projectName
+  //         startDate
+  //         endDate
+  //         projectType
+  //         priority
+  //         confidence
+  //         client {
+  //           clientName
+  //         }
+  //       }
+  //     }
+  //   `
+
+  //   it('should return null if project does not exist', async () => {
+  //     const response = await gqlCall({
+  //       source: getSearchProjectQuery,
+  //     })
+
+  //     expect(response).toEqual({
+  //       data: {
+  //         searchProjects: null,
+  //       },
+  //     })
+  //   })
+
+  //   it('should return project if it exists without any search variables', async () => {
+  //     const project = ProjectFactory().build()
+  //     await Client.insert(project.client)
+  //     await Project.insert(project)
+
+  //     const {
+  //       id,
+  //       projectName,
+  //       startDate,
+  //       endDate,
+  //       projectType,
+  //       priority,
+  //       confidence,
+  //       client,
+  //     } = project
+
+  //     const response = await gqlCall({
+  //       source: getSearchProjectQuery,
+  //       variableValues: {},
+  //     })
+
+  //     expect(response).toMatchObject({
+  //       data: {
+  //         searchProjects: [
+  //           {
+  //             id,
+  //             projectName,
+  //             startDate,
+  //             endDate,
+  //             projectType,
+  //             priority,
+  //             confidence,
+  //             client: {
+  //               clientName: client.clientName,
+  //             },
+  //           },
+  //         ],
+  //       },
+  //     })
+  //   })
+  // })
+
   describe('project()', () => {
     const getProjectQuery = (id: string) => `{
       project (id: "${id}") {

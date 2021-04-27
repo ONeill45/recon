@@ -20,6 +20,8 @@
   "author": "",
   "dependencies": {
     "apollo-server": "^2.19.2",
+    "date-fns": "^2.21.1",
+    "dateformat": "^4.5.1",
     "pg": "^8.5.1",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1",
