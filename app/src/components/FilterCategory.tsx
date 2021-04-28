@@ -7,7 +7,7 @@ type filterCategoryProps = {
   title: string
   fields: Array<{ [key: string]: any }> | undefined
   filterItems: { [key: string]: any } | undefined
-  onChange: (queryData: { [key: string]: string }) => void
+  onChange?: (queryData: { [key: string]: string }) => void
 }
 
 export const FilterCategoryHeaderDiv = styled.div`
@@ -76,7 +76,6 @@ export const FilterCategory = ({
         (item: string) => item !== name,
       )
     }
-    console.log(' = = ==    ', queryData)
   }
 
   const handleOnChange = (value: string, field: string) => {
@@ -108,7 +107,9 @@ export const FilterCategory = ({
   }, [])
 
   const onFilter = () => {
-    onChange(queryData)
+    if (onChange) {
+      onChange(queryData)
+    }
   }
 
   const selectRenderItems = (field: string): Array<string> | null => {

@@ -31,7 +31,7 @@ const Clients = () => {
   return (
     <>
       <div className={styles.container}>
-        <FilterPanel onFilter={() => {}} />
+        <FilterPanel />
         <Cards>
           {clients.map((client: Client) => {
             return <ClientCard key={client.id} client={client} />
