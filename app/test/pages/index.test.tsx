@@ -1,21 +1,15 @@
-import React from 'react'
 import Index from 'pages/index'
-// import { render } from '../testUtils'
-import { render } from '@testing-library/react'
-import { ThemeContext } from '@emotion/react'
+import { render } from '../testUtils'
 
 jest.mock('utils/context/ThemeProvider', () => ({
-  __esModule: true,
-  default: React.createContext<any | undefined>(undefined),
+  useTheme: jest.fn(() => {
+    return { isDark: false }
+  }),
 }))
 
 describe('Index page test', () => {
   it('should render index page', async () => {
-    const { getByText } = render(
-      <ThemeContext.Provider value={}>
-        <Index />
-      </ThemeContext.Provider>,
-    )
+    const { getByText } = await render(Index)
 
     expect(getByText('Welcome to Recon!')).toBeVisible()
   })
