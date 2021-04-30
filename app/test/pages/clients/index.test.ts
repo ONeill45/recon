@@ -1,25 +1,18 @@
-import { gql } from '@apollo/client'
-
-import Clients from 'pages/clients'
+import Clients, { GET_ALL_CLIENTS } from 'pages/clients/index'
 import { ClientFactory } from '../../factories'
-import { render } from '../../testUtils'
+import { applyMockUseRouter, render } from '../../testUtils'
 
 const clients = ClientFactory.buildList(5)
+
+applyMockUseRouter({ query: { searchItem: '' } })
+
 const mocks = [
   {
     request: {
-      query: gql`
-        {
-          clients {
-            id
-            clientName
-            description
-            logoUrl
-            startDate
-            endDate
-          }
-        }
-      `,
+      query: GET_ALL_CLIENTS,
+      variables: {
+        searchItem: '',
+      },
     },
     result: {
       data: {
@@ -32,25 +25,17 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: gql`
-        {
-          clients {
-            id
-            clientName
-            description
-            logoUrl
-            startDate
-            endDate
-          }
-        }
-      `,
+      query: GET_ALL_CLIENTS,
+      variables: {
+        searchItem: '',
+      },
     },
     error: new Error('An error occurred'),
   },
 ]
 
-describe('Client page test', () => {
-  it('should render client page and display Loading...', async () => {
+describe('Clients page test', () => {
+  it('should render clients page and display Loading...', async () => {
     const { getByText } = await render(Clients, {}, mocks, false)
     expect(getByText('Loading...')).toBeVisible()
   })

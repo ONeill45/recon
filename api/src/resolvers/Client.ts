@@ -6,40 +6,22 @@ import { ILike } from 'typeorm'
 @Resolver()
 export class ClientResolver {
   @Query(() => [Client])
-  clients() {
-    return Client.find()
-  }
-
-  @Query(() => [Client])
-  async searchClients(@Arg('searchItem') searchItem: string) {
-    const foundClient = await Client.find({
-      relations: ['clientAllocations'],
-      where: [
-        {
-          clientName: ILike(`${searchItem}%`),
-        },
-        {
-          description: ILike(`${searchItem}%`),
-        },
-      ],
-    })
-    return foundClient
-  }
-
-  @Query(() => [Client])
-  async searchClient(@Arg('searchItem') searchItem: string) {
-    const foundClient = await Client.find({
-      // relations: ['clientAllocations'],
-      where: [
-        {
-          clientName: ILike(`${searchItem}%`),
-        },
-        {
-          description: ILike(`${searchItem}%`),
-        },
-      ],
-    })
-    return foundClient
+  async clients(@Arg('searchItem', { nullable: true }) searchItem: string) {
+    if (searchItem === null) {
+      return Client.find()
+    } else {
+      const foundClient = await Client.find({
+        where: [
+          {
+            clientName: ILike(`${searchItem}%`),
+          },
+          {
+            description: ILike(`${searchItem}%`),
+          },
+        ],
+      })
+      return foundClient
+    }
   }
 
   @Query(() => Client, { nullable: true })
@@ -49,7 +31,7 @@ export class ClientResolver {
 
   @Mutation(() => Client)
   async updateClient(
-  @Arg('id') id: string,
+    @Arg('id') id: string,
     @Arg('data') data: UpdateClientInput,
   ) {
     const client = await Client.findOne({ id })
