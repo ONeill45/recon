@@ -4,9 +4,8 @@ import {
   HeaderDiv,
   HeaderNameDiv,
   SubHeaderDiv,
-  PencilIcon,
 } from './Header'
-import Link from 'next/link'
+import { Pencil } from '../components/Pencil'
 
 type ProjectHeaderProps = {
   project: Project
@@ -20,9 +19,7 @@ export const ProjectHeader = ({ project }: ProjectHeaderProps) => {
       <SubHeaderDiv>
         <HeaderNameDiv>{projectName}</HeaderNameDiv>
         <HeaderDescriptionDiv>Project Manager: Some Guy</HeaderDescriptionDiv>
-        <Link href={`/projects/update/${id}`}>
-          <PencilIcon src="/images/pencil.png" />
-        </Link>
+        <Pencil size={'30'} route={'/projects/update'} id={id} />
       </SubHeaderDiv>
     </HeaderDiv>
   )
