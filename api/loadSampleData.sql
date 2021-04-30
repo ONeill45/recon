@@ -1,3 +1,13 @@
+DELETE FROM public.resource_skill;
+DELETE FROM public.project_skill;
+DELETE FROM public.skill;
+DELETE FROM public.skill_category;
+DELETE FROM public.resource_allocation;
+DELETE FROM public.resource;
+DELETE FROM public.project;
+DELETE FROM public.department;
+DELETE FROM public.client;
+
 INSERT INTO public.client
 (id, client_name, description, logo_url, start_date, end_date, created_date, created_by, updated_date, updated_by, deleted_date, deleted_by)
 VALUES
@@ -21,10 +31,10 @@ VALUES
 INSERT INTO public.project 
 (id, project_name, start_date, end_date, project_type, confidence, priority, created_date, created_by, updated_date, updated_by, deleted_date, deleted_by, client_id)
 VALUES
-(uuid_generate_v4(), 'Duzy Admin', '2019-10-01', '2020-10-01', 'fixed bid', 100, 'High', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'DuzyTV' )),
-(uuid_generate_v4(), 'Work OS', '2021-01-01', null, 'fixed bid', 100, 'Medium', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Anthem' )),
-(uuid_generate_v4(), 'Recon', '2020-12-01', null, 'internal', 100, 'Low', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Ascendum' )),
-(uuid_generate_v4(), 'Cortex v6', '2020-09-01', null, 'fixed bid', 100, 'High', now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'CognitiveScale' ));
+(uuid_generate_v4(), 'Duzy Admin', '2019-10-01', '2020-10-01', 'fixed bid', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'DuzyTV' )),
+(uuid_generate_v4(), 'Work OS', '2021-01-01', null, 'fixed bid', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Anthem' )),
+(uuid_generate_v4(), 'Recon', '2020-12-01', null, 'internal', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'Ascendum' )),
+(uuid_generate_v4(), 'Cortex v6', '2020-09-01', null, 'fixed bid', 100, 4, now(), '', now(), '', null, null, (SELECT id FROM public.client WHERE client_name = 'CognitiveScale' ));
 
 INSERT INTO public.resource
 (id, first_name, last_name, preferred_name, start_date, termination_date, title, email, image_url, department_id, created_date, created_by, updated_date, updated_by, deleted_date, deleted_by)
@@ -48,3 +58,18 @@ VALUES(uuid_generate_v4(), '2020-01-01', '2020-09-28', 'Project Ended', 100, now
 (uuid_generate_v4(), '2020-11-20', null, null, 50, now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', null, null, (SELECT id FROM public.resource WHERE first_name = 'Michelle' AND last_name = 'Ching'), (SELECT id FROM public.project WHERE project_name = 'Cortex v6')),
 (uuid_generate_v4(), '2021-02-01', null, null, 100, now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', now(), 'b426dc70-433e-45ec-943c-1cf3d10a7a1d', null, null, (SELECT id FROM public.resource WHERE first_name = 'Pankti' AND last_name = 'Patel'), (SELECT id FROM public.project WHERE project_name = 'Recon'));
 
+INSERT INTO public.skill_category
+(id, skill_category_name)
+VALUES(uuid_generate_v4(), 'Technical');
+
+INSERT INTO public.skill
+(id, skill_name, category_id)
+VALUES(uuid_generate_v4(), 'React', (SELECT id FROM public.skill_category WHERE skill_category_name = 'Technical'));
+
+INSERT INTO public.resource_skill
+(id, resource_id, skill_id, skill_value)
+VALUES(uuid_generate_v4(), (SELECT id FROM public.resource WHERE email = 'craig.samad@ascendum.com'), (SELECT id FROM public.skill WHERE skill_name = 'React'), 75);
+
+INSERT INTO public.project_skill
+(id, project_id, skill_id, skill_value)
+VALUES(uuid_generate_v4(), (SELECT id FROM public.project WHERE project_name = 'Recon'), (SELECT id FROM public.skill WHERE skill_name = 'React'), 50);
