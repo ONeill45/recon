@@ -18,7 +18,7 @@ export const ResourceFactory = (allocations: ProjectAllocationsInput[] = []) =>
     .attr('preferredName', null)
     .attr('title', () => faker.name.jobTitle())
     .attr('imageUrl', () => faker.image.people())
-    .attr('department', () => DepartmentFactory.build())
+    .attr('department', () => DepartmentFactory().build())
     .attr('email', () => faker.internet.email())
     .attr('startDate', () => new Date(faker.date.past()).toISOString())
     .attr('terminationDate', null)
@@ -26,7 +26,7 @@ export const ResourceFactory = (allocations: ProjectAllocationsInput[] = []) =>
       if (allocations.length) {
         return allocations.map((allocation) => {
           const { project, isCurrent } = allocation
-          return ResourceAllocationFactory.build({ project }, { isCurrent })
+          return ResourceAllocationFactory().build({ project }, { isCurrent })
         })
       } else return []
     })
