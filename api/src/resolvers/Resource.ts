@@ -4,37 +4,32 @@ import { Department, Resource } from '../models'
 import { CreateResourceInput, UpdateResourceInput } from '../inputs'
 @Resolver()
 export class ResourceResolver {
-  // @Query(() => [Resource])
-  // async resources() {
-  //   return Resource.find({ relations: ['resourceAllocations'] })
-  // }
-
   @Query(() => Resource, { nullable: true })
   async resource(@Arg('id') id: string): Promise<Resource | null> {
     return Resource.findOne(id, { relations: ['resourceAllocations'] })
   }
 
   @Query(() => [Resource])
-  async resources(@Arg('searchItem', { nullable: true }) searchItem: string): Promise<Resource[] | null> {
-    const foundResource = await Resource.find(
-      {
-        relations: ['resourceAllocations'],
-        where: [
-          {
-            firstName: ILike(`${searchItem}%`)
-          },
-          {
-            lastName: ILike(`${searchItem}%`)
-          },
-          {
-            preferredName: ILike(`${searchItem}%`)
-          },
-          {
-            email: ILike(`${searchItem}%`)
-          },
-        ]
-      }
-    );
+  async resources(
+    @Arg('searchItem', { nullable: true }) searchItem: string,
+  ): Promise<Resource[] | null> {
+    const foundResource = await Resource.find({
+      relations: ['resourceAllocations'],
+      where: [
+        {
+          firstName: ILike(`${searchItem}%`),
+        },
+        {
+          lastName: ILike(`${searchItem}%`),
+        },
+        {
+          preferredName: ILike(`${searchItem}%`),
+        },
+        {
+          email: ILike(`${searchItem}%`),
+        },
+      ],
+    })
     return foundResource
   }
 
