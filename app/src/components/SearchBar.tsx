@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { FormEvent } from 'react'
+import { SearchBarProps } from 'interfaces'
 
 const SearchInput = styled.input`
   width: 72%;
@@ -10,16 +11,25 @@ const SearchComponentConatainer = styled.div`
   position: relative;
 `
 
-type SearchBarProps = {
-  setSearchText?: any
-}
-
 export const SearchBar = ({ setSearchText }: SearchBarProps) => {
+  const updateText = (val: string) => {
+    if (setSearchText) {
+      setSearchText(val)
+    } else {
+      return
+    }
+  }
 
   return (
     <SearchComponentConatainer>
       <form>
-        <SearchInput type="text" placeholder="Search..." onChange={(e: FormEvent<HTMLInputElement>) => setSearchText(e.currentTarget.value)} />
+        <SearchInput
+          type="text"
+          placeholder="Search..."
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            updateText(e.currentTarget.value)
+          }
+        />
         <button type="submit">Search</button>
       </form>
     </SearchComponentConatainer>

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { css } from '@emotion/react'
 import { FiFilter } from 'react-icons/fi'
 import { FilterCategory, SearchBar } from './'
+import { SearchBarProps } from 'interfaces'
 
 type displayProps = {
   displayed: boolean
@@ -45,11 +46,7 @@ const filterCategoryProperties = [
   },
 ]
 
-type FilterPanelProps = {
-  setSearchText?: any
-}
-
-export const FilterPanel = ({ setSearchText }: FilterPanelProps) => {
+export const FilterPanel = ({ setSearchText }: SearchBarProps) => {
   const [expanded, setExpanded] = useState(false)
 
   return (

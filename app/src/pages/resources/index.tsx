@@ -4,74 +4,40 @@ import { Cards, FilterPanel, PlusCircle, ResourceCard } from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
 
-// export const GET_ALL_RESOURCES = gql`
-//   {
-//     resources {
-//       id
-//       firstName
-//       lastName
-//       preferredName
-//       title
-//       startDate
-//       terminationDate
-//       imageUrl
-//       department {
-//         name
-//       }
-//       email
-//       resourceAllocations {
-//         id
-//         startDate
-//         endDate
-//         endReason
-//         percentage
-//         project {
-//           id
-//           projectName
-//           projectType
-//           confidence
-//           priority
-//         }
-//       }
-//     }
-//   }
-// `
-
 export const GET_ALL_RESOURCES = gql`
-query Resources($searchItem: String!) {
-  resources(searchItem: $searchItem) {
-    id
-    firstName
-    lastName
-    preferredName
-    title
-    startDate
-    terminationDate
-    imageUrl
-    department {
-      name
-    }
-    email
-    resourceAllocations {
+  query Resources($searchItem: String!) {
+    resources(searchItem: $searchItem) {
       id
+      firstName
+      lastName
+      preferredName
+      title
       startDate
-      endDate
-      endReason
-      percentage
-      project {
+      terminationDate
+      imageUrl
+      department {
+        name
+      }
+      email
+      resourceAllocations {
         id
-        projectName
-        projectType
-        confidence
-        priority
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
       }
     }
   }
-}  
 `
 
 const Resources = () => {
-
   const [searchText, setSearchText] = useState('')
 
   const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
@@ -81,7 +47,7 @@ const Resources = () => {
     },
   })
 
-  const resources  = data?.resources
+  const resources = data?.resources
 
   if (error) {
     return <p>Error: {error.message}</p>
