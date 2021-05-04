@@ -42,9 +42,10 @@ const Clients = () => {
         <div className={styles.container}>
           <FilterPanel onFilter={() => {}} setSearchText={setSearchText} />
           <Cards>
-            {searchClients.map((client: Client) => {
-              return <ClientCard key={client.id} client={client} />
-            })}
+            {searchClients &&
+              searchClients.map((client: Client) => {
+                return <ClientCard key={client.id} client={client} />
+              })}
           </Cards>
           <PlusCircle size="50" route="/clients/client" />
         </div>
