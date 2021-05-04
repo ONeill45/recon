@@ -17,7 +17,7 @@ jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
 
 describe('<ResourceForm />', () => {
   it('should create a new resource with user provided info', async () => {
-    const departments = DepartmentFactory.buildList(4)
+    const departments = DepartmentFactory().buildList(4)
     const mocks = [
       {
         request: {

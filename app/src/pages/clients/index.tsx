@@ -29,28 +29,33 @@ const Clients = () => {
     },
   })
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error.message}</p>
-
   console.log('searchText : ', searchText)
   console.log('data: ', data)
 
-  const searchClients = data.clients
+  const searchClients = data?.clients
 
-  return (
-    <>
-      <div className={styles.container}>
-        <FilterPanel searchQuery={data} setSearchText={setSearchText} />
-        <Cards>
-          {searchClients.map((client: Client) => {
-            return <ClientCard key={client.id} client={client} />
-          })}
-        </Cards>
-        <PlusCircle size="50" route="/clients/client" />
-      </div>
-      <Footer />
-    </>
-  )
+  if (error) {
+    return <p>Error: {error.message}</p>
+  } else if (data) {
+    return (
+      <>
+        <div className={styles.container}>
+          <FilterPanel onFilter={() => {}} setSearchText={setSearchText} />
+          <Cards>
+            {searchClients.map((client: Client) => {
+              return <ClientCard key={client.id} client={client} />
+            })}
+          </Cards>
+          <PlusCircle size="50" route="/clients/client" />
+        </div>
+        <Footer />
+      </>
+    )
+  } else if (loading) {
+    return <p>Loading...</p>
+  } else {
+    return
+  }
 }
 
 export default Clients

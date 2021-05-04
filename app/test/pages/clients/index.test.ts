@@ -1,10 +1,8 @@
 import Clients, { GET_ALL_CLIENTS } from 'pages/clients/index'
 import { ClientFactory } from '../../factories'
-import { applyMockUseRouter, render } from '../../testUtils'
+import { render } from '../../testUtils/render'
 
-const clients = ClientFactory.buildList(5)
-
-applyMockUseRouter({ query: { searchItem: '' } })
+const clients = ClientFactory().buildList(5)
 
 const mocks = [
   {
@@ -38,10 +36,6 @@ describe('Clients page test', () => {
   it('should render clients page and display Loading...', async () => {
     const { getByText } = await render(Clients, {}, mocks, false)
     expect(getByText('Loading...')).toBeVisible()
-  })
-  it('should render clients page and display filter sidebar', async () => {
-    const { getByText } = await render(Clients, {}, mocks)
-    expect(getByText('Filters')).toBeVisible()
   })
   it('should fetch all clients and display their cards', async () => {
     const { getByText } = await render(Clients, {}, mocks)
