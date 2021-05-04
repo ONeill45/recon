@@ -4,7 +4,7 @@ import { gql, useMutation, useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-
+import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
 import { Client, ProjectType, Project } from 'interfaces'
 import { Priority } from '../interfaces/Enum'
@@ -97,13 +97,15 @@ export const ProjectForm = ({ project }: ProjectProps) => {
   const [createProject] = useMutation(CREATE_PROJECT)
   const [updateProject] = useMutation(UPDATE_PROJECT)
 
-  const { 
+  const {
     setDisplayToast,
-    setToastMessage, 
-    setUpdateSuccess, 
-    displayToast, 
-    toastMessage, 
-    updateSuccess 
+    setToastHeader,
+    setUpdateSuccess,
+    displayToast,
+    toastHeader,
+    updateSuccess,
+    toastFields,
+    setToastFields,
   } = useToast()
 
   const handleClientInput = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -117,7 +119,8 @@ export const ProjectForm = ({ project }: ProjectProps) => {
       alert('Client cannot be empty')
       return
     }
-    const data = {
+
+    const mutationVariables = {
       projectName,
       clientId: client.id,
       startDate,
@@ -128,12 +131,67 @@ export const ProjectForm = ({ project }: ProjectProps) => {
       createdBy: account?.username,
       updatedBy: account?.username,
     }
-    await createProject({
-      variables: {
-        data,
+
+    const mutationParams = [
+      {
+        projectName: projectName,
+        displayText: 'Project name',
       },
-    })
-    router.push('/projects')
+      {
+        clientId: client.id,
+        displayText: 'Client name',
+      },
+      {
+        startDate: startDate,
+        displayText: 'Start date',
+      },
+      {
+        projectType: projectType,
+        displayText: 'Project type',
+      },
+      {
+        priority: priority,
+        displayText: 'Priority',
+      },
+      {
+        confidence: confidence,
+        displayText: 'Confidence',
+      },
+    ]
+
+    const toastFuncs = {
+      setDisplayToast,
+      setToastHeader,
+      setUpdateSuccess,
+      setToastFields,
+    }
+
+    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
+
+    if (!isMutationVarNull) {
+      try {
+        const { data } = await createProject({
+          variables: {
+            data: mutationVariables,
+          },
+        })
+
+        if (data) {
+          setToastHeader('Successfully created Project!')
+          setToastFields([])
+          setUpdateSuccess(true)
+          setDisplayToast(true)
+          setTimeout(() => {
+            router.push('/projects')
+          }, 3000)
+        }
+      } catch {
+        setToastHeader('Oops! Something went wrong.')
+        setToastFields([])
+        setUpdateSuccess(false)
+        setDisplayToast(true)
+      }
+    }
   }
 
   const updateExistingProject = async (e: FormEvent) => {
@@ -153,25 +211,64 @@ export const ProjectForm = ({ project }: ProjectProps) => {
       updatedBy: account?.username,
     }
 
-    try {
-      const { data } = await updateProject({
-        variables: {
-          id: project?.id,
-          data: mutationVariables,
-        },
-      })
+    const mutationParams = [
+      {
+        projectName: projectName,
+        displayText: 'Project name',
+      },
+      {
+        clientId: client.id,
+        displayText: 'Client name',
+      },
+      {
+        startDate: startDate,
+        displayText: 'Start date',
+      },
+      {
+        projectType: projectType,
+        displayText: 'Project type',
+      },
+      {
+        priority: priority,
+        displayText: 'Priority',
+      },
+      {
+        confidence: confidence,
+        displayText: 'Confidence',
+      },
+    ]
 
-      if (data) {
-        setToastMessage('Successfully updated Project!')
-        setUpdateSuccess(true)
-        setDisplayToast(true)
-      }
-    } catch {
-      setToastMessage('Oops! Something went wrong.')
-      setUpdateSuccess(false)
-      setDisplayToast(true)
+    const toastFuncs = {
+      setDisplayToast,
+      setToastHeader,
+      setUpdateSuccess,
+      setToastFields,
     }
 
+    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
+
+    if (!isMutationVarNull) {
+      try {
+        const { data } = await updateProject({
+          variables: {
+            id: project?.id,
+            data: mutationVariables,
+          },
+        })
+
+        if (data) {
+          setToastHeader('Successfully updated Project!')
+          setToastFields([])
+          setUpdateSuccess(true)
+          setDisplayToast(true)
+        }
+      } catch {
+        setToastHeader('Oops! Something went wrong.')
+        setToastFields([])
+        setUpdateSuccess(false)
+        setDisplayToast(true)
+      }
+    }
   }
 
   const { data, error } = useQuery(GET_ALL_CLIENTS, {
@@ -190,7 +287,6 @@ export const ProjectForm = ({ project }: ProjectProps) => {
       }
     }
   }, [clients])
-
 
   // Added these effects for detecting changes on the date
   // pickers since they do not trigger a change event on the
@@ -211,10 +307,11 @@ export const ProjectForm = ({ project }: ProjectProps) => {
 
   return (
     <>
-      <Toast 
-        message={toastMessage} 
-        success={updateSuccess} 
-        display={displayToast} 
+      <Toast
+        headerText={toastHeader}
+        fields={toastFields}
+        success={updateSuccess}
+        display={displayToast}
         setDisplayToast={setDisplayToast}
       />
       <CreateProjectForm onChange={formChange}>

@@ -1,16 +1,19 @@
 import { useState } from 'react'
 
 export const useToast = () => {
-  const [toastMessage, setToastMessage] = useState('')
+  const [toastHeader, setToastHeader] = useState('')
+  const [toastFields, setToastFields] = useState<Array<string>>()
   const [updateSuccess, setUpdateSuccess] = useState(false)
   const [displayToast, setDisplayToast] = useState(false)
 
   return {
-    toastMessage: toastMessage,
-    setToastMessage: setToastMessage,
+    toastHeader: toastHeader,
+    setToastHeader: setToastHeader,
+    toastFields: toastFields,
+    setToastFields: setToastFields,
     updateSuccess: updateSuccess,
     setUpdateSuccess: setUpdateSuccess,
     displayToast: displayToast,
-    setDisplayToast: setDisplayToast
+    setDisplayToast: setDisplayToast,
   }
 }

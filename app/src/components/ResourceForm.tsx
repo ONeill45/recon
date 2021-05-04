@@ -5,6 +5,7 @@ import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Resource, Department } from 'interfaces'
+import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
 import { Toast } from 'components'
 import { useToast } from 'hooks'
@@ -92,13 +93,15 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
   const [createResource] = useMutation(CREATE_RESOURCE)
   const [updateResource] = useMutation(UPDATE_RESOURCE)
 
-  const { 
+  const {
     setDisplayToast,
-    setToastMessage, 
-    setUpdateSuccess, 
-    displayToast, 
-    toastMessage, 
-    updateSuccess 
+    setToastHeader,
+    setUpdateSuccess,
+    displayToast,
+    toastHeader,
+    updateSuccess,
+    toastFields,
+    setToastFields,
   } = useToast()
 
   const handleDepartmentInput = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -111,59 +114,156 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   const createNewResource = async (e: FormEvent) => {
     e.preventDefault()
-    await createResource({
-      variables: {
-        data: {
-          firstName,
-          lastName,
-          preferredName,
-          title,
-          departmentId: department?.id,
-          imageUrl,
-          email,
-          startDate,
-          terminationDate,
-          createdBy: account?.username,
-          updatedBy: account?.username,
-        },
+
+    const mutationVariables = {
+      firstName,
+      lastName,
+      preferredName,
+      title,
+      departmentId: department?.id,
+      imageUrl,
+      email,
+      startDate,
+      terminationDate,
+      updatedBy: account?.username,
+      createdBy: account?.username,
+    }
+
+    const mutationParams = [
+      {
+        firstName: firstName,
+        displayText: 'First name',
       },
-    })
-    router.push('/resources')
+      {
+        lastName: lastName,
+        displayText: 'Last name',
+      },
+      {
+        title: title,
+        displayText: 'Title',
+      },
+      {
+        department: department?.id,
+        displayText: 'Department name',
+      },
+      {
+        email: email,
+        displayText: 'Email',
+      },
+      {
+        startDate: startDate,
+        displayText: 'Start Date',
+      },
+    ]
+
+    const toastFuncs = {
+      setDisplayToast,
+      setToastHeader,
+      setUpdateSuccess,
+      setToastFields,
+    }
+
+    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
+
+    if (!isMutationVarNull) {
+      try {
+        const { data } = await createResource({
+          variables: {
+            data: mutationVariables,
+          },
+        })
+
+        if (data) {
+          setToastHeader('Successfully created Resource!')
+          setToastFields([])
+          setUpdateSuccess(true)
+          setDisplayToast(true)
+          setTimeout(() => {
+            router.push('/resources')
+          }, 3000)
+        }
+      } catch {
+        setToastHeader('Oops! Something went wrong.')
+        setToastFields([])
+        setUpdateSuccess(false)
+        setDisplayToast(true)
+      }
+    }
   }
 
   const updateExistingResource = async (e: FormEvent) => {
     e.preventDefault()
 
     const mutationVariables = {
-        firstName,
-        lastName,
-        preferredName,
-        title,
-        departmentId: department?.id,
-        imageUrl,
-        email,
-        startDate,
-        terminationDate,
-        updatedBy: account?.username,
+      firstName,
+      lastName,
+      preferredName,
+      title,
+      departmentId: department?.id,
+      imageUrl,
+      email,
+      startDate,
+      terminationDate,
+      updatedBy: account?.username,
     }
 
-    try {
-      const { data } = await updateResource({
-        variables: {
-          id: id,
-          data: mutationVariables
-        },
-      })
+    const mutationParams = [
+      {
+        firstName: firstName,
+        displayText: 'First name',
+      },
+      {
+        lastName: lastName,
+        displayText: 'Last name',
+      },
+      {
+        title: title,
+        displayText: 'Title',
+      },
+      {
+        department: department?.id,
+        displayText: 'Department name',
+      },
+      {
+        email: email,
+        displayText: 'Email',
+      },
+      {
+        startDate: startDate,
+        displayText: 'Start Date',
+      },
+    ]
 
-      if (data) {
-        setToastMessage('Successfully updated Resource!')
-        setUpdateSuccess(true)
+    const toastFuncs = {
+      setDisplayToast,
+      setToastHeader,
+      setUpdateSuccess,
+      setToastFields,
+    }
+
+    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
+
+    if (!isMutationVarNull) {
+      try {
+        const { data } = await updateResource({
+          variables: {
+            id: id,
+            data: mutationVariables,
+          },
+        })
+
+        if (data) {
+          setToastHeader('Successfully updated Resource!')
+          setToastFields([])
+          setUpdateSuccess(true)
+          setDisplayToast(true)
+        }
+      } catch {
+        setToastHeader('Oops! Something went wrong.')
+        setToastFields([])
+        setUpdateSuccess(false)
         setDisplayToast(true)
       }
-    } catch {
-      setToastMessage('Oops! Something went wrong.')
-      setUpdateSuccess(false)
-      setDisplayToast(true)
     }
   }
 
@@ -201,16 +301,15 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   return (
     <>
-      <Toast 
-        message={toastMessage} 
-        success={updateSuccess} 
-        display={displayToast} 
+      <Toast
+        headerText={toastHeader}
+        fields={toastFields}
+        success={updateSuccess}
+        display={displayToast}
         setDisplayToast={setDisplayToast}
-      />      
+      />
       <CreateResourceForm onChange={() => setHasFormChanged(true)}>
-        <CreateResourceFormLabel>
-          First Name
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>First Name</CreateResourceFormLabel>
         <CreateResourceFormInput
           type="text"
           aria-label="first-name"
@@ -219,9 +318,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           }
           value={firstName}
         ></CreateResourceFormInput>
-        <CreateResourceFormLabel>
-          Last Name
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>Last Name</CreateResourceFormLabel>
         <CreateResourceFormInput
           type="text"
           aria-label="last-name"
@@ -230,9 +327,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           }
           value={lastName}
         ></CreateResourceFormInput>
-        <CreateResourceFormLabel>
-          Preferred Name
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>Preferred Name</CreateResourceFormLabel>
         <CreateResourceFormInput
           type="text"
           aria-label="preferred-name"
@@ -241,9 +336,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           }
           value={preferredName}
         ></CreateResourceFormInput>
-        <CreateResourceFormLabel>
-          Title
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>Title</CreateResourceFormLabel>
         <CreateResourceFormInput
           type="text"
           aria-label="title"
@@ -252,9 +345,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           }
           value={title}
         ></CreateResourceFormInput>
-        <CreateResourceFormLabel>
-          Department
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>Department</CreateResourceFormLabel>
         <DepartmentSelect
           value={department?.id}
           aria-label="department-select"
@@ -270,9 +361,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
             )
           })}
         </DepartmentSelect>
-        <CreateResourceFormLabel>
-          ImageUrl
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>ImageUrl</CreateResourceFormLabel>
         <CreateResourceFormInput
           type="text"
           aria-label="image-url"
@@ -281,9 +370,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           }
           value={imageUrl}
         ></CreateResourceFormInput>
-        <CreateResourceFormLabel>
-          Email
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>Email</CreateResourceFormLabel>
         <CreateResourceFormInput
           type="text"
           aria-label="email"
@@ -292,9 +379,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
           }
           value={email}
         ></CreateResourceFormInput>
-        <CreateResourceFormLabel>
-          Start Date
-        </CreateResourceFormLabel>
+        <CreateResourceFormLabel>Start Date</CreateResourceFormLabel>
         <DatePicker
           selected={startDate}
           onChange={(date: Date) => setStartDate(date)}
