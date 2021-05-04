@@ -3,7 +3,7 @@ import { FormEvent } from 'react'
 import { SearchBarProps } from 'interfaces'
 
 const SearchInput = styled.input`
-  width: 72%;
+  width: 100%;
   margin: 1rem 0;
 `
 
@@ -30,7 +30,6 @@ export const SearchBar = ({ setSearchText }: SearchBarProps) => {
             updateText(e.currentTarget.value)
           }
         />
-        <button type="submit">Search</button>
       </form>
     </SearchComponentConatainer>
   )
