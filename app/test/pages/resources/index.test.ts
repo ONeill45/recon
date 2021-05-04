@@ -12,6 +12,9 @@ const mocks = [
   {
     request: {
       query: GET_ALL_RESOURCES,
+      variables: {
+        searchItem: ''
+      }
     },
     result: {
       data: {
@@ -25,6 +28,9 @@ const errorMocks = [
   {
     request: {
       query: GET_ALL_RESOURCES,
+      variables: {
+        searchItem: ''
+      }
     },
     error: new Error('An error occurred'),
   },

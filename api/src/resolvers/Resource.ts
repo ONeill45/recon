@@ -4,10 +4,10 @@ import { Department, Resource } from '../models'
 import { CreateResourceInput, UpdateResourceInput } from '../inputs'
 @Resolver()
 export class ResourceResolver {
-  @Query(() => [Resource])
-  async resources() {
-    return Resource.find({ relations: ['resourceAllocations'] })
-  }
+  // @Query(() => [Resource])
+  // async resources() {
+  //   return Resource.find({ relations: ['resourceAllocations'] })
+  // }
 
   @Query(() => Resource, { nullable: true })
   async resource(@Arg('id') id: string): Promise<Resource | null> {
@@ -15,7 +15,7 @@ export class ResourceResolver {
   }
 
   @Query(() => [Resource])
-  async searchResource(@Arg('searchItem') searchItem: string): Promise<Resource[] | null> {
+  async resources(@Arg('searchItem', { nullable: true }) searchItem: string): Promise<Resource[] | null> {
     const foundResource = await Resource.find(
       {
         relations: ['resourceAllocations'],

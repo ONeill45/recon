@@ -47,10 +47,9 @@ const filterCategoryProperties = [
 
 type FilterPanelProps = {
   setSearchText?: any
-  searchQuery?: any
 }
 
-export const FilterPanel = ({ setSearchText, searchQuery }: FilterPanelProps) => {
+export const FilterPanel = ({ setSearchText }: FilterPanelProps) => {
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -68,7 +67,7 @@ export const FilterPanel = ({ setSearchText, searchQuery }: FilterPanelProps) =>
         data-testid="ExpandedFilterPanel"
         displayed={expanded}
       >
-        <SearchBar searchQuery={searchQuery} setSearchText={setSearchText} />
+        <SearchBar setSearchText={setSearchText} />
         {filterCategoryProperties.map((property) => (
           <FilterCategory key={property.title} title={property.title} />
         ))}
