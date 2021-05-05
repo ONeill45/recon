@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import {
+  Theme,
   ThemeProvider as EThemeProvider,
   useTheme as useEmotionTheme,
 } from '@emotion/react'
@@ -24,9 +25,12 @@ export const ThemeProvider: React.FC = ({ children }) => {
     </ThemeContext.Provider>
   )
 }
+export interface UseThemeType extends ThemeContextType {
+  theme: Theme
+}
 
-export const useTheme = () => {
-  const context = React.useContext(ThemeContext)
+export const useTheme = (): UseThemeType => {
+  const context = React.useContext<ThemeContextType | undefined>(ThemeContext)
   const theme = useEmotionTheme()
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider')
