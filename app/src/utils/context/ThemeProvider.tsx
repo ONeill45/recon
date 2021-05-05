@@ -5,7 +5,13 @@ import {
 } from '@emotion/react'
 import { themeLight, themeDark } from '../../styles/theme'
 
-export const ThemeContext = React.createContext<any | undefined>(undefined)
+export interface ThemeContextType {
+  isDark: boolean
+  setIsDark: (b: boolean) => void
+}
+export const ThemeContext = React.createContext<ThemeContextType | undefined>(
+  undefined,
+)
 
 export const ThemeProvider: React.FC = ({ children }) => {
   const [isDark, setIsDark] = useState(true)
