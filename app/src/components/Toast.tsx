@@ -5,7 +5,7 @@ import { AiFillCloseCircle } from 'react-icons/ai'
 type toastProps = {
   success: boolean
   display: boolean
-  setDisplayToast: any
+  setDisplayToast: (b: boolean) => void
   headerText?: string
   fields?: Array<string>
 }
