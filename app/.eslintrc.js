@@ -24,17 +24,10 @@ module.exports = {
     //indent: ['error', 2, { SwitchCase: 1 }],
     indent: 'off',
     '@typescript-eslint/indent': ['error', 2, { SwitchCase: 1 }],
-    'linebreak-style': ['error', 'windows'],
+    'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'never'],
     'react/jsx-filename-extension': ['warn', { extensions: ['.tsx'] }],
     'no-console': 'warn',
-    // 'prettier/prettier': 'error',
-    'prettier/prettier': [
-      'error',
-      {
-        endOfLine: 'auto',
-      },
-    ],
   },
 }
