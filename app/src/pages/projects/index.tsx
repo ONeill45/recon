@@ -41,7 +41,7 @@ const Projects = () => {
             return <ProjectCard project={project} key={project.id} />
           })}
         </Cards>
-        <PlusCircle size="50" route="/projects/new" />
+        <PlusCircle size="50" route="/projects/project" />
       </div>
     </>
   )
