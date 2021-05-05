@@ -29,9 +29,6 @@ const Clients = () => {
     },
   })
 
-  console.log('searchText : ', searchText)
-  console.log('data: ', data)
-
   const searchClients = data?.clients
 
   if (error) {

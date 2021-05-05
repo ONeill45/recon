@@ -59,7 +59,7 @@ type FilterPanelProps = {
   page?: String | null | undefined
   filterItems?: { [key: string]: any } | undefined
   onFilter?: (queryData: { [key: string]: any }) => void
-  setSearchText?: any
+  setSearchText?: (s: string) => void
 }
 
 export const FilterPanel = ({

@@ -7,20 +7,18 @@ const SearchInput = styled.input`
 `
 
 type SearchBarProps = {
-  setSearchText?: any
+  setSearchText?: (s: string) => void
   searchQuery?: any
 }
 
 export const SearchBar = ({ setSearchText, searchQuery }: SearchBarProps) => {
-  console.log('SEARCH RESULTS: ', searchQuery)
-
   return (
     <form>
       <SearchInput
         type="text"
         placeholder="Search..."
         onChange={(e: FormEvent<HTMLInputElement>) =>
-          setSearchText(e.currentTarget.value)
+          setSearchText && setSearchText(e.currentTarget.value)
         }
       />
       <button type="submit">Search</button>
