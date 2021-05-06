@@ -45,7 +45,7 @@ describe('<ClientForm />', () => {
   })
 
   it('should update a client with user provided info', async () => {
-    const client = ClientFactory.build()
+    const client = ClientFactory().build()
 
     const mocks = [
       {

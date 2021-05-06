@@ -2,7 +2,7 @@ import { Client, GET_CLIENT_FROM_ID } from 'pages/clients/client'
 import { ClientFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
-const client = ClientFactory.build()
+const client = ClientFactory().build()
 
 applyMockUseRouter({ query: { id: client.id } })
 

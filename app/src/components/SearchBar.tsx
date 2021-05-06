@@ -23,6 +23,13 @@ export const SearchBar = ({ setSearchText }: SearchBarProps) => {
   return (
     <SearchComponentConatainer>
       <form>
+        {/* <SearchInput
+        type="text"
+        placeholder="Search..."
+        onChange={(e: FormEvent<HTMLInputElement>) =>
+          setSearchText && setSearchText(e.currentTarget.value)
+        }
+      /> */}
         <SearchInput
           type="text"
           placeholder="Search..."

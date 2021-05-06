@@ -1,9 +1,9 @@
 import styled from '@emotion/styled'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { css } from '@emotion/react'
 import { FiFilter } from 'react-icons/fi'
 import { FilterCategory, SearchBar } from './'
-import { SearchBarProps } from 'interfaces'
+// import { SearchBarProps } from 'interfaces'
 
 type displayProps = {
   displayed: boolean
@@ -29,7 +29,7 @@ const isDisplayed = ({ displayed }: displayProps) => css`
 
 export const ExpandedFilterPanelDiv = styled.div<displayProps>`
   ${isDisplayed};
-  width: 250px;
+  width: 400px;
   background-color: orange;
   flex-direction: column;
 `
@@ -43,11 +43,39 @@ const filterCategoryProperties = [
   },
   {
     title: 'Resources',
+    children: [
+      { field: 'title', type: 'checkbox', label: 'Title' },
+      { field: 'departmentName', type: 'checkbox', label: 'Department Name' },
+      { field: 'project', type: 'checkbox', label: 'Project' },
+      { field: 'clients', type: 'checkbox', label: 'Client' },
+      { field: 'skills', type: 'checkbox', label: 'Skill' },
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'terminationdate', type: 'date', label: 'Termination Date' },
+    ],
   },
 ]
 
-export const FilterPanel = ({ setSearchText }: SearchBarProps) => {
+type FilterPanelProps = {
+  page?: String | null | undefined
+  filterItems?: { [key: string]: any } | undefined
+  onFilter?: (queryData: { [key: string]: any }) => void
+  setSearchText?: (s: string) => void
+}
+
+export const FilterPanel = ({
+  page,
+  onFilter,
+  filterItems,
+  setSearchText,
+}: FilterPanelProps) => {
   const [expanded, setExpanded] = useState(false)
+
+  const filterCategories = useMemo(() => {
+    if (page) {
+      return filterCategoryProperties.filter((item) => item.title === page)
+    }
+    return filterCategoryProperties
+  }, [page])
 
   return (
     <>
@@ -65,8 +93,14 @@ export const FilterPanel = ({ setSearchText }: SearchBarProps) => {
         displayed={expanded}
       >
         <SearchBar setSearchText={setSearchText} />
-        {filterCategoryProperties.map((property) => (
-          <FilterCategory key={property.title} title={property.title} />
+        {filterCategories.map((property) => (
+          <FilterCategory
+            key={property.title}
+            title={property.title}
+            fields={property.children}
+            filterItems={filterItems}
+            onChange={onFilter}
+          />
         ))}
       </ExpandedFilterPanelDiv>
     </>

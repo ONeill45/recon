@@ -1,9 +1,21 @@
-import { Resolver, Query, Mutation, Arg } from 'type-graphql'
 import { ILike } from 'typeorm'
+import { Resolver, Query, Mutation, Arg, Args } from 'type-graphql'
 import { Department, Resource } from '../models'
 import { CreateResourceInput, UpdateResourceInput } from '../inputs'
+import { GetResourcesWithFilter } from '../filters'
+// import { LessThan, Like, MoreThan, getRepository } from 'typeorm'
 @Resolver()
 export class ResourceResolver {
+  // @Query(() => [Resource])
+  // async resources(@Args() filter: GetResourcesWithFilter) {
+  //   const where: { [key: string]: any } = {}
+
+  //   return Resource.find({
+  //     where: where,
+  //     relations: ['resourceAllocations'],
+  //   })
+  // }
+
   @Query(() => Resource, { nullable: true })
   async resource(@Arg('id') id: string): Promise<Resource | null> {
     return Resource.findOne(id, { relations: ['resourceAllocations'] })
