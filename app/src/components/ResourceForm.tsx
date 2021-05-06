@@ -5,7 +5,10 @@ import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { Resource, Department } from 'interfaces'
+import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
+import { Toast } from 'components'
+import { useToast } from 'hooks'
 
 const CreateResourceForm = styled.form`
   margin: 1rem 0;
@@ -24,19 +27,15 @@ const CreateResourceFormInput = styled.input`
   margin: 0.5rem 0;
 `
 
-const ButtonContainer = styled.div`
-  text-align: center;
-  margin-bottom: 1rem;
-`
-
-const CancelButton = styled.button`
-  margin-right: 1rem;
-`
-
 const DepartmentSelect = styled.select`
   width: 50%;
-  padding: 5px 10px;
-  margin: 8px 0;
+  padding: 0.3rem 0.6rem;
+  margin: 0.5rem 0;
+`
+
+const SubmitButton = styled.button`
+  display: block;
+  margin-top: 1rem;
 `
 
 export const GET_ALL_DEPARTMENTS = gql`
@@ -86,13 +85,24 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
   const [department, setDepartment] = useState(resource?.department || null)
 
   const id = resource?.id
-  const [isFormChanged, setIsFormChanged] = useState(false)
+  const [hasFormChanged, setHasFormChanged] = useState(false)
 
   const router = useRouter()
   const account = useMsAccount()
 
   const [createResource] = useMutation(CREATE_RESOURCE)
   const [updateResource] = useMutation(UPDATE_RESOURCE)
+
+  const {
+    setDisplayToast,
+    setToastHeader,
+    setUpdateSuccess,
+    displayToast,
+    toastHeader,
+    updateSuccess,
+    toastFields,
+    setToastFields,
+  } = useToast()
 
   const handleDepartmentInput = (e: ChangeEvent<HTMLSelectElement>) => {
     setDepartment(
@@ -104,64 +114,168 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   const createNewResource = async (e: FormEvent) => {
     e.preventDefault()
-    await createResource({
-      variables: {
-        data: {
-          firstName,
-          lastName,
-          preferredName,
-          title,
-          departmentId: department?.id,
-          imageUrl,
-          email,
-          startDate,
-          terminationDate,
-          createdBy: account?.username,
-          updatedBy: account?.username,
-        },
+
+    const mutationVariables = {
+      firstName,
+      lastName,
+      preferredName,
+      title,
+      departmentId: department?.id,
+      imageUrl,
+      email,
+      startDate,
+      terminationDate,
+      updatedBy: account?.username,
+      createdBy: account?.username,
+    }
+
+    const mutationParams = [
+      {
+        firstName: firstName,
+        displayText: 'First name',
       },
-    })
-    router.push('/resources')
+      {
+        lastName: lastName,
+        displayText: 'Last name',
+      },
+      {
+        title: title,
+        displayText: 'Title',
+      },
+      {
+        department: department?.id,
+        displayText: 'Department name',
+      },
+      {
+        email: email,
+        displayText: 'Email',
+      },
+      {
+        startDate: startDate,
+        displayText: 'Start Date',
+      },
+    ]
+
+    const toastFuncs = {
+      setDisplayToast,
+      setToastHeader,
+      setUpdateSuccess,
+      setToastFields,
+    }
+
+    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
+
+    if (!isMutationVarNull) {
+      try {
+        const { data } = await createResource({
+          variables: {
+            data: mutationVariables,
+          },
+        })
+
+        if (data) {
+          setToastHeader('Successfully created Resource!')
+          setToastFields([])
+          setUpdateSuccess(true)
+          setDisplayToast(true)
+          setTimeout(() => {
+            router.push('/resources')
+          }, 3000)
+        }
+      } catch {
+        setToastHeader('Oops! Something went wrong.')
+        setToastFields([])
+        setUpdateSuccess(false)
+        setDisplayToast(true)
+      }
+    }
   }
 
   const updateExistingResource = async (e: FormEvent) => {
     e.preventDefault()
-    await updateResource({
-      variables: {
-        id: id,
-        data: {
-          firstName,
-          lastName,
-          preferredName,
-          title,
-          departmentId: department?.id,
-          imageUrl,
-          email,
-          startDate,
-          terminationDate,
-          updatedBy: account?.username,
-        },
+
+    const mutationVariables = {
+      firstName,
+      lastName,
+      preferredName,
+      title,
+      departmentId: department?.id,
+      imageUrl,
+      email,
+      startDate,
+      terminationDate,
+      updatedBy: account?.username,
+    }
+
+    const mutationParams = [
+      {
+        firstName: firstName,
+        displayText: 'First name',
       },
-    })
-  }
+      {
+        lastName: lastName,
+        displayText: 'Last name',
+      },
+      {
+        title: title,
+        displayText: 'Title',
+      },
+      {
+        department: department?.id,
+        displayText: 'Department name',
+      },
+      {
+        email: email,
+        displayText: 'Email',
+      },
+      {
+        startDate: startDate,
+        displayText: 'Start Date',
+      },
+    ]
 
-  const formChange = () => {
-    setIsFormChanged(true)
-  }
+    const toastFuncs = {
+      setDisplayToast,
+      setToastHeader,
+      setUpdateSuccess,
+      setToastFields,
+    }
 
-  const cancelClicked = () => {
-    router.push(id ? '/resources/' + id : '/resources')
+    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
+
+    if (!isMutationVarNull) {
+      try {
+        const { data } = await updateResource({
+          variables: {
+            id: id,
+            data: mutationVariables,
+          },
+        })
+
+        if (data) {
+          setToastHeader('Successfully updated Resource!')
+          setToastFields([])
+          setUpdateSuccess(true)
+          setDisplayToast(true)
+        }
+      } catch {
+        setToastHeader('Oops! Something went wrong.')
+        setToastFields([])
+        setUpdateSuccess(false)
+        setDisplayToast(true)
+      }
+    }
   }
 
   // Added these effects for detecting changes on the date
   // pickers since they do not trigger a change event on the
   // <CreateResourceForm> component when they are modified
   useEffect(() => {
-    setIsFormChanged(true)
+    setHasFormChanged(true)
   }, [startDate, terminationDate])
 
   useEffect(() => {
-    setIsFormChanged(false)
+    setHasFormChanged(false)
   }, [])
 
   const { data, error } = useQuery(GET_ALL_DEPARTMENTS, {
@@ -187,124 +301,110 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
 
   return (
     <>
-      <CreateResourceForm onChange={formChange}>
-        <CreateResourceFormLabel>
-          First Name
-          <CreateResourceFormInput
-            type="text"
-            aria-label="first-name"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setFirstName(e.currentTarget.value)
-            }
-            value={firstName}
-          ></CreateResourceFormInput>
-        </CreateResourceFormLabel>
-        <CreateResourceFormLabel>
-          Last Name
-          <CreateResourceFormInput
-            type="text"
-            aria-label="last-name"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setLastName(e.currentTarget.value)
-            }
-            value={lastName}
-          ></CreateResourceFormInput>
-        </CreateResourceFormLabel>
-        <CreateResourceFormLabel>
-          Preferred Name
-          <CreateResourceFormInput
-            type="text"
-            aria-label="preferred-name"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setPreferredName(e.currentTarget.value)
-            }
-            value={preferredName}
-          ></CreateResourceFormInput>
-        </CreateResourceFormLabel>
-        <CreateResourceFormLabel>
-          Title
-          <CreateResourceFormInput
-            type="text"
-            aria-label="title"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setTitle(e.currentTarget.value)
-            }
-            value={title}
-          ></CreateResourceFormInput>
-        </CreateResourceFormLabel>
-        <CreateResourceFormLabel>
-          Department
-          <DepartmentSelect
-            value={department?.id}
-            aria-label="department-select"
-            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-              handleDepartmentInput(event)
-            }
-          >
-            {departments.map((department: Department) => {
-              return (
-                <option key={department.id} value={department.id}>
-                  {department.name}
-                </option>
-              )
-            })}
-          </DepartmentSelect>
-        </CreateResourceFormLabel>
-        <CreateResourceFormLabel>
-          ImageUrl
-          <CreateResourceFormInput
-            type="text"
-            aria-label="image-url"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setImageUrl(e.currentTarget.value)
-            }
-            value={imageUrl}
-          ></CreateResourceFormInput>
-        </CreateResourceFormLabel>
-        <CreateResourceFormLabel>
-          Email
-          <CreateResourceFormInput
-            type="text"
-            aria-label="email"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setEmail(e.currentTarget.value)
-            }
-            value={email}
-          ></CreateResourceFormInput>
-        </CreateResourceFormLabel>
-        <CreateResourceFormLabel>
-          Start Date
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date) => setStartDate(date)}
-          ></DatePicker>
-        </CreateResourceFormLabel>
+      <Toast
+        headerText={toastHeader}
+        fields={toastFields}
+        success={updateSuccess}
+        display={displayToast}
+        setDisplayToast={setDisplayToast}
+      />
+      <CreateResourceForm onChange={() => setHasFormChanged(true)}>
+        <CreateResourceFormLabel>First Name</CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="first-name"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setFirstName(e.currentTarget.value)
+          }
+          value={firstName}
+        ></CreateResourceFormInput>
+        <CreateResourceFormLabel>Last Name</CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="last-name"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setLastName(e.currentTarget.value)
+          }
+          value={lastName}
+        ></CreateResourceFormInput>
+        <CreateResourceFormLabel>Preferred Name</CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="preferred-name"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setPreferredName(e.currentTarget.value)
+          }
+          value={preferredName}
+        ></CreateResourceFormInput>
+        <CreateResourceFormLabel>Title</CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="title"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setTitle(e.currentTarget.value)
+          }
+          value={title}
+        ></CreateResourceFormInput>
+        <CreateResourceFormLabel>Department</CreateResourceFormLabel>
+        <DepartmentSelect
+          value={department?.id}
+          aria-label="department-select"
+          onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+            handleDepartmentInput(event)
+          }
+        >
+          {departments.map((department: Department) => {
+            return (
+              <option key={department.id} value={department.id}>
+                {department.name}
+              </option>
+            )
+          })}
+        </DepartmentSelect>
+        <CreateResourceFormLabel>ImageUrl</CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="image-url"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setImageUrl(e.currentTarget.value)
+          }
+          value={imageUrl}
+        ></CreateResourceFormInput>
+        <CreateResourceFormLabel>Email</CreateResourceFormLabel>
+        <CreateResourceFormInput
+          type="text"
+          aria-label="email"
+          onChange={(e: FormEvent<HTMLInputElement>) =>
+            setEmail(e.currentTarget.value)
+          }
+          value={email}
+        ></CreateResourceFormInput>
+        <CreateResourceFormLabel>Start Date</CreateResourceFormLabel>
+        <DatePicker
+          selected={startDate}
+          onChange={(date: Date) => setStartDate(date)}
+        ></DatePicker>
         <CreateResourceFormLabel>
           Termination Date (Optional)
-          <DatePicker
-            selected={terminationDate}
-            onChange={(date: Date) => setTerminationDate(date)}
-          ></DatePicker>
         </CreateResourceFormLabel>
-      </CreateResourceForm>
-      <ButtonContainer>
-        <CancelButton name="Cancel" onClick={cancelClicked}>
-          Cancel
-        </CancelButton>
+        <DatePicker
+          selected={terminationDate}
+          onChange={(date: Date) => setTerminationDate(date)}
+        ></DatePicker>
         {id ? (
-          <button
-            name="Save"
-            disabled={!isFormChanged}
+          <SubmitButton
+            name="Update"
+            disabled={!hasFormChanged}
             onClick={updateExistingResource}
           >
-            Save
-          </button>
+            Update
+          </SubmitButton>
         ) : (
-          <button name="Submit" onClick={createNewResource}>
+          <SubmitButton name="Submit" onClick={createNewResource}>
             Submit
-          </button>
+          </SubmitButton>
         )}
-      </ButtonContainer>
+      </CreateResourceForm>
     </>
   )
 }

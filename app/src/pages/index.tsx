@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import styles from '../styles/Home.module.css'
-import { Button, FullPageSpinner, Spinner } from '../components'
+import { Button, FullPageSpinner, Spinner, FilterPanel } from '../components'
 import { useTheme } from '../utils/context'
 import { EmotionComponentProps } from 'styles/theme'
 
@@ -17,12 +17,13 @@ const Main = styled.main<EmotionComponentProps>`
   justify-content: flex-start;
   align-items: center;
 `
-const Home = () => {
+const Home: React.FC = () => {
   const [showSpinner, setShowSpinner] = useState(false)
   const { isDark, setIsDark } = useTheme()
   return (
     <>
       <div className={styles.container}>
+        <FilterPanel onFilter={() => {}} setSearchText={() => {}} />
         <Main>
           <h1 className={styles.title}>Welcome to Recon!</h1>
 
