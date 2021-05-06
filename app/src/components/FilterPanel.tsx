@@ -59,12 +59,14 @@ type FilterPanelProps = {
   page?: String | null | undefined
   filterItems?: { [key: string]: any } | undefined
   onFilter?: (queryData: { [key: string]: any }) => void
+  setSearchText?: (s: string) => void
 }
 
 export const FilterPanel = ({
   page,
   onFilter,
   filterItems,
+  setSearchText,
 }: FilterPanelProps) => {
   const [expanded, setExpanded] = useState(false)
 
@@ -90,7 +92,7 @@ export const FilterPanel = ({
         data-testid="ExpandedFilterPanel"
         displayed={expanded}
       >
-        <SearchBar />
+        <SearchBar setSearchText={setSearchText} />
         {filterCategories.map((property) => (
           <FilterCategory
             key={property.title}

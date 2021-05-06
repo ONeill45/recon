@@ -1,12 +1,27 @@
 import { Query, Resolver, Mutation, Arg } from 'type-graphql'
 import { Client } from '../models'
 import { CreateClientInput, UpdateClientInput } from '../inputs'
+import { ILike } from 'typeorm'
 
 @Resolver()
 export class ClientResolver {
   @Query(() => [Client])
-  clients() {
-    return Client.find()
+  async clients(@Arg('searchItem', { nullable: true }) searchItem: string) {
+    if (searchItem === null) {
+      return Client.find()
+    } else {
+      const foundClient = await Client.find({
+        where: [
+          {
+            clientName: ILike(`${searchItem}%`),
+          },
+          {
+            description: ILike(`${searchItem}%`),
+          },
+        ],
+      })
+      return foundClient
+    }
   }
 
   @Query(() => Client, { nullable: true })
