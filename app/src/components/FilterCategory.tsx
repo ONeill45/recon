@@ -147,6 +147,10 @@ export const FilterCategory = ({
   const [beforeAfterStartDate, setBeforeAfterStartDate] = useState<string>('')
   const [beforeAfterEndDate, setBeforeAfterEndDate] = useState<string>('')
 
+  // useEffect(() => {
+  //   console.log('FILTER ITEMS: ', filterItems)
+  // }, [filterItems])
+
   useEffect(() => {
     if (filterItems && filterItems.clients) {
       setClients(filterItems.clients)
@@ -176,15 +180,21 @@ export const FilterCategory = ({
     if (filterItems && filterItems.projectTypes) {
       setProjectTypes(filterItems.projectTypes)
     }
-  }, [])
+  }, [filterItems])
 
   // useEffect(() => {
-  //   console.log('clients: ', clients)
-  //   console.log('projects: ', projects)
+  //   console.log('clients filter category: ', clients)
+  //   console.log('projects filter category: ', projects)
   // }, [clients, projects])
+
+  useEffect(() => {
+    console.log('Q DATA: ', qData)
+    // console.log('projects filter category: ', projects)
+  }, [qData, projects])
 
   const onFilter = () => {
     if (onChange) {
+      console.log('ON CHANGE FILTER: ', qData)
       onChange(qData)
     }
   }

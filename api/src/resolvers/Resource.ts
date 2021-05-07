@@ -10,16 +10,28 @@ export class ResourceResolver {
   async resources(@Args() filter: GetResourcesWithFilter) {
     const where: { [key: string]: any } = {}
 
-    if (filter?.clients) {
-      where.clients = In(filter.clients)
-    }
+    // if (filter?.clients) {
+    //   where.clients = In(filter.clients)
+    // }
 
     if (filter?.title) {
       where.title = In(filter.title)
     }
 
     if (filter?.departmentName) {
-      where.departmentName = In(filter.departmentName)
+      const foundDepartment = await Department.find({
+        where: {
+          name: In(filter.departmentName),
+        },
+      })
+
+      console.log('FOUND DEPARTMENT: ', foundDepartment)
+
+      const departmentIds = foundDepartment.map((dep: any) => {
+        return dep.id
+      })
+
+      where.department_id = In(departmentIds)
     }
 
     if (filter?.project) {
@@ -40,6 +52,8 @@ export class ResourceResolver {
       where: where,
       relations: ['resourceAllocations'],
     })
+
+    console.log('FOUND RESOURCEEEE: ', foundResource)
 
     return foundResource
   }

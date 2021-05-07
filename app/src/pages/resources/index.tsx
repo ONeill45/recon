@@ -134,7 +134,7 @@ const MockSkills = [
 const Resources = () => {
   const [searchText, setSearchText] = useState('')
 
-  console.log('SEARCH: ', searchText)
+  // console.log('SEARCH: ', searchText)
 
   // const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
   //   fetchPolicy: 'network-only',
@@ -161,6 +161,7 @@ const Resources = () => {
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: Array<{ [key: string]: any }>) => {
+      console.log('res: ', res)
       setData(res)
     },
     onError: (err: any) => {
@@ -213,6 +214,7 @@ const Resources = () => {
   })
 
   useEffect(() => {
+    console.log('FIRST EFFECT')
     getClients({ variables: { searchItem: '' } })
     getProjects()
     getDepartments()
@@ -220,24 +222,28 @@ const Resources = () => {
     setSkills(MockSkills)
   }, [])
 
-  useEffect(() => {
-    console.log('clients: ', clients)
-    console.log('projects: ', projects)
-  }, [clients, projects])
+  // useEffect(() => {
+  //   console.log('FILTER OBJ: ', filter)
+  // }, [filter])
 
   const page = 'Resources'
 
   useEffect(() => {
+    console.log('FILTER OBJ: ', filter)
+    console.log('FUNCTIONS')
     setData({})
     setError(undefined)
     getAllResources({ variables: filter })
   }, [filter, getAllResources])
 
+  // useEffect(() => {
+  //   console.log('data: ', data)
+  // }, [data, projects])
+
   // if (loading) return <p>Loading...</p>
   // if (error) return <p>Error: {error.message}</p>
 
   const handleOnFilter = (queryFilter: any) => {
-    console.log('filter: ', filter)
     setFilter(queryFilter)
   }
 
