@@ -41,7 +41,6 @@ export class ProjectResolver {
           format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
         )
       } else {
-        console.log()
         where.startDate = Equal(
           format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
         )

@@ -7,7 +7,7 @@ type filterCategoryProps = {
   title: string
   fields: Array<{ [key: string]: any }> | undefined
   filterItems: { [key: string]: any } | undefined
-  onChange: (queryData: { [key: string]: string }) => void
+  onChange?: (queryData: { [key: string]: string }) => void
 }
 
 type filterItemDivProps = {
@@ -145,7 +145,6 @@ export const FilterCategory = ({
   const [skills, setSkills] = useState<Array<string>>([])
 
   const [clientNames, setClientNames] = useState<Array<string>>([])
-  const [projectNames, setProjectNames] = useState<Array<string>>([])
   const [projectConfidence, setProjectConfidence] = useState<Array<string>>([])
   const [projectPriorities, setProjectPriorities] = useState<Array<string>>([])
   const [projectTypes, setProjectTypes] = useState<Array<string>>([])
@@ -174,9 +173,6 @@ export const FilterCategory = ({
     if (filterItems && filterItems.clientNames) {
       setClientNames(filterItems.clientNames)
     }
-    if (filterItems && filterItems.projectNames) {
-      setProjectNames(filterItems.projectNames)
-    }
     if (filterItems && filterItems.projectConfidence) {
       setProjectConfidence(filterItems.projectConfidence)
     }
@@ -189,7 +185,9 @@ export const FilterCategory = ({
   }, [])
 
   const onFilter = () => {
-    onChange(qData)
+    if (onChange) {
+      onChange(qData)
+    }
   }
 
   useEffect(() => {
@@ -241,8 +239,8 @@ export const FilterCategory = ({
       } else {
         setBeforeAfterEndDate('present')
       }
-    }
   }
+}
 
   const selectRenderItems = (field: string): Array<string> | null => {
     if (field === 'project') return projects
@@ -251,7 +249,6 @@ export const FilterCategory = ({
     if (field === 'title') return titles
     if (field === 'skills') return skills
 
-    if (field === 'projectNames') return projectNames
     if (field === 'clientNames') return clientNames
     if (field === 'confidence') return projectConfidence
     if (field === 'priorities') return projectPriorities

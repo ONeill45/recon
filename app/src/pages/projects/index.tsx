@@ -2,25 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { gql, useLazyQuery } from '@apollo/client'
 import { ProjectCard, PlusCircle, Cards, FilterPanel } from 'components'
 import { Project, Priority, ProjectType } from 'interfaces'
-
 import styles from '../../styles/Home.module.css'
-
-const GET_ALL_PROJECTS = gql`
-  {
-    projects {
-      id
-      projectName
-      startDate
-      endDate
-      projectType
-      priority
-      confidence
-      client {
-        clientName
-      }
-    }
-  }
-`
 
 export const GET_PROJECTS = gql`
   query GetAllProjects(
@@ -54,8 +36,8 @@ export const GET_PROJECTS = gql`
 `
 
 export const GET_ALL_CLIENTS_NAME = gql`
-  {
-    clients {
+  query clients($searchItem: String) {
+    clients(searchItem: $searchItem) {
       clientName
     }
   }
@@ -68,7 +50,6 @@ const Projects = () => {
   )
 
   const [clientNames, setClientNames] = useState<Array<string>>([])
-  const [projectNames, setProjectNames] = useState<Array<string>>([])
   const [projectPriorities, setProjectPriorities] = useState<Array<string>>([])
   const [projectTypes, setProjectTypes] = useState<Array<string>>([])
   const projectConfidence: Array<string> = ['0', '100']
@@ -96,17 +77,6 @@ const Projects = () => {
     onError: () => {},
   })
 
-  const [getProjectNames] = useLazyQuery(GET_ALL_PROJECTS, {
-    fetchPolicy: 'network-only',
-    onCompleted: (res: { [key: string]: any }) => {
-      const _projects =
-        res?.projects &&
-        res.projects.map((item: { projectName: string }) => item.projectName)
-      setProjectNames(Array.from(new Set(_projects)))
-    },
-    onError: () => {},
-  })
-
   const getProjectPriorites = () => {
     const values = Object.values(Priority).map((value: any) => {
       return value
@@ -122,8 +92,7 @@ const Projects = () => {
   }
 
   useEffect(() => {
-    getClientNames()
-    getProjectNames()
+    getClientNames({ variables: { searchItem: '' } })
     getProjectPriorites()
     getProjectTypes()
   }, [])
@@ -151,14 +120,14 @@ const Projects = () => {
         <FilterPanel
           page={page}
           onFilter={handleOnFilter}
-          filterItems={{ clientNames, projectNames, projectConfidence, projectPriorities, projectTypes }}
+          filterItems={{ clientNames, projectConfidence, projectPriorities, projectTypes }}
         />
         <Cards>
           {projects && projects.map((project: Project) => {
             return <ProjectCard project={project} key={project.id} />
           })}
         </Cards>
-        <PlusCircle size="50" route="/projects/new" />
+        <PlusCircle size="50" route="/projects/project" />
       </div>
     </>
   )

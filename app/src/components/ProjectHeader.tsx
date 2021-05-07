@@ -5,7 +5,7 @@ import {
   HeaderNameDiv,
   SubHeaderDiv,
 } from './Header'
-import { Pencil } from '../components/Pencil'
+import { Pencil } from './Pencil'
 
 type ProjectHeaderProps = {
   project: Project
@@ -19,7 +19,7 @@ export const ProjectHeader = ({ project }: ProjectHeaderProps) => {
       <SubHeaderDiv>
         <HeaderNameDiv>{projectName}</HeaderNameDiv>
         <HeaderDescriptionDiv>Project Manager: Some Guy</HeaderDescriptionDiv>
-        <Pencil size={'30'} route={'/projects/update'} id={id} />
+        <Pencil size={'30'} route={'/projects/project'} id={id} />
       </SubHeaderDiv>
     </HeaderDiv>
   )

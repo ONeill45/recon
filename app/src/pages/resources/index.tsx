@@ -144,9 +144,7 @@ const Resources = () => {
   const [skills, setSkills] = useState<Array<string>>([])
 
   const [data, setData] = useState<{ [key: string]: any }>({})
-  // const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
-  //   fetchPolicy: 'network-only',
-  // })
+
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: Array<{ [key: string]: any }>) => {
