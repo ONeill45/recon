@@ -120,12 +120,18 @@ const Projects = () => {
         <FilterPanel
           page={page}
           onFilter={handleOnFilter}
-          filterItems={{ clientNames, projectConfidence, projectPriorities, projectTypes }}
+          filterItems={{
+            clientNames,
+            projectConfidence,
+            projectPriorities,
+            projectTypes,
+          }}
         />
         <Cards>
-          {projects && projects.map((project: Project) => {
-            return <ProjectCard project={project} key={project.id} />
-          })}
+          {projects &&
+            projects.map((project: Project) => {
+              return <ProjectCard project={project} key={project.id} />
+            })}
         </Cards>
         <PlusCircle size="50" route="/projects/project" />
       </div>

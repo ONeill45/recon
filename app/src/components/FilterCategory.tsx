@@ -35,9 +35,10 @@ export const FilterCategoryContentDiv = styled.div`
 
 export const FilterItemDiv = styled.div<filterItemDivProps>`
   display: flex;
-  flex-direction: ${ (props: any) => props.isDate ? 'column' : 'row'};
+  flex-direction: ${(props: any) => (props.isDate ? 'column' : 'row')};
   justify-content: space-between;
-  margin: ${ (props: any) => props.isDate ? '1.5rem 0.3rem 0 0.3rem' : '0.3rem 0.3rem 0 0.3rem' };
+  margin: ${(props: any) =>
+    props.isDate ? '1.5rem 0.3rem 0 0.3rem' : '0.3rem 0.3rem 0 0.3rem'};
 `
 
 export const FilterSubmitDIv = styled.div`
@@ -50,11 +51,11 @@ export const FilterItemLabel = styled.label`
 `
 
 export const FilterItemInput = styled.input<filterInputProps>`
-  width: ${ (props: any) => props.isDate ? '50%' : 'auto'};
+  width: ${(props: any) => (props.isDate ? '50%' : 'auto')};
 `
 
 export const FilterDateDescription = styled.div<filterDateDescriptionProps>`
-  display: ${ (props: any) => props.isDate ? 'block' : 'none'};
+  display: ${(props: any) => (props.isDate ? 'block' : 'none')};
   margin: 0.5rem 0;
   font-size: 0.8rem;
 `
@@ -87,19 +88,18 @@ export const FilterCategory = ({
   }) => {
     if (target && target.checked === true) {
       if (!qData[field]) {
-        const qDataCopy = {...qData}
+        const qDataCopy = { ...qData }
         qDataCopy[field] = [name]
-        setQData({...qDataCopy})
+        setQData({ ...qDataCopy })
       } else {
-        const qDataCopy = {...qData}
+        const qDataCopy = { ...qData }
         qDataCopy[field].push(name)
-        setQData({...qDataCopy})
+        setQData({ ...qDataCopy })
       }
     } else {
-      const qDataCopy = {...qData}
+      const qDataCopy = { ...qData }
       delete qDataCopy[field]
-      setQData({...qDataCopy})
-
+      setQData({ ...qDataCopy })
     }
   }
 
@@ -109,32 +109,28 @@ export const FilterCategory = ({
         const qDataCopy = { startDate: {} }
         qDataCopy['startDate'] = {
           date: value,
-          beforeAfter: beforeAfterStartDate
+          beforeAfter: beforeAfterStartDate,
         }
-        setQData((prev: any) => (
-          {
-            ...prev,
-            ...qDataCopy
-          }
-        ))
+        setQData((prev: any) => ({
+          ...prev,
+          ...qDataCopy,
+        }))
       } else {
         console.log('endDate')
-        const qDataCopy = { endDate: {}}
+        const qDataCopy = { endDate: {} }
         qDataCopy['endDate'] = {
           date: value,
-          beforeAfter: beforeAfterEndDate
+          beforeAfter: beforeAfterEndDate,
         }
-        setQData((prev: any) => (
-          {
-            ...prev,
-            ...qDataCopy
-          }
-        ))
+        setQData((prev: any) => ({
+          ...prev,
+          ...qDataCopy,
+        }))
       }
     } else {
-      const qDataCopy = {...qData}
+      const qDataCopy = { ...qData }
       qDataCopy[field] = [value]
-      setQData({...qDataCopy})
+      setQData({ ...qDataCopy })
     }
   }
 
@@ -150,7 +146,6 @@ export const FilterCategory = ({
   const [projectTypes, setProjectTypes] = useState<Array<string>>([])
   const [beforeAfterStartDate, setBeforeAfterStartDate] = useState<string>('')
   const [beforeAfterEndDate, setBeforeAfterEndDate] = useState<string>('')
-
 
   useEffect(() => {
     if (filterItems && filterItems.clients) {
@@ -168,7 +163,6 @@ export const FilterCategory = ({
     if (filterItems && filterItems.skills) {
       setSkills(filterItems.skills)
     }
-
 
     if (filterItems && filterItems.clientNames) {
       setClientNames(filterItems.clientNames)
@@ -191,32 +185,34 @@ export const FilterCategory = ({
   }
 
   useEffect(() => {
-      const qDataCopy = {...qData}
-      let qDataCopyStartDate = {...qDataCopy['startDate']}
-      if (qDataCopyStartDate.date) {
-        qDataCopy['startDate'] = {
-          ...qDataCopyStartDate,
-          beforeAfter: beforeAfterStartDate
-        }
-        setQData({...qDataCopy})
+    const qDataCopy = { ...qData }
+    let qDataCopyStartDate = { ...qDataCopy['startDate'] }
+    if (qDataCopyStartDate.date) {
+      qDataCopy['startDate'] = {
+        ...qDataCopyStartDate,
+        beforeAfter: beforeAfterStartDate,
       }
+      setQData({ ...qDataCopy })
+    }
   }, [beforeAfterStartDate])
 
   useEffect(() => {
-    const qDataCopy = {...qData}
-    let qDataCopyEndDate = {...qDataCopy['endDate']}
+    const qDataCopy = { ...qData }
+    let qDataCopyEndDate = { ...qDataCopy['endDate'] }
     if (qDataCopyEndDate.date) {
       qDataCopy['endDate'] = {
         ...qDataCopyEndDate,
-        beforeAfter: beforeAfterEndDate
+        beforeAfter: beforeAfterEndDate,
       }
-      setQData({...qDataCopy})
+      setQData({ ...qDataCopy })
     }
   }, [beforeAfterEndDate])
 
-
-
-  const beforeAfterChange = (checked: any, field: string, beforeAfter: string) => {
+  const beforeAfterChange = (
+    checked: any,
+    field: string,
+    beforeAfter: string,
+  ) => {
     console.log('checked: ', checked)
     if (field === 'startDate') {
       if (checked) {
@@ -239,8 +235,8 @@ export const FilterCategory = ({
       } else {
         setBeforeAfterEndDate('present')
       }
+    }
   }
-}
 
   const selectRenderItems = (field: string): Array<string> | null => {
     if (field === 'project') return projects
@@ -307,29 +303,31 @@ export const FilterCategory = ({
         <FilterDateDescription isDate={item.type === 'date'}>
           Check box below to filter before or after the selected date
           <FilterCheckItemDiv>
-            <FilterItemInput 
+            <FilterItemInput
               type="checkbox"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => beforeAfterChange(e.target?.checked, item.field, 'before')}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                beforeAfterChange(e.target?.checked, item.field, 'before')
+              }
             />
-            <FilterItemLabel>
-              before
-            </FilterItemLabel>
+            <FilterItemLabel>before</FilterItemLabel>
           </FilterCheckItemDiv>
           <FilterCheckItemDiv>
-            <FilterItemInput 
+            <FilterItemInput
               type="checkbox"
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => beforeAfterChange(e.target?.checked, item.field, 'after')}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                beforeAfterChange(e.target?.checked, item.field, 'after')
+              }
             />
-            <FilterItemLabel>
-              after
-            </FilterItemLabel>
+            <FilterItemLabel>after</FilterItemLabel>
           </FilterCheckItemDiv>
         </FilterDateDescription>
         <FilterItemInput
           type={item.type}
           id={`${item.type}-${item.field}`}
           isDate={item.type === 'date'}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleOnChange(e.target?.value, item.field, item.type === 'date')}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            handleOnChange(e.target?.value, item.field, item.type === 'date')
+          }
         />
       </FilterItemDiv>
     )
