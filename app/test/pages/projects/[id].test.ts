@@ -1,4 +1,3 @@
-// import { gql } from '@apollo/client'
 import Project, { GET_PROJECT } from 'pages/projects/[id]'
 import { ProjectFactory, ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
@@ -48,7 +47,10 @@ describe('Individual project page test', () => {
     expect(getByText('Loading...')).toBeVisible()
   })
   it('should fetch the requested project and display more details', async () => {
-    const { getByText } = await render(Project, {}, mocks)
+    const mockProps = {
+      router: { query: { id: project.id } },
+    }
+    const { getByText } = await render(Project, mockProps, mocks)
 
     expect(getByText(`${project.projectName}`)).toBeVisible()
   })

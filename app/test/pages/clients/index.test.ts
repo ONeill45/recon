@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client'
 
-import Clients from 'pages/clients'
+import Clients, { GET_ALL_CLIENTS } from 'pages/clients'
 import { ClientFactory } from '../../factories'
 import { render } from '../../testUtils'
 
@@ -8,18 +8,7 @@ const clients = ClientFactory().buildList(5)
 const mocks = [
   {
     request: {
-      query: gql`
-        query GetAllClient($startDate: String, $terminationDate: String) {
-          clients(startDate: $startDate, terminationDate: $terminationDate) {
-            id
-            clientName
-            description
-            logoUrl
-            startDate
-            endDate
-          }
-        }
-      `,
+      query: GET_ALL_CLIENTS,
     },
     result: {
       data: {
@@ -32,18 +21,7 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: gql`
-        query GetAllClient($startDate: String, $terminationDate: String) {
-          clients(startDate: $startDate, terminationDate: $terminationDate) {
-            id
-            clientName
-            description
-            logoUrl
-            startDate
-            endDate
-          }
-        }
-      `,
+      query: GET_ALL_CLIENTS,
     },
     error: new Error('An error occurred'),
   },
