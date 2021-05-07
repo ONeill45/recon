@@ -38,58 +38,58 @@ export const GET_ALL_RESOURCES = gql`
   }
 `
 
-// export const GET_RESOURCES = gql`
-//   query GetAllResource(
-//     $title: String
-//     $startDate: String
-//     $terminationDate: String
-//     $clients: String
-//     $skills: String
-//     $departmentName: String
-//     $project: String
-//   ) {
-//     resources(
-//       title: $title
-//       startDate: $startDate
-//       terminationDate: $terminationDate
-//       clients: $clients
-//       skills: $skills
-//       departmentName: $departmentName
-//       project: $project
-//     ) {
-//       id
-//       firstName
-//       lastName
-//       preferredName
-//       title
-//       startDate
-//       terminationDate
-//       imageUrl
-//       department {
-//         name
-//       }
-//       email
-//       resourceAllocations {
-//         id
-//         startDate
-//         endDate
-//         endReason
-//         percentage
-//         project {
-//           id
-//           projectName
-//           projectType
-//           confidence
-//           priority
-//         }
-//       }
-//     }
-//   }
-// `
+export const GET_RESOURCES = gql`
+  query GetAllResource(
+    $title: [String!]
+    $clients: [String!]
+    $skills: [String!]
+    $departmentName: [String!]
+    $project: [String!]
+    $startDate: DateInput
+    $terminationDate: DateInput
+  ) {
+    resources(
+      title: $title
+      startDate: $startDate
+      terminationDate: $terminationDate
+      clients: $clients
+      skills: $skills
+      departmentName: $departmentName
+      project: $project
+    ) {
+      id
+      firstName
+      lastName
+      preferredName
+      title
+      startDate
+      terminationDate
+      imageUrl
+      department {
+        name
+      }
+      email
+      resourceAllocations {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
+    }
+  }
+`
 
 export const GET_ALL_CLIENTS_NAME = gql`
-  {
-    clients {
+  query clients($searchItem: String) {
+    clients(searchItem: $searchItem) {
       clientName
     }
   }
@@ -134,37 +134,39 @@ const MockSkills = [
 const Resources = () => {
   const [searchText, setSearchText] = useState('')
 
-  const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
-    fetchPolicy: 'network-only',
-    variables: {
-      searchItem: searchText,
-    },
-  })
+  console.log('SEARCH: ', searchText)
 
-  const resources = data?.resources
+  // const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
+  //   fetchPolicy: 'network-only',
+  //   variables: {
+  //     searchItem: searchText,
+  //   },
+  // })
+
+  // const resources = data?.resources
 
   const [filter, setFilter] = useState({})
-  // const [error, setError] = useState<{ [key: string]: any } | undefined>(
-  //   undefined,
-  // )
+  const [error, setError] = useState<{ [key: string]: any } | undefined>(
+    undefined,
+  )
 
-  const [clients, setCleints] = useState<Array<string>>([])
+  const [clients, setClients] = useState<Array<string>>([])
   const [projects, setProjects] = useState<Array<string>>([])
   const [departments, setDepartments] = useState<Array<string>>([])
   const [titles, setTitles] = useState<Array<string>>([])
   const [skills, setSkills] = useState<Array<string>>([])
 
-  // const [data, setData] = useState<{ [key: string]: any }>({})
+  const [data, setData] = useState<{ [key: string]: any }>({})
 
-  // const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
-  //   fetchPolicy: 'network-only',
-  //   onCompleted: (res: Array<{ [key: string]: any }>) => {
-  //     setData(res)
-  //   },
-  //   onError: (err: any) => {
-  //     setError(err)
-  //   },
-  // })
+  const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
+    fetchPolicy: 'network-only',
+    onCompleted: (res: Array<{ [key: string]: any }>) => {
+      setData(res)
+    },
+    onError: (err: any) => {
+      setError(err)
+    },
+  })
 
   const [getClients] = useLazyQuery(GET_ALL_CLIENTS_NAME, {
     fetchPolicy: 'network-only',
@@ -172,7 +174,7 @@ const Resources = () => {
       const _clients =
         res?.clients &&
         res.clients.map((item: { clientName: string }) => item.clientName)
-      setCleints(Array.from(new Set(_clients)))
+      setClients(Array.from(new Set(_clients)))
     },
     onError: () => {},
   })
@@ -211,20 +213,25 @@ const Resources = () => {
   })
 
   useEffect(() => {
-    getClients()
+    getClients({ variables: { searchItem: '' } })
     getProjects()
     getDepartments()
     getResourceTitles()
     setSkills(MockSkills)
   }, [])
 
+  useEffect(() => {
+    console.log('clients: ', clients)
+    console.log('projects: ', projects)
+  }, [clients, projects])
+
   const page = 'Resources'
 
-  // useEffect(() => {
-  //   setData({})
-  //   setError(undefined)
-  //   getAllResources({ variables: filter })
-  // }, [filter, getAllResources])
+  useEffect(() => {
+    setData({})
+    setError(undefined)
+    getAllResources({ variables: filter })
+  }, [filter, getAllResources])
 
   // if (loading) return <p>Loading...</p>
   // if (error) return <p>Error: {error.message}</p>
@@ -234,7 +241,7 @@ const Resources = () => {
     setFilter(queryFilter)
   }
 
-  // const { resources } = data
+  const { resources } = data
 
   if (error) {
     return <p>Error: {error.message}</p>

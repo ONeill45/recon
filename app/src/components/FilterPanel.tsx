@@ -93,14 +93,15 @@ export const FilterPanel = ({
         displayed={expanded}
       >
         <SearchBar setSearchText={setSearchText} />
-        {filterCategories.map((property) => (
-          <FilterCategory
-            key={property.title}
-            title={property.title}
-            fields={property.children}
-            filterItems={filterItems}
-            onChange={onFilter}
-          />
+        {filterCategories.map((property: any) => (
+          <div key={property.title}>
+            <FilterCategory
+              title={property.title}
+              fields={property.children}
+              filterItems={filterItems}
+              onChange={onFilter}
+            />
+          </div>
         ))}
       </ExpandedFilterPanelDiv>
     </>
