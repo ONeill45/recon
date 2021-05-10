@@ -1,9 +1,29 @@
 import userEvent from '@testing-library/user-event'
 
-import { FilterCategory } from 'components'
+import {
+  FilterCategory,
+  GET_ALL_CLIENTS_NAME,
+  GET_ALL_DEPARTMENTS,
+  GET_ALL_PROJECTS_NAME,
+  GET_ALL_RESOURCE_TITLE,
+} from 'components'
+import {
+  ClientFactory,
+  ProjectFactory,
+  DepartmentFactory,
+  ResourceFactory,
+} from '../factories'
 import { render } from '../testUtils'
 
 const title = 'test'
+const data = {
+  target: {
+    name: 'title',
+    checked: 'checked',
+  },
+  field: 'checkbox',
+  name: 'software developer',
+}
 
 describe('<FilterCategory />', () => {
   it('should not show expanded filter category content by default', async () => {

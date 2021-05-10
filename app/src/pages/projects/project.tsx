@@ -1,7 +1,7 @@
 import { gql, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 
-import { ProjectForm } from '../../../components/ProjectForm'
+import { ProjectForm } from '../../components/ProjectForm'
 
 export const GET_PROJECT = gql`
   query GetProject($id: String!) {
@@ -21,18 +21,21 @@ export const GET_PROJECT = gql`
   }
 `
 
-const UpdateProject = () => {
+const Project = () => {
+
   const router = useRouter()
+  const { id } = router.query
+
   const { data, loading, error } = useQuery(GET_PROJECT, {
-    variables: {
-      id: router.query.id,
-    },
+    fetchPolicy: 'network-only',
+    variables: { id },
+    skip: !id,
   })
 
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
-  const { project } = data
+  const { project } = data || {}
 
   return (
     <>
@@ -41,4 +44,4 @@ const UpdateProject = () => {
   )
 }
 
-export default UpdateProject
+export default Project

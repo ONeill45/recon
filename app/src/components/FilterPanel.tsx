@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from '@emotion/styled'
-import { useState } from 'react'
 import { css } from '@emotion/react'
 import { FiFilter } from 'react-icons/fi'
 
@@ -48,18 +47,33 @@ const filterCategoryProperties = [
   },
   {
     title: 'Resources',
+    children: [
+      { field: 'title', type: 'checkbox', label: 'Title' },
+      { field: 'departmentName', type: 'checkbox', label: 'Department Name' },
+      { field: 'project', type: 'checkbox', label: 'Project' },
+      { field: 'clients', type: 'checkbox', label: 'Client' },
+      { field: 'skills', type: 'checkbox', label: 'Skill' },
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'terminationdate', type: 'date', label: 'Termination Date' },
+    ],
   },
 ]
 
 type FilterPanelProps = {
-  page?: String | null | undefined
+  page?: string | null | undefined
   filterItems?: { [key: string]: any } | undefined
   onFilter?: (queryData: { [key: string]: any }) => void
+  setSearchText?: (s: string) => void
 }
 
-export const FilterPanel = (props: FilterPanelProps) => {
-  const { page, filterItems, onFilter } = props
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const FilterPanel = ({
+  page,
+  onFilter,
+  filterItems,
+}: FilterPanelProps) => {
   const [expanded, setExpanded] = useState(false)
+  const [searchText, onSetSearchText] = useState<string | undefined>(undefined)
 
   const filterCategories = useMemo(() => {
     if (page) {
@@ -67,6 +81,22 @@ export const FilterPanel = (props: FilterPanelProps) => {
     }
     return filterCategoryProperties
   }, [page])
+
+  const onHandleFilter = (filter: { [key: string]: any }) => {
+    if (searchText) {
+      filter.searchItem = searchText
+    }
+    if (onFilter) {
+      onFilter(filter)
+    }
+  }
+
+  const onHandleSearch = (text: string) => {
+    onSetSearchText(text)
+    if (onFilter) {
+      onFilter({ searchItem: text })
+    }
+  }
 
   return (
     <>
@@ -83,14 +113,14 @@ export const FilterPanel = (props: FilterPanelProps) => {
         data-testid="ExpandedFilterPanel"
         displayed={expanded}
       >
-        <SearchBar />
+        <SearchBar setSearchText={onHandleSearch} searchQuery={searchText} />
         {filterCategories.map((property) => (
           <FilterCategory
             key={property.title}
             title={property.title}
             fields={property.children}
             filterItems={filterItems}
-            onChange={onFilter}
+            onChange={onHandleFilter}
           />
         ))}
       </ExpandedFilterPanelDiv>

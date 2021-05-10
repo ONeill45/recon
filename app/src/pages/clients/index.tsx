@@ -7,8 +7,16 @@ import { Client } from 'interfaces'
 import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
 
 export const GET_ALL_CLIENTS = gql`
-  query GetAllClient($startDate: String, $terminationDate: String) {
-    clients(startDate: $startDate, terminationDate: $terminationDate) {
+  query GetAllClient(
+    $startDate: String
+    $terminationDate: String
+    $searchItem: String
+  ) {
+    clients(
+      startDate: $startDate
+      terminationDate: $terminationDate
+      searchItem: $searchItem
+    ) {
       id
       clientName
       description
@@ -19,6 +27,7 @@ export const GET_ALL_CLIENTS = gql`
   }
 `
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const Clients = () => {
   const [data, setData] = useState<{ [key: string]: any }>({})
   const [error, setError] = useState<{ [key: string]: any } | null>(null)
@@ -27,7 +36,7 @@ const Clients = () => {
 
   const [getAllClients, { loading }] = useLazyQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
-    onCompleted: (res: Array<{ [key: string]: any }>) => {
+    onCompleted: (res: Array<{ [key: string]: unknown }>) => {
       setData(res)
     },
     onError: (err: any) => {

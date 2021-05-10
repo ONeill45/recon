@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
+// import { gql, useLazyQuery, useQuery } from '@apollo/client'
 
 export const FilterCategoryHeaderDiv = styled.div`
   height: 40px;
@@ -44,21 +45,81 @@ export const FilterCheckItemDiv = styled.div`
 
 type filterCategoryProps = {
   title: string
-  fields?: any
-  filterItems?: any
-  onChange?: any
+  fields: Array<{ [key: string]: any }> | undefined
+  filterItems: { [key: string]: any } | undefined
+  onChange?: (queryData: { [key: string]: string }) => void
 }
 
 export const FilterCategory = ({
   title,
   fields,
   onChange,
+  filterItems,
 }: filterCategoryProps) => {
   const [expanded, setExpanded] = useState(false)
   const queryData: { [key: string]: any } = {}
 
+  const handleOnChangeCheckBox = ({
+    target,
+    field,
+    name,
+  }: {
+    [key: string]: any
+  }) => {
+    if (target && target.checked === true) {
+      if (!queryData[field]) {
+        queryData[field] = name
+      } else {
+        queryData[field] = queryData[field].concat(`, ${name}`)
+      }
+    } else {
+      queryData[field] = queryData[field].filter(
+        (item: string) => item !== name,
+      )
+    }
+  }
+
   const handleOnChange = (value: string, field: string) => {
     queryData[field] = value
+  }
+
+  const [clients, setCleints] = useState<Array<string>>([])
+  const [projects, setProjects] = useState<Array<string>>([])
+  const [departments, setDepartments] = useState<Array<string>>([])
+  const [titles, setTitles] = useState<Array<string>>([])
+  const [skills, setSkills] = useState<Array<string>>([])
+
+  useEffect(() => {
+    if (filterItems && filterItems.clients) {
+      setCleints(filterItems.clients)
+    }
+    if (filterItems && filterItems.projects) {
+      setProjects(filterItems.projects)
+    }
+    if (filterItems && filterItems.departments) {
+      setDepartments(filterItems.departments)
+    }
+    if (filterItems && filterItems.titles) {
+      setTitles(filterItems.titles)
+    }
+    if (filterItems && filterItems.skills) {
+      setSkills(filterItems.skills)
+    }
+  }, [])
+
+  const onFilter = () => {
+    if (onChange) {
+      onChange(queryData)
+    }
+  }
+
+  const selectRenderItems = (field: string): Array<string> | null => {
+    if (field === 'project') return projects
+    if (field === 'clients') return clients
+    if (field === 'departmentName') return departments
+    if (field === 'title') return titles
+    if (field === 'skills') return skills
+    return null
   }
 
   const renderFilterItem = (item: {
@@ -66,6 +127,44 @@ export const FilterCategory = ({
     type: string
     label: string
   }) => {
+    if (item.type === 'checkbox' && selectRenderItems(item.field)) {
+      const items = selectRenderItems(item.field)
+
+      if (items && items.length) {
+        return (
+          <>
+            <FilterItemDiv>
+              <FilterItemLabel>{item.label}</FilterItemLabel>
+            </FilterItemDiv>
+            {items &&
+              items.map((name: string) => (
+                <FilterCheckItemDiv>
+                  <FilterItemInput
+                    type="checkbox"
+                    id={`${item.type}-${item.field}-${name}`}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      handleOnChangeCheckBox({
+                        target: {
+                          name: e.target?.name,
+                          checked: e.target?.checked,
+                        },
+                        field: item.field,
+                        name,
+                      })
+                    }}
+                  />
+                  <FilterItemLabel
+                    htmlFor={`${item.type}-${item.field}-${name}`}
+                  >
+                    {name}
+                  </FilterItemLabel>
+                </FilterCheckItemDiv>
+              ))}
+          </>
+        )
+      }
+      return null
+    }
     return (
       <FilterItemDiv>
         <FilterItemLabel htmlFor={`${item.type}-${item.field}`}>
@@ -74,15 +173,12 @@ export const FilterCategory = ({
         <FilterItemInput
           type={item.type}
           id={`${item.type}-${item.field}`}
-          onChange={(e: any) => handleOnChange(e.target?.value, item.field)}
+          onChange={(e) => handleOnChange(e.target?.value, item.field)}
         />
       </FilterItemDiv>
     )
   }
 
-  const onFilter = () => {
-    onChange(queryData)
-  }
   return (
     <>
       <FilterCategoryHeaderDiv onClick={() => setExpanded(!expanded)}>
@@ -97,33 +193,40 @@ export const FilterCategory = ({
             )
           ) : (
             <>
-              <div>
-                <input type="checkbox" id="checkbox1" />
-                <label htmlFor="checkbox1">Relevant filter option 1</label>
-              </div>
-              <div>
-                <input type="checkbox" id="checkbox2" />
-                <label htmlFor="checkbox2">Relevant filter option 2</label>
-              </div>
-              <div>
-                <input type="checkbox" id="checkbox3" />
-                <label htmlFor="checkbox3">Relevant filter option 3</label>
-              </div>
-              <div>
-                <input type="checkbox" id="checkbox4" />
-                <label htmlFor="checkbox4">Relevant filter option 4</label>
-              </div>
+              <FilterItemDiv>
+                <FilterItemLabel htmlFor="checkbox1">
+                  Relevant filter option 1
+                </FilterItemLabel>
+                <FilterItemInput type="checkbox" id="checkbox1" />
+              </FilterItemDiv>
+              <FilterItemDiv>
+                <FilterItemLabel htmlFor="checkbox2">
+                  Relevant filter option 2
+                </FilterItemLabel>
+                <FilterItemInput type="checkbox" id="checkbox2" />
+              </FilterItemDiv>
+              <FilterItemDiv>
+                <FilterItemLabel htmlFor="checkbox3">
+                  Relevant filter option 3
+                </FilterItemLabel>
+                <FilterItemInput type="checkbox" id="checkbox3" />
+              </FilterItemDiv>
+              <FilterItemDiv>
+                <FilterItemLabel htmlFor="checkbox4">
+                  Relevant filter option 4
+                </FilterItemLabel>
+                <FilterItemInput type="checkbox" id="checkbox4" />
+              </FilterItemDiv>
             </>
           )}
           <FilterSubmitDIv>
             <FilterSubmitButton type="button" onClick={onFilter}>
-              Search
+              Filter
             </FilterSubmitButton>
           </FilterSubmitDIv>
-          {/* this is just an example and will be removed/replaced later */}
         </FilterCategoryContentDiv>
       ) : (
-        <div />
+        <FilterItemDiv />
       )}
     </>
   )

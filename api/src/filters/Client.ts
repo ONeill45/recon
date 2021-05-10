@@ -7,4 +7,7 @@ export class GetClientsWithFilter {
 
   @Field({ nullable: true })
   terminationDate: string
+
+  @Field({ nullable: true })
+  searchItem: string
 }

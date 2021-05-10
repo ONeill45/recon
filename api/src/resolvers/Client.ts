@@ -1,5 +1,5 @@
 import { Query, Resolver, Mutation, Arg, Args } from 'type-graphql'
-import { LessThan, Like, MoreThan, getRepository } from 'typeorm'
+import { LessThan, ILike, MoreThan, getRepository } from 'typeorm'
 import { Client } from '../models'
 import { CreateClientInput, UpdateClientInput } from '../inputs'
 import { GetClientsWithFilter } from '../filters'
@@ -10,13 +10,17 @@ export class ClientResolver {
   clients(@Args() filter: GetClientsWithFilter) {
     const where: { [key: string]: any } = {}
 
-    if (filter?.startDate) {
-      where.startDate = LessThan(new Date(filter.startDate))
+    // if (filter?.startDate) {
+    //   where.startDate = LessThan(new Date(filter.startDate))
+    // }
+    // if (filter?.terminationDate) {
+    //   where.startDate = MoreThan(new Date(filter.terminationDate))
+    // }
+    if (filter?.searchItem) {
+      where.clientName = ILike(`${filter.searchItem}%`)
+      where.description = ILike(`${filter.searchItem}%`)
     }
-    if (filter?.terminationDate) {
-      where.startDate = MoreThan(new Date(filter.terminationDate))
-    }
-    return Client.find({ where: {} })
+    return Client.find({ where })
   }
 
   @Query(() => Client, { nullable: true })
