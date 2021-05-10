@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
 // import { gql, useLazyQuery, useQuery } from '@apollo/client'
 
@@ -97,35 +97,45 @@ export const FilterCategory = ({
         setQData({ ...qDataCopy })
       }
     } else {
-      const qDataCopy = { ...qData }
-      delete qDataCopy[field]
+      let qDataCopy = { ...qData }
+      const filteredCopy = qDataCopy[field].filter((item: any) => item !== name)
+      if (filteredCopy.length > 0) {
+        qDataCopy[field] = [...filteredCopy]
+      } else {
+        delete qDataCopy[field]
+      }
       setQData({ ...qDataCopy })
     }
   }
 
   const handleOnChange = (value: string, field: string, date?: boolean) => {
     if (date) {
-      if (field === 'startDate') {
-        const qDataCopy = { startDate: {} }
-        qDataCopy['startDate'] = {
-          date: value,
-          beforeAfter: beforeAfterStartDate,
+      if (value) {
+        if (field === 'startDate') {
+          const qDataCopy = { startDate: {} }
+          qDataCopy['startDate'] = {
+            date: value,
+            beforeAfter: beforeAfterStartDate,
+          }
+          setQData((prev: any) => ({
+            ...prev,
+            ...qDataCopy,
+          }))
+        } else {
+          const qDataCopy = { endDate: {} }
+          qDataCopy['endDate'] = {
+            date: value,
+            beforeAfter: beforeAfterEndDate,
+          }
+          setQData((prev: any) => ({
+            ...prev,
+            ...qDataCopy,
+          }))
         }
-        setQData((prev: any) => ({
-          ...prev,
-          ...qDataCopy,
-        }))
       } else {
-        console.log('endDate')
-        const qDataCopy = { endDate: {} }
-        qDataCopy['endDate'] = {
-          date: value,
-          beforeAfter: beforeAfterEndDate,
-        }
-        setQData((prev: any) => ({
-          ...prev,
-          ...qDataCopy,
-        }))
+        const qDataCopy = { ...qData }
+        delete qDataCopy[field]
+        setQData({ ...qDataCopy })
       }
     } else {
       const qDataCopy = { ...qData }
@@ -152,6 +162,7 @@ export const FilterCategory = ({
   // }, [filterItems])
 
   useEffect(() => {
+    // console.log('FILTER ITEMS: ', filterItems)
     if (filterItems && filterItems.clients) {
       setClients(filterItems.clients)
     }
@@ -189,8 +200,7 @@ export const FilterCategory = ({
 
   useEffect(() => {
     console.log('Q DATA: ', qData)
-    // console.log('projects filter category: ', projects)
-  }, [qData, projects])
+  }, [qData])
 
   const onFilter = () => {
     if (onChange) {
@@ -228,7 +238,6 @@ export const FilterCategory = ({
     field: string,
     beforeAfter: string,
   ) => {
-    console.log('checked: ', checked)
     if (field === 'startDate') {
       if (checked) {
         if (beforeAfter === 'before') {

@@ -40,5 +40,5 @@ export class GetResourcesWithFilter {
   startDate: DateInput
 
   @Field({ nullable: true })
-  terminationDate: DateInput
+  endDate: DateInput
 }

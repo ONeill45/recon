@@ -50,7 +50,7 @@ const filterCategoryProperties = [
       { field: 'clients', type: 'checkbox', label: 'Client' },
       { field: 'skills', type: 'checkbox', label: 'Skill' },
       { field: 'startDate', type: 'date', label: 'Start Date' },
-      { field: 'terminationdate', type: 'date', label: 'Termination Date' },
+      { field: 'endDate', type: 'date', label: 'Termination Date' },
     ],
   },
 ]

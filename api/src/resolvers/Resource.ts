@@ -1,9 +1,10 @@
-import { ILike, In } from 'typeorm'
+import { ILike, In, LessThan, MoreThan, Equal } from 'typeorm'
 import { Resolver, Query, Mutation, Arg, Args } from 'type-graphql'
-import { Department, Resource } from '../models'
+import { Department, Resource, Project, ResourceAllocation } from '../models'
 import { CreateResourceInput, UpdateResourceInput } from '../inputs'
 import { GetResourcesWithFilter } from '../filters'
-// import { LessThan, Like, MoreThan, getRepository } from 'typeorm'
+import { format } from 'date-fns'
+
 @Resolver()
 export class ResourceResolver {
   @Query(() => [Resource])
@@ -35,11 +36,74 @@ export class ResourceResolver {
     }
 
     if (filter?.project) {
-      where.project = In(filter.project)
+      console.log('proj name: ', filter.project)
+      const foundProject = await Project.find({
+        relations: ['resourceAllocations'],
+        where: {
+          projectName: In(filter.project),
+        },
+      })
+
+      const projectIds = foundProject.map((proj: any) => {
+        return proj.id
+      })
+
+      // console.log('PROJECT IDS: ', projectIds)
+
+      const foundResourceAllocations = await ResourceAllocation.find({
+        where: {
+          project: {
+            id: In(projectIds),
+          },
+        },
+      })
+
+      // console.log('FOUND RESOURCE ALLOCATIONS: ', foundResourceAllocations)
+
+      const currentDate = new Date()
+      const currentAllocations = foundResourceAllocations.filter(
+        (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
+      )
+
+      const currentResourceIds = currentAllocations.map((ra: any) => {
+        return ra.resource.id
+      })
+
+      where.id = In(currentResourceIds)
+
+      // console.log('foundResourceAllocation: ', foundResourceAllocation)
     }
 
-    if (filter?.project) {
-      where.project = In(filter.project)
+    if (filter?.startDate) {
+      if (filter.startDate.beforeAfter === 'before') {
+        where.startDate = LessThan(
+          format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
+        )
+      } else if (filter.startDate.beforeAfter === 'after') {
+        where.startDate = MoreThan(
+          format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
+        )
+      } else {
+        where.startDate = Equal(
+          format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
+        )
+      }
+    }
+
+    if (filter?.endDate) {
+      if (filter.endDate.beforeAfter === 'before') {
+        where.terminationDate = LessThan(
+          format(new Date(filter.endDate.date), 'yyyy-MM-dd'),
+        )
+      } else if (filter.endDate.beforeAfter === 'after') {
+        where.terminationDate = MoreThan(
+          format(new Date(filter.endDate.date), 'yyyy-MM-dd'),
+        )
+      } else {
+        where.terminationDate = Equal(
+          format(new Date(filter.endDate.date), 'yyyy-MM-dd'),
+        )
+      }
     }
 
     if (filter?.skills) {
@@ -53,7 +117,7 @@ export class ResourceResolver {
       relations: ['resourceAllocations'],
     })
 
-    console.log('FOUND RESOURCEEEE: ', foundResource)
+    // console.log('FOUND RESOURCEEEE: ', foundResource)
 
     return foundResource
   }

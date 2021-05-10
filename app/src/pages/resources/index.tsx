@@ -46,12 +46,12 @@ export const GET_RESOURCES = gql`
     $departmentName: [String!]
     $project: [String!]
     $startDate: DateInput
-    $terminationDate: DateInput
+    $endDate: DateInput
   ) {
     resources(
       title: $title
       startDate: $startDate
-      terminationDate: $terminationDate
+      endDate: $endDate
       clients: $clients
       skills: $skills
       departmentName: $departmentName
@@ -161,7 +161,6 @@ const Resources = () => {
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: Array<{ [key: string]: any }>) => {
-      console.log('res: ', res)
       setData(res)
     },
     onError: (err: any) => {
@@ -214,7 +213,6 @@ const Resources = () => {
   })
 
   useEffect(() => {
-    console.log('FIRST EFFECT')
     getClients({ variables: { searchItem: '' } })
     getProjects()
     getDepartments()
@@ -230,15 +228,14 @@ const Resources = () => {
 
   useEffect(() => {
     console.log('FILTER OBJ: ', filter)
-    console.log('FUNCTIONS')
     setData({})
     setError(undefined)
     getAllResources({ variables: filter })
   }, [filter, getAllResources])
 
-  // useEffect(() => {
-  //   console.log('data: ', data)
-  // }, [data, projects])
+  useEffect(() => {
+    console.log('data: ', data)
+  }, [data])
 
   // if (loading) return <p>Loading...</p>
   // if (error) return <p>Error: {error.message}</p>
