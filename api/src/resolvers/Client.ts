@@ -8,7 +8,7 @@ import { GetClientsWithFilter } from '../filters'
 export class ClientResolver {
   @Query(() => [Client])
   clients(@Args() filter: GetClientsWithFilter) {
-    const where: { [key: string]: any } = {}
+    const where = []
 
     // if (filter?.startDate) {
     //   where.startDate = LessThan(new Date(filter.startDate))
@@ -17,8 +17,8 @@ export class ClientResolver {
     //   where.startDate = MoreThan(new Date(filter.terminationDate))
     // }
     if (filter?.searchItem) {
-      where.clientName = ILike(`${filter.searchItem}%`)
-      where.description = ILike(`${filter.searchItem}%`)
+      where.push({ clientName: ILike(`${filter.searchItem}%`) })
+      where.push({ description: ILike(`${filter.searchItem}%`) })
     }
     return Client.find({ where })
   }
