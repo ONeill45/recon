@@ -40,6 +40,7 @@ export const GET_ALL_RESOURCES = gql`
 
 export const GET_RESOURCES = gql`
   query GetAllResource(
+    $searchItem: String!
     $title: [String!]
     $clients: [String!]
     $skills: [String!]
@@ -49,6 +50,7 @@ export const GET_RESOURCES = gql`
     $endDate: DateInput
   ) {
     resources(
+      searchItem: $searchItem
       title: $title
       startDate: $startDate
       endDate: $endDate
@@ -220,6 +222,10 @@ const Resources = () => {
     setSkills(MockSkills)
   }, [])
 
+  useEffect(() => {
+    handleOnFilter({ searchItem: searchText })
+  }, [searchText])
+
   // useEffect(() => {
   //   console.log('FILTER OBJ: ', filter)
   // }, [filter])
@@ -241,7 +247,19 @@ const Resources = () => {
   // if (error) return <p>Error: {error.message}</p>
 
   const handleOnFilter = (queryFilter: any) => {
-    setFilter(queryFilter)
+    if (!queryFilter.hasOwnProperty('searchItem')) {
+      queryFilter['searchItem'] = searchText
+    }
+    setFilter((prev: any) => {
+      console.log('PREV: ', { ...prev })
+      console.log('QUERY FILTER: ', { ...queryFilter })
+      if (prev.searchItem !== queryFilter.searchItem) {
+        return { ...prev, ...queryFilter }
+      } else {
+        return { ...queryFilter }
+      }
+    })
+    // setFilter({ ...queryFilter })
   }
 
   const { resources } = data

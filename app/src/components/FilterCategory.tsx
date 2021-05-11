@@ -205,6 +205,7 @@ export const FilterCategory = ({
   const onFilter = () => {
     if (onChange) {
       console.log('ON CHANGE FILTER: ', qData)
+      // onChange({})
       onChange(qData)
     }
   }
@@ -365,8 +366,10 @@ export const FilterCategory = ({
       {expanded ? (
         <FilterCategoryContentDiv data-testid="FilterCategoryContent">
           {fields ? (
-            fields.map((item: { field: string; type: string; label: string }) =>
-              renderFilterItem(item),
+            fields.map(
+              (item: { field: string; type: string; label: string }) => (
+                <div key={item.label}>{renderFilterItem(item)}</div>
+              ),
             )
           ) : (
             <>

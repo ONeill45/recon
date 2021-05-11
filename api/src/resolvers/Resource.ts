@@ -1,6 +1,12 @@
 import { ILike, In, LessThan, MoreThan, Equal } from 'typeorm'
 import { Resolver, Query, Mutation, Arg, Args } from 'type-graphql'
-import { Department, Resource, Project, ResourceAllocation } from '../models'
+import {
+  Department,
+  Resource,
+  Project,
+  ResourceAllocation,
+  Client,
+} from '../models'
 import { CreateResourceInput, UpdateResourceInput } from '../inputs'
 import { GetResourcesWithFilter } from '../filters'
 import { format } from 'date-fns'
@@ -8,11 +14,47 @@ import { format } from 'date-fns'
 @Resolver()
 export class ResourceResolver {
   @Query(() => [Resource])
-  async resources(@Args() filter: GetResourcesWithFilter) {
+  async resources(
+    @Args() filter: GetResourcesWithFilter,
+  ): Promise<Resource[] | null> {
     const where: { [key: string]: any } = {}
+    let resourceIds: any = []
+    let queriedResources = []
+    let textSearchQueriedResource = []
+    let textSearchWhere: Array<{ [key: string]: any }> = [
+      {
+        firstName: ILike(`${filter.searchItem}%`),
+      },
+      {
+        lastName: ILike(`${filter.searchItem}%`),
+      },
+      {
+        preferredName: ILike(`${filter.searchItem}%`),
+      },
+      {
+        email: ILike(`${filter.searchItem}%`),
+      },
+    ]
 
-    // if (filter?.clients) {
-    //   where.clients = In(filter.clients)
+    // if (filter?.searchItem) {
+    //   textSearchQueriedResource = await Resource.find({
+    //     relations: ['resourceAllocations'],
+    //     where: [
+    //       {
+    //         firstName: ILike(`${filter?.searchItem}%`),
+    //       },
+    //       {
+    //         lastName: ILike(`${filter?.searchItem}%`),
+    //       },
+    //       {
+    //         preferredName: ILike(`${filter?.searchItem}%`),
+    //       },
+    //       {
+    //         email: ILike(`${filter?.searchItem}%`),
+    //       },
+    //     ],
+    //   })
+    //   console.log('TEXT SEARCH RESOURCE: ', textSearchQueriedResource)
     // }
 
     if (filter?.title) {
@@ -65,12 +107,10 @@ export class ResourceResolver {
         (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
       )
 
-      const currentResourceIds = currentAllocations.map((ra: any) => {
-        return ra.resource.id
-      })
-
-      where.id = In(currentResourceIds)
-
+      const currentResourceIds = currentAllocations.map(
+        (ra: any) => ra.resource.id,
+      )
+      resourceIds = currentResourceIds
       // console.log('foundResourceAllocation: ', foundResourceAllocation)
     }
 
@@ -106,14 +146,91 @@ export class ResourceResolver {
       }
     }
 
+    if (filter?.clients) {
+      const foundClients = await Client.find({
+        where: {
+          clientName: In(filter.clients),
+        },
+      })
+
+      const clientIds = foundClients.map((client: any) => client.id)
+
+      const foundProjects = await Project.find({
+        relations: ['resourceAllocations'],
+        where: {
+          client: In(clientIds),
+        },
+      })
+
+      const projectIds = foundProjects.map((proj: any) => proj.id)
+
+      // console.log('PROJECT IDS: ', projectIds)
+
+      const foundResourceAllocations = await ResourceAllocation.find({
+        where: {
+          project: {
+            id: In(projectIds),
+          },
+        },
+      })
+
+      const currentDate = new Date()
+      const currentAllocations = foundResourceAllocations.filter(
+        (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
+      )
+
+      const currentResourceIds = currentAllocations.map(
+        (ra: any) => ra.resource.id,
+      )
+      console.log('client idssss: ', currentResourceIds)
+      resourceIds = resourceIds.concat(currentResourceIds)
+      console.log('resourceIds AFTER: ', resourceIds)
+    }
+
     if (filter?.skills) {
       where.skills = In(filter.skills)
     }
 
-    console.log('WHERE: ', where)
+    // console.log('RESOURCE IDS: ', resourceIds)
+    if (resourceIds.length > 0) {
+      where.id = In(resourceIds)
+    }
+
+    let updatedWhere = []
+    if (Object.keys(where).length > 0) {
+      updatedWhere = textSearchWhere.map((field: any) => {
+        Object.entries(where).map((item: any) => {
+          console.log('ENTRY[0]: ', item[0])
+          console.log('ENTRY[1]: ', item[1])
+          field[item[0]] = item[1]
+        })
+        console.log('FIELD: ', field)
+        return field
+      })
+      textSearchWhere = textSearchWhere.concat(updatedWhere)
+    }
+
+    console.log('UPDATED WHERE: ', updatedWhere)
+
+    // let foundResource = []
+    // if (filter?.searchItem) {
+    //   foundResource = textSearchQueriedResource
+    // } else if (Object.keys(where).length > 0) {
+    //   foundResource = await Resource.find({
+    //     where: where,
+    //     relations: ['resourceAllocations'],
+    //   })
+    // } else if (Object.keys(where).length > 0 && filter?.searchItem) {
+    //   foundResource = foundResource.concat(textSearchQueriedResource)
+    // } else {
+    //   foundResource = await Resource.find({
+    //     where: where,
+    //     relations: ['resourceAllocations'],
+    //   })
+    // }
 
     const foundResource = await Resource.find({
-      where: where,
+      where: textSearchWhere,
       relations: ['resourceAllocations'],
     })
 
