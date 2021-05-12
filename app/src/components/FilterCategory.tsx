@@ -15,10 +15,15 @@ type filterItemDivProps = {
 
 type filterInputProps = {
   isDate?: boolean
+  isInvalidDate?: boolean
 }
 
 type filterDateDescriptionProps = {
   isDate?: boolean
+}
+
+type invalidDateFormatProps = {
+  display: boolean
 }
 
 export const FilterCategoryHeaderDiv = styled.div`
@@ -51,6 +56,11 @@ export const FilterItemLabel = styled.label`
 
 export const FilterItemInput = styled.input<filterInputProps>`
   width: ${(props: any) => (props.isDate ? '50%' : 'auto')};
+  border: ${(props: any) => (props.isInvalidDate ? '3px solid red' : 'auto')};
+
+  &:focus {
+    outline: none;
+  }
 `
 
 export const FilterDateDescription = styled.div<filterDateDescriptionProps>`
@@ -69,6 +79,12 @@ export const FilterCheckItemDiv = styled.div`
   padding-left: 15px;
 `
 
+export const InvalidDateFormat = styled.div<invalidDateFormatProps>`
+  opacity: ${(props: any) => (props.display ? '1' : '0')};
+  color: red;
+  font-size: 0.8rem;
+`
+
 export const FilterCategory = ({
   title,
   fields,
@@ -77,6 +93,23 @@ export const FilterCategory = ({
 }: filterCategoryProps) => {
   const [expanded, setExpanded] = useState(false)
   const [qData, setQData] = useState<{ [key: string]: any }>({})
+  const [isInvalidDate, setIsInvalidDate] = useState<{
+    startDate: boolean
+    endDate: boolean
+  }>({ startDate: false, endDate: false })
+  const [dateFilters, setDateFilters] = useState<{
+    startDate: { before: boolean; after: boolean }
+    endDate: { before: boolean; after: boolean }
+  }>({
+    startDate: {
+      before: false,
+      after: false,
+    },
+    endDate: {
+      before: false,
+      after: false,
+    },
+  })
 
   const handleOnChangeCheckBox = ({
     target,
@@ -109,6 +142,7 @@ export const FilterCategory = ({
 
   const handleOnChange = (value: string, field: string, date?: boolean) => {
     if (date) {
+      const isInvalidDateCopy = { ...isInvalidDate }
       if (value) {
         if (field === 'startDate') {
           const qDataCopy = { startDate: {} }
@@ -120,6 +154,8 @@ export const FilterCategory = ({
             ...prev,
             ...qDataCopy,
           }))
+          isInvalidDateCopy.startDate = false
+          setIsInvalidDate({ ...isInvalidDateCopy })
         } else {
           const qDataCopy = { endDate: {} }
           qDataCopy['endDate'] = {
@@ -130,11 +166,20 @@ export const FilterCategory = ({
             ...prev,
             ...qDataCopy,
           }))
+          isInvalidDateCopy.endDate = false
+          setIsInvalidDate({ ...isInvalidDateCopy })
         }
       } else {
         const qDataCopy = { ...qData }
         delete qDataCopy[field]
         setQData({ ...qDataCopy })
+        if (field === 'startDate') {
+          isInvalidDateCopy.startDate = true
+          setIsInvalidDate({ ...isInvalidDateCopy })
+        } else {
+          isInvalidDateCopy.endDate = true
+          setIsInvalidDate({ ...isInvalidDateCopy })
+        }
       }
     } else {
       const qDataCopy = { ...qData }
@@ -230,7 +275,7 @@ export const FilterCategory = ({
           setBeforeAfterStartDate('after')
         }
       } else {
-        setBeforeAfterStartDate('present')
+        setBeforeAfterStartDate('')
       }
     }
     if (field === 'endDate') {
@@ -241,10 +286,44 @@ export const FilterCategory = ({
           setBeforeAfterEndDate('after')
         }
       } else {
-        setBeforeAfterEndDate('present')
+        setBeforeAfterEndDate('')
       }
     }
   }
+
+  useEffect(() => {
+    const dateFiltersCopy = { ...dateFilters }
+    if (beforeAfterEndDate === 'before') {
+      dateFiltersCopy.endDate.before = true
+      dateFiltersCopy.endDate.after = false
+    } else if (beforeAfterEndDate === 'after') {
+      dateFiltersCopy.endDate.before = false
+      dateFiltersCopy.endDate.after = true
+    } else {
+      dateFiltersCopy.endDate.before = false
+      dateFiltersCopy.endDate.after = false
+    }
+    setDateFilters({
+      ...dateFiltersCopy,
+    })
+  }, [beforeAfterEndDate])
+
+  useEffect(() => {
+    const dateFiltersCopy = { ...dateFilters }
+    if (beforeAfterStartDate === 'before') {
+      dateFiltersCopy.startDate.before = true
+      dateFiltersCopy.startDate.after = false
+    } else if (beforeAfterStartDate === 'after') {
+      dateFiltersCopy.startDate.before = false
+      dateFiltersCopy.startDate.after = true
+    } else {
+      dateFiltersCopy.startDate.before = false
+      dateFiltersCopy.startDate.after = false
+    }
+    setDateFilters({
+      ...dateFiltersCopy,
+    })
+  }, [beforeAfterStartDate])
 
   const selectRenderItems = (field: string): Array<string> | null => {
     if (field === 'project') return projects
@@ -313,6 +392,12 @@ export const FilterCategory = ({
           <FilterCheckItemDiv>
             <FilterItemInput
               type="checkbox"
+              id={`${item.field}-before`}
+              checked={
+                item.field === 'startDate'
+                  ? dateFilters.startDate.before
+                  : dateFilters.endDate.before
+              }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 beforeAfterChange(e.target?.checked, item.field, 'before')
               }
@@ -322,6 +407,12 @@ export const FilterCategory = ({
           <FilterCheckItemDiv>
             <FilterItemInput
               type="checkbox"
+              id={`${item.field}-after`}
+              checked={
+                item.field === 'startDate'
+                  ? dateFilters.startDate.after
+                  : dateFilters.endDate.after
+              }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 beforeAfterChange(e.target?.checked, item.field, 'after')
               }
@@ -333,10 +424,29 @@ export const FilterCategory = ({
           type={item.type}
           id={`${item.type}-${item.field}`}
           isDate={item.type === 'date'}
+          isInvalidDate={
+            item.type === 'date' && item.field === 'startDate'
+              ? isInvalidDate.startDate
+              : item.type === 'date' && item.field === 'endDate'
+              ? isInvalidDate.endDate
+              : false
+          }
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleOnChange(e.target?.value, item.field, item.type === 'date')
           }
         />
+        <InvalidDateFormat
+          display={
+            item.type === 'date' && item.field === 'startDate'
+              ? isInvalidDate.startDate
+              : item.type === 'date' && item.field === 'endDate'
+              ? isInvalidDate.endDate
+              : false
+          }
+        >
+          *Date format is incorrect. Date input can only contain numbers (e.g.
+          04/04/2021).
+        </InvalidDateFormat>
       </FilterItemDiv>
     )
   }
