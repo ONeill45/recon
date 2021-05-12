@@ -19,8 +19,6 @@ export class ResourceResolver {
   ): Promise<Resource[] | null> {
     const where: { [key: string]: any } = {}
     let resourceIds: any = []
-    let queriedResources = []
-    let textSearchQueriedResource = []
     let textSearchWhere: Array<{ [key: string]: any }> = [
       {
         firstName: ILike(`${filter.searchItem}%`),
@@ -36,27 +34,6 @@ export class ResourceResolver {
       },
     ]
 
-    // if (filter?.searchItem) {
-    //   textSearchQueriedResource = await Resource.find({
-    //     relations: ['resourceAllocations'],
-    //     where: [
-    //       {
-    //         firstName: ILike(`${filter?.searchItem}%`),
-    //       },
-    //       {
-    //         lastName: ILike(`${filter?.searchItem}%`),
-    //       },
-    //       {
-    //         preferredName: ILike(`${filter?.searchItem}%`),
-    //       },
-    //       {
-    //         email: ILike(`${filter?.searchItem}%`),
-    //       },
-    //     ],
-    //   })
-    //   console.log('TEXT SEARCH RESOURCE: ', textSearchQueriedResource)
-    // }
-
     if (filter?.title) {
       where.title = In(filter.title)
     }
@@ -67,31 +44,22 @@ export class ResourceResolver {
           name: In(filter.departmentName),
         },
       })
-
-      console.log('FOUND DEPARTMENT: ', foundDepartment)
-
       const departmentIds = foundDepartment.map((dep: any) => {
         return dep.id
       })
-
       where.department_id = In(departmentIds)
     }
 
     if (filter?.project) {
-      console.log('proj name: ', filter.project)
       const foundProject = await Project.find({
         relations: ['resourceAllocations'],
         where: {
           projectName: In(filter.project),
         },
       })
-
       const projectIds = foundProject.map((proj: any) => {
         return proj.id
       })
-
-      // console.log('PROJECT IDS: ', projectIds)
-
       const foundResourceAllocations = await ResourceAllocation.find({
         where: {
           project: {
@@ -99,19 +67,14 @@ export class ResourceResolver {
           },
         },
       })
-
-      // console.log('FOUND RESOURCE ALLOCATIONS: ', foundResourceAllocations)
-
       const currentDate = new Date()
       const currentAllocations = foundResourceAllocations.filter(
         (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
       )
-
       const currentResourceIds = currentAllocations.map(
         (ra: any) => ra.resource.id,
       )
       resourceIds = currentResourceIds
-      // console.log('foundResourceAllocation: ', foundResourceAllocation)
     }
 
     if (filter?.startDate) {
@@ -152,20 +115,14 @@ export class ResourceResolver {
           clientName: In(filter.clients),
         },
       })
-
       const clientIds = foundClients.map((client: any) => client.id)
-
       const foundProjects = await Project.find({
         relations: ['resourceAllocations'],
         where: {
           client: In(clientIds),
         },
       })
-
       const projectIds = foundProjects.map((proj: any) => proj.id)
-
-      // console.log('PROJECT IDS: ', projectIds)
-
       const foundResourceAllocations = await ResourceAllocation.find({
         where: {
           project: {
@@ -173,7 +130,6 @@ export class ResourceResolver {
           },
         },
       })
-
       const currentDate = new Date()
       const currentAllocations = foundResourceAllocations.filter(
         (ra) => !ra.endDate || new Date(ra.endDate) > currentDate,
@@ -182,16 +138,9 @@ export class ResourceResolver {
       const currentResourceIds = currentAllocations.map(
         (ra: any) => ra.resource.id,
       )
-      console.log('client idssss: ', currentResourceIds)
       resourceIds = resourceIds.concat(currentResourceIds)
-      console.log('resourceIds AFTER: ', resourceIds)
     }
 
-    if (filter?.skills) {
-      where.skills = In(filter.skills)
-    }
-
-    // console.log('RESOURCE IDS: ', resourceIds)
     if (resourceIds.length > 0) {
       where.id = In(resourceIds)
     }
@@ -200,41 +149,16 @@ export class ResourceResolver {
     if (Object.keys(where).length > 0) {
       updatedWhere = textSearchWhere.map((field: any) => {
         Object.entries(where).map((item: any) => {
-          console.log('ENTRY[0]: ', item[0])
-          console.log('ENTRY[1]: ', item[1])
           field[item[0]] = item[1]
         })
-        console.log('FIELD: ', field)
         return field
       })
       textSearchWhere = textSearchWhere.concat(updatedWhere)
     }
-
-    console.log('UPDATED WHERE: ', updatedWhere)
-
-    // let foundResource = []
-    // if (filter?.searchItem) {
-    //   foundResource = textSearchQueriedResource
-    // } else if (Object.keys(where).length > 0) {
-    //   foundResource = await Resource.find({
-    //     where: where,
-    //     relations: ['resourceAllocations'],
-    //   })
-    // } else if (Object.keys(where).length > 0 && filter?.searchItem) {
-    //   foundResource = foundResource.concat(textSearchQueriedResource)
-    // } else {
-    //   foundResource = await Resource.find({
-    //     where: where,
-    //     relations: ['resourceAllocations'],
-    //   })
-    // }
-
     const foundResource = await Resource.find({
       where: textSearchWhere,
       relations: ['resourceAllocations'],
     })
-
-    // console.log('FOUND RESOURCEEEE: ', foundResource)
 
     return foundResource
   }

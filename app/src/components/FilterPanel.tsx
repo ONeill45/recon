@@ -3,7 +3,6 @@ import { useMemo, useState } from 'react'
 import { css } from '@emotion/react'
 import { FiFilter } from 'react-icons/fi'
 import { FilterCategory, SearchBar } from './'
-// import { SearchBarProps } from 'interfaces'
 
 type displayProps = {
   displayed: boolean
@@ -48,7 +47,6 @@ const filterCategoryProperties = [
       { field: 'departmentName', type: 'checkbox', label: 'Department Name' },
       { field: 'project', type: 'checkbox', label: 'Project' },
       { field: 'clients', type: 'checkbox', label: 'Client' },
-      { field: 'skills', type: 'checkbox', label: 'Skill' },
       { field: 'startDate', type: 'date', label: 'Start Date' },
       { field: 'endDate', type: 'date', label: 'Termination Date' },
     ],

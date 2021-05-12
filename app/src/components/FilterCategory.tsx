@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
-// import { gql, useLazyQuery, useQuery } from '@apollo/client'
 
 type filterCategoryProps = {
   title: string
@@ -157,12 +156,7 @@ export const FilterCategory = ({
   const [beforeAfterStartDate, setBeforeAfterStartDate] = useState<string>('')
   const [beforeAfterEndDate, setBeforeAfterEndDate] = useState<string>('')
 
-  // useEffect(() => {
-  //   console.log('FILTER ITEMS: ', filterItems)
-  // }, [filterItems])
-
   useEffect(() => {
-    // console.log('FILTER ITEMS: ', filterItems)
     if (filterItems && filterItems.clients) {
       setClients(filterItems.clients)
     }
@@ -193,19 +187,8 @@ export const FilterCategory = ({
     }
   }, [filterItems])
 
-  // useEffect(() => {
-  //   console.log('clients filter category: ', clients)
-  //   console.log('projects filter category: ', projects)
-  // }, [clients, projects])
-
-  useEffect(() => {
-    console.log('Q DATA: ', qData)
-  }, [qData])
-
   const onFilter = () => {
     if (onChange) {
-      console.log('ON CHANGE FILTER: ', qData)
-      // onChange({})
       onChange(qData)
     }
   }

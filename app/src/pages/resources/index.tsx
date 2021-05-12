@@ -1,49 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { gql, useQuery, useLazyQuery } from '@apollo/client'
-
+import { gql, useLazyQuery } from '@apollo/client'
 import { Cards, FilterPanel, PlusCircle, ResourceCard } from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
 
-export const GET_ALL_RESOURCES = gql`
-  query Resources($searchItem: String!) {
-    resources(searchItem: $searchItem) {
-      id
-      firstName
-      lastName
-      preferredName
-      title
-      startDate
-      terminationDate
-      imageUrl
-      department {
-        name
-      }
-      email
-      resourceAllocations {
-        id
-        startDate
-        endDate
-        endReason
-        percentage
-        project {
-          id
-          projectName
-          projectType
-          confidence
-          priority
-        }
-      }
-    }
-  }
-`
-
 export const GET_RESOURCES = gql`
   query GetAllResource(
-    $searchItem: String!
+    $searchItem: String
     $title: [String!]
     $clients: [String!]
-    $skills: [String!]
     $departmentName: [String!]
     $project: [String!]
     $startDate: DateInput
@@ -55,7 +20,6 @@ export const GET_RESOURCES = gql`
       startDate: $startDate
       endDate: $endDate
       clients: $clients
-      skills: $skills
       departmentName: $departmentName
       project: $project
     ) {
@@ -113,40 +77,9 @@ export const GET_ALL_DEPARTMENTS_NAME = gql`
   }
 `
 
-export const GET_ALL_RESOURCE_TITLE = gql`
-  {
-    resources {
-      title
-    }
-  }
-`
-
-const MockSkills = [
-  'React',
-  'React Native',
-  'Vue',
-  'Angular',
-  'IONIC',
-  'Node',
-  'Ruby on Rails',
-  'CI/CD with Jenkins',
-  'AWS',
-]
-
 const Resources = () => {
+  const page = 'Resources'
   const [searchText, setSearchText] = useState('')
-
-  // console.log('SEARCH: ', searchText)
-
-  // const { data, loading, error } = useQuery(GET_ALL_RESOURCES, {
-  //   fetchPolicy: 'network-only',
-  //   variables: {
-  //     searchItem: searchText,
-  //   },
-  // })
-
-  // const resources = data?.resources
-
   const [filter, setFilter] = useState({})
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
@@ -156,8 +89,6 @@ const Resources = () => {
   const [projects, setProjects] = useState<Array<string>>([])
   const [departments, setDepartments] = useState<Array<string>>([])
   const [titles, setTitles] = useState<Array<string>>([])
-  const [skills, setSkills] = useState<Array<string>>([])
-
   const [data, setData] = useState<{ [key: string]: any }>({})
 
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
@@ -203,7 +134,7 @@ const Resources = () => {
     onError: () => {},
   })
 
-  const [getResourceTitles] = useLazyQuery(GET_ALL_RESOURCE_TITLE, {
+  const [getResourceTitles] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: { [key: string]: any }) => {
       const _titles =
@@ -218,48 +149,30 @@ const Resources = () => {
     getClients({ variables: { searchItem: '' } })
     getProjects()
     getDepartments()
-    getResourceTitles()
-    setSkills(MockSkills)
+    getResourceTitles({ variables: { searchItem: '' } })
   }, [])
 
   useEffect(() => {
     handleOnFilter({ searchItem: searchText })
   }, [searchText])
 
-  // useEffect(() => {
-  //   console.log('FILTER OBJ: ', filter)
-  // }, [filter])
-
-  const page = 'Resources'
-
   useEffect(() => {
-    console.log('FILTER OBJ: ', filter)
     setData({})
     setError(undefined)
     getAllResources({ variables: filter })
   }, [filter, getAllResources])
-
-  useEffect(() => {
-    console.log('data: ', data)
-  }, [data])
-
-  // if (loading) return <p>Loading...</p>
-  // if (error) return <p>Error: {error.message}</p>
 
   const handleOnFilter = (queryFilter: any) => {
     if (!queryFilter.hasOwnProperty('searchItem')) {
       queryFilter['searchItem'] = searchText
     }
     setFilter((prev: any) => {
-      console.log('PREV: ', { ...prev })
-      console.log('QUERY FILTER: ', { ...queryFilter })
       if (prev.searchItem !== queryFilter.searchItem) {
         return { ...prev, ...queryFilter }
       } else {
         return { ...queryFilter }
       }
     })
-    // setFilter({ ...queryFilter })
   }
 
   const { resources } = data
@@ -273,7 +186,7 @@ const Resources = () => {
           setSearchText={setSearchText}
           page={page}
           onFilter={handleOnFilter}
-          filterItems={{ clients, projects, departments, titles, skills }}
+          filterItems={{ clients, projects, departments, titles }}
         />
         <Cards>
           {resources &&
@@ -287,7 +200,7 @@ const Resources = () => {
   } else if (loading) {
     return <p>Loading...</p>
   } else {
-    return
+    return <p></p>
   }
 }
 
