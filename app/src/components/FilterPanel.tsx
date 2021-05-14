@@ -2,7 +2,6 @@ import styled from '@emotion/styled'
 import { useMemo, useState } from 'react'
 import { css } from '@emotion/react'
 import { FiFilter } from 'react-icons/fi'
-
 import { FilterCategory, SearchBar } from './'
 
 type displayProps = {
@@ -48,9 +47,8 @@ const filterCategoryProperties = [
       { field: 'departmentName', type: 'checkbox', label: 'Department Name' },
       { field: 'project', type: 'checkbox', label: 'Project' },
       { field: 'clients', type: 'checkbox', label: 'Client' },
-      { field: 'skills', type: 'checkbox', label: 'Skill' },
       { field: 'startDate', type: 'date', label: 'Start Date' },
-      { field: 'terminationdate', type: 'date', label: 'Termination Date' },
+      { field: 'endDate', type: 'date', label: 'Termination Date' },
     ],
   },
 ]
@@ -93,14 +91,15 @@ export const FilterPanel = ({
         displayed={expanded}
       >
         <SearchBar setSearchText={setSearchText} />
-        {filterCategories.map((property) => (
-          <FilterCategory
-            key={property.title}
-            title={property.title}
-            fields={property.children}
-            filterItems={filterItems}
-            onChange={onFilter}
-          />
+        {filterCategories.map((property: any) => (
+          <div key={property.title}>
+            <FilterCategory
+              title={property.title}
+              fields={property.children}
+              filterItems={filterItems}
+              onChange={onFilter}
+            />
+          </div>
         ))}
       </ExpandedFilterPanelDiv>
     </>
