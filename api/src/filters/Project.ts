@@ -1,5 +1,5 @@
-import { ArgsType, Field, InputType } from 'type-graphql'
-import { DateInput } from '../inputs/Project'
+import { ArgsType, Field } from 'type-graphql'
+import { DateInput } from '../inputs/Date'
 
 @ArgsType()
 export class GetProjectsWithFilter {

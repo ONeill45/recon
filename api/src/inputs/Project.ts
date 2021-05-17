@@ -2,15 +2,6 @@ import { InputType, Field } from 'type-graphql'
 import { Priority, ProjectType } from '../models/enums'
 
 @InputType()
-export class DateInput {
-  @Field({ nullable: true })
-  date: string
-
-  @Field({ nullable: true })
-  beforeAfter?: string
-}
-
-@InputType()
 export class CreateProjectInput {
   @Field()
   projectName: string

@@ -1,7 +1,6 @@
 import styled from '@emotion/styled'
 import React, { useState, useEffect } from 'react'
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
-// import { gql, useLazyQuery, useQuery } from '@apollo/client'
 
 type filterCategoryProps = {
   title: string
@@ -16,10 +15,15 @@ type filterItemDivProps = {
 
 type filterInputProps = {
   isDate?: boolean
+  isInvalidDate?: boolean
 }
 
 type filterDateDescriptionProps = {
   isDate?: boolean
+}
+
+type invalidDateFormatProps = {
+  display: boolean
 }
 
 export const FilterCategoryHeaderDiv = styled.div`
@@ -51,7 +55,13 @@ export const FilterItemLabel = styled.label`
 `
 
 export const FilterItemInput = styled.input<filterInputProps>`
+  margin-left: 0.3rem;
   width: ${(props: any) => (props.isDate ? '50%' : 'auto')};
+  border: ${(props: any) => (props.isInvalidDate ? '3px solid red' : 'auto')};
+
+  &:focus {
+    outline: none;
+  }
 `
 
 export const FilterDateDescription = styled.div<filterDateDescriptionProps>`
@@ -70,6 +80,12 @@ export const FilterCheckItemDiv = styled.div`
   padding-left: 15px;
 `
 
+export const InvalidDateFormat = styled.div<invalidDateFormatProps>`
+  display: ${(props: any) => (props.display ? 'block' : 'none')};
+  color: red;
+  font-size: 0.8rem;
+`
+
 export const FilterCategory = ({
   title,
   fields,
@@ -78,6 +94,23 @@ export const FilterCategory = ({
 }: filterCategoryProps) => {
   const [expanded, setExpanded] = useState(false)
   const [qData, setQData] = useState<{ [key: string]: any }>({})
+  const [isInvalidDate, setIsInvalidDate] = useState<{
+    startDate: boolean
+    endDate: boolean
+  }>({ startDate: false, endDate: false })
+  const [dateFilters, setDateFilters] = useState<{
+    startDate: { before: boolean; after: boolean }
+    endDate: { before: boolean; after: boolean }
+  }>({
+    startDate: {
+      before: false,
+      after: false,
+    },
+    endDate: {
+      before: false,
+      after: false,
+    },
+  })
 
   const handleOnChangeCheckBox = ({
     target,
@@ -97,35 +130,57 @@ export const FilterCategory = ({
         setQData({ ...qDataCopy })
       }
     } else {
-      const qDataCopy = { ...qData }
-      delete qDataCopy[field]
+      let qDataCopy = { ...qData }
+      const filteredCopy = qDataCopy[field].filter((item: any) => item !== name)
+      if (filteredCopy.length > 0) {
+        qDataCopy[field] = [...filteredCopy]
+      } else {
+        delete qDataCopy[field]
+      }
       setQData({ ...qDataCopy })
     }
   }
 
   const handleOnChange = (value: string, field: string, date?: boolean) => {
     if (date) {
-      if (field === 'startDate') {
-        const qDataCopy = { startDate: {} }
-        qDataCopy['startDate'] = {
-          date: value,
-          beforeAfter: beforeAfterStartDate,
+      const isInvalidDateCopy = { ...isInvalidDate }
+      if (value) {
+        if (field === 'startDate') {
+          const qDataCopy = { startDate: {} }
+          qDataCopy['startDate'] = {
+            date: value,
+            beforeAfter: beforeAfterStartDate,
+          }
+          setQData((prev: any) => ({
+            ...prev,
+            ...qDataCopy,
+          }))
+          isInvalidDateCopy.startDate = false
+          setIsInvalidDate({ ...isInvalidDateCopy })
+        } else {
+          const qDataCopy = { endDate: {} }
+          qDataCopy['endDate'] = {
+            date: value,
+            beforeAfter: beforeAfterEndDate,
+          }
+          setQData((prev: any) => ({
+            ...prev,
+            ...qDataCopy,
+          }))
+          isInvalidDateCopy.endDate = false
+          setIsInvalidDate({ ...isInvalidDateCopy })
         }
-        setQData((prev: any) => ({
-          ...prev,
-          ...qDataCopy,
-        }))
       } else {
-        console.log('endDate')
-        const qDataCopy = { endDate: {} }
-        qDataCopy['endDate'] = {
-          date: value,
-          beforeAfter: beforeAfterEndDate,
+        const qDataCopy = { ...qData }
+        delete qDataCopy[field]
+        setQData({ ...qDataCopy })
+        if (field === 'startDate') {
+          isInvalidDateCopy.startDate = true
+          setIsInvalidDate({ ...isInvalidDateCopy })
+        } else {
+          isInvalidDateCopy.endDate = true
+          setIsInvalidDate({ ...isInvalidDateCopy })
         }
-        setQData((prev: any) => ({
-          ...prev,
-          ...qDataCopy,
-        }))
       }
     } else {
       const qDataCopy = { ...qData }
@@ -134,7 +189,7 @@ export const FilterCategory = ({
     }
   }
 
-  const [clients, setCleints] = useState<Array<string>>([])
+  const [clients, setClients] = useState<Array<string>>([])
   const [projects, setProjects] = useState<Array<string>>([])
   const [departments, setDepartments] = useState<Array<string>>([])
   const [titles, setTitles] = useState<Array<string>>([])
@@ -149,7 +204,7 @@ export const FilterCategory = ({
 
   useEffect(() => {
     if (filterItems && filterItems.clients) {
-      setCleints(filterItems.clients)
+      setClients(filterItems.clients)
     }
     if (filterItems && filterItems.projects) {
       setProjects(filterItems.projects)
@@ -176,7 +231,7 @@ export const FilterCategory = ({
     if (filterItems && filterItems.projectTypes) {
       setProjectTypes(filterItems.projectTypes)
     }
-  }, [])
+  }, [filterItems])
 
   const onFilter = () => {
     if (onChange) {
@@ -213,7 +268,6 @@ export const FilterCategory = ({
     field: string,
     beforeAfter: string,
   ) => {
-    console.log('checked: ', checked)
     if (field === 'startDate') {
       if (checked) {
         if (beforeAfter === 'before') {
@@ -222,7 +276,7 @@ export const FilterCategory = ({
           setBeforeAfterStartDate('after')
         }
       } else {
-        setBeforeAfterStartDate('present')
+        setBeforeAfterStartDate('')
       }
     }
     if (field === 'endDate') {
@@ -233,10 +287,44 @@ export const FilterCategory = ({
           setBeforeAfterEndDate('after')
         }
       } else {
-        setBeforeAfterEndDate('present')
+        setBeforeAfterEndDate('')
       }
     }
   }
+
+  useEffect(() => {
+    const dateFiltersCopy = { ...dateFilters }
+    if (beforeAfterEndDate === 'before') {
+      dateFiltersCopy.endDate.before = true
+      dateFiltersCopy.endDate.after = false
+    } else if (beforeAfterEndDate === 'after') {
+      dateFiltersCopy.endDate.before = false
+      dateFiltersCopy.endDate.after = true
+    } else {
+      dateFiltersCopy.endDate.before = false
+      dateFiltersCopy.endDate.after = false
+    }
+    setDateFilters({
+      ...dateFiltersCopy,
+    })
+  }, [beforeAfterEndDate])
+
+  useEffect(() => {
+    const dateFiltersCopy = { ...dateFilters }
+    if (beforeAfterStartDate === 'before') {
+      dateFiltersCopy.startDate.before = true
+      dateFiltersCopy.startDate.after = false
+    } else if (beforeAfterStartDate === 'after') {
+      dateFiltersCopy.startDate.before = false
+      dateFiltersCopy.startDate.after = true
+    } else {
+      dateFiltersCopy.startDate.before = false
+      dateFiltersCopy.startDate.after = false
+    }
+    setDateFilters({
+      ...dateFiltersCopy,
+    })
+  }, [beforeAfterStartDate])
 
   const selectRenderItems = (field: string): Array<string> | null => {
     if (field === 'project') return projects
@@ -305,6 +393,12 @@ export const FilterCategory = ({
           <FilterCheckItemDiv>
             <FilterItemInput
               type="checkbox"
+              id={`${item.field}-before`}
+              checked={
+                item.field === 'startDate'
+                  ? dateFilters.startDate.before
+                  : dateFilters.endDate.before
+              }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 beforeAfterChange(e.target?.checked, item.field, 'before')
               }
@@ -314,6 +408,12 @@ export const FilterCategory = ({
           <FilterCheckItemDiv>
             <FilterItemInput
               type="checkbox"
+              id={`${item.field}-after`}
+              checked={
+                item.field === 'startDate'
+                  ? dateFilters.startDate.after
+                  : dateFilters.endDate.after
+              }
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                 beforeAfterChange(e.target?.checked, item.field, 'after')
               }
@@ -325,10 +425,29 @@ export const FilterCategory = ({
           type={item.type}
           id={`${item.type}-${item.field}`}
           isDate={item.type === 'date'}
+          isInvalidDate={
+            item.type === 'date' && item.field === 'startDate'
+              ? isInvalidDate.startDate
+              : item.type === 'date' && item.field === 'endDate'
+              ? isInvalidDate.endDate
+              : false
+          }
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleOnChange(e.target?.value, item.field, item.type === 'date')
           }
         />
+        <InvalidDateFormat
+          display={
+            item.type === 'date' && item.field === 'startDate'
+              ? isInvalidDate.startDate
+              : item.type === 'date' && item.field === 'endDate'
+              ? isInvalidDate.endDate
+              : false
+          }
+        >
+          *Date format is incorrect. Date input can only contain numbers (e.g.
+          04/04/2021).
+        </InvalidDateFormat>
       </FilterItemDiv>
     )
   }
@@ -341,8 +460,10 @@ export const FilterCategory = ({
       {expanded ? (
         <FilterCategoryContentDiv data-testid="FilterCategoryContent">
           {fields ? (
-            fields.map((item: { field: string; type: string; label: string }) =>
-              renderFilterItem(item),
+            fields.map(
+              (item: { field: string; type: string; label: string }) => (
+                <div key={item.label}>{renderFilterItem(item)}</div>
+              ),
             )
           ) : (
             <>
