@@ -24,7 +24,7 @@ const ormConfig: PostgresConnectionOptions = {
     ? /* istanbul ignore next */ { ca: sslCertPath, rejectUnauthorized: false }
     : false,
   entities: [__dirname + '/../models/index{.ts,.js}'],
-  synchronize: false,
+  synchronize: true,
   migrationsRun: false,
   logging: ['schema', 'error'],
   logger: 'advanced-console',

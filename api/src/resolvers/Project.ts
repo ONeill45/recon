@@ -1,17 +1,92 @@
-import { Arg, Query, Mutation, Resolver } from 'type-graphql'
+import { Arg, Query, Mutation, Resolver, Args } from 'type-graphql'
 import { Client, Project } from '../models'
+import { GetProjectsWithFilter } from '../filters'
 import { CreateProjectInput, UpdateProjectInput } from '../inputs/Project'
+import { LessThan, MoreThan, Equal, In } from 'typeorm'
+import { format } from 'date-fns'
 
 @Resolver()
 export class ProjectResolver {
-  @Query(() => [Project])
-  async projects() {
-    return Project.find()
-  }
+  // @Query(() => [Project])
+  // async projects() {
+  //   return Project.find()
+  // }
 
   @Query(() => Project, { nullable: true })
   async project(@Arg('id') id: string): Promise<Project | null> {
     return Project.findOne(id, { relations: ['resourceAllocations'] })
+  }
+
+  @Query(() => [Project])
+  async projects(
+    @Args() filter: GetProjectsWithFilter,
+  ): Promise<Project[] | null> {
+    const where: { [key: string]: any } = {}
+
+    if (filter?.projectTypes) {
+      where.projectType = In(filter.projectTypes)
+    }
+
+    if (filter?.priorities) {
+      where.priority = In(filter.priorities)
+    }
+
+    if (filter?.startDate) {
+      if (filter.startDate.beforeAfter === 'before') {
+        where.startDate = LessThan(
+          format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
+        )
+      } else if (filter.startDate.beforeAfter === 'after') {
+        where.startDate = MoreThan(
+          format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
+        )
+      } else {
+        where.startDate = Equal(
+          format(new Date(filter.startDate.date), 'yyyy-MM-dd'),
+        )
+      }
+    }
+
+    if (filter?.endDate) {
+      if (filter.endDate.beforeAfter === 'before') {
+        where.endDate = LessThan(
+          format(new Date(filter.endDate.date), 'yyyy-MM-dd'),
+        )
+      } else if (filter.endDate.beforeAfter === 'after') {
+        where.endDate = MoreThan(
+          format(new Date(filter.endDate.date), 'yyyy-MM-dd'),
+        )
+      } else {
+        where.endDate = Equal(
+          format(new Date(filter.endDate.date), 'yyyy-MM-dd'),
+        )
+      }
+    }
+
+    if (filter?.clientNames) {
+      const foundClient = await Client.find({
+        where: {
+          clientName: In(filter.clientNames),
+        },
+      })
+
+      const clientIds = foundClient.map((client: any) => {
+        return client.id
+      })
+
+      where.client = In(clientIds)
+    }
+
+    if (filter?.confidence) {
+      where.confidence = filter.confidence
+    }
+
+    const foundProject = await Project.find({
+      where: where,
+      relations: ['resourceAllocations'],
+    })
+
+    return foundProject
   }
 
   @Mutation(() => Project)

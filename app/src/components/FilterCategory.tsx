@@ -55,6 +55,7 @@ export const FilterItemLabel = styled.label`
 `
 
 export const FilterItemInput = styled.input<filterInputProps>`
+  margin-left: 0.3rem;
   width: ${(props: any) => (props.isDate ? '50%' : 'auto')};
   border: ${(props: any) => (props.isInvalidDate ? '3px solid red' : 'auto')};
 
@@ -80,7 +81,7 @@ export const FilterCheckItemDiv = styled.div`
 `
 
 export const InvalidDateFormat = styled.div<invalidDateFormatProps>`
-  opacity: ${(props: any) => (props.display ? '1' : '0')};
+  display: ${(props: any) => (props.display ? 'block' : 'none')};
   color: red;
   font-size: 0.8rem;
 `

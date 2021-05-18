@@ -39,6 +39,14 @@ const filterCategoryProperties = [
   },
   {
     title: 'Projects',
+    children: [
+      { field: 'clientNames', type: 'checkbox', label: 'Client Name' },
+      { field: 'confidence', type: 'number', label: 'Confidence' },
+      { field: 'priorities', type: 'checkbox', label: 'Priority' },
+      { field: 'projectTypes', type: 'checkbox', label: 'Project Type' },
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'endDate', type: 'date', label: 'End Date' },
+    ],
   },
   {
     title: 'Resources',
@@ -56,16 +64,12 @@ const filterCategoryProperties = [
 type FilterPanelProps = {
   page?: String | null | undefined
   filterItems?: { [key: string]: any } | undefined
-  onFilter?: (queryData: { [key: string]: any }) => void
+  onFilter: (queryData: { [key: string]: any }) => void
   setSearchText?: (s: string) => void
 }
 
-export const FilterPanel = ({
-  page,
-  onFilter,
-  filterItems,
-  setSearchText,
-}: FilterPanelProps) => {
+export const FilterPanel = (props: FilterPanelProps) => {
+  const { page, onFilter, filterItems } = props
   const [expanded, setExpanded] = useState(false)
 
   const filterCategories = useMemo(() => {
@@ -90,7 +94,8 @@ export const FilterPanel = ({
         data-testid="ExpandedFilterPanel"
         displayed={expanded}
       >
-        <SearchBar setSearchText={setSearchText} />
+        <SearchBar />
+        {/* <SearchBar setSearchText={setSearchText} /> */}
         {filterCategories.map((property: any) => (
           <div key={property.title}>
             <FilterCategory
