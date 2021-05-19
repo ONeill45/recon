@@ -69,7 +69,7 @@ type FilterPanelProps = {
 }
 
 export const FilterPanel = (props: FilterPanelProps) => {
-  const { page, onFilter, filterItems } = props
+  const { page, onFilter, filterItems, setSearchText } = props
   const [expanded, setExpanded] = useState(false)
 
   const filterCategories = useMemo(() => {
@@ -94,8 +94,7 @@ export const FilterPanel = (props: FilterPanelProps) => {
         data-testid="ExpandedFilterPanel"
         displayed={expanded}
       >
-        <SearchBar />
-        {/* <SearchBar setSearchText={setSearchText} /> */}
+        <SearchBar setSearchText={setSearchText} />
         {filterCategories.map((property: any) => (
           <div key={property.title}>
             <FilterCategory

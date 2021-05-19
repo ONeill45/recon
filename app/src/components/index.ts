@@ -32,4 +32,4 @@ export * from './SearchBar'
 export * from './Spinner'
 export * from './UserSelect'
 export * from './Toast'
-
+export * from './Pagination'

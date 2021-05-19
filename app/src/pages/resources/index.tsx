@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { gql, useLazyQuery } from '@apollo/client'
+import styled from '@emotion/styled'
+import { gql, useLazyQuery, useQuery } from '@apollo/client'
 import { Cards, FilterPanel, PlusCircle, ResourceCard } from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
+import { Pagination } from 'components'
+
+export const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`
 
 export const GET_RESOURCES = gql`
   query GetAllResource(
@@ -13,6 +21,7 @@ export const GET_RESOURCES = gql`
     $project: [String!]
     $startDate: DateInput
     $endDate: DateInput
+    $pagination: PaginationInput
   ) {
     resources(
       searchItem: $searchItem
@@ -22,6 +31,7 @@ export const GET_RESOURCES = gql`
       clients: $clients
       departmentName: $departmentName
       project: $project
+      pagination: $pagination
     ) {
       id
       firstName
@@ -80,6 +90,10 @@ export const GET_ALL_DEPARTMENTS_NAME = gql`
 const Resources = () => {
   const page = 'Resources'
   const [searchText, setSearchText] = useState('')
+  const [paginationInputs, setPaginationInputs] = useState<{
+    page: number
+    itemsPerPage: number
+  }>({ page: 1, itemsPerPage: 5 })
   const [filter, setFilter] = useState({})
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
@@ -90,11 +104,24 @@ const Resources = () => {
   const [departments, setDepartments] = useState<Array<string>>([])
   const [titles, setTitles] = useState<Array<string>>([])
   const [data, setData] = useState<{ [key: string]: any }>({})
+  const [totalData, setTotalData] = useState<number>(0)
 
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: Array<{ [key: string]: any }>) => {
       setData(res)
+    },
+    onError: (err: any) => {
+      setError(err)
+    },
+  })
+
+  const [getAllResourcesWithoutPagination] = useLazyQuery(GET_RESOURCES, {
+    fetchPolicy: 'network-only',
+    onCompleted: (res: Array<{ [key: string]: any }>) => {
+      const resLength = res && Object.values(res)[0].length
+      console.log('HEREEEE: ', resLength)
+      setTotalData(resLength)
     },
     onError: (err: any) => {
       setError(err)
@@ -157,9 +184,22 @@ const Resources = () => {
   }, [searchText])
 
   useEffect(() => {
+    handleOnFilter({ searchItem: searchText, pagination: paginationInputs })
+  }, [paginationInputs])
+
+  useEffect(() => {
     setData({})
     setError(undefined)
     getAllResources({ variables: filter })
+
+    let filterCopy: { [key: string]: any } = { ...filter }
+    if (filterCopy.hasOwnProperty('pagination')) {
+      delete filterCopy['pagination']
+    }
+    getAllResourcesWithoutPagination({ variables: filterCopy })
+    // console.log('TOTAL RESOURCE COUNT: ', totalResourceCount)
+    // const totalDataCount = data?.resources?.length
+    // setTotalData(totalDataCount)
   }, [filter, getAllResources])
 
   const handleOnFilter = (queryFilter: any) => {
@@ -181,21 +221,27 @@ const Resources = () => {
     return <p>Error: {error.message}</p>
   } else if (data) {
     return (
-      <div className={styles.container}>
-        <FilterPanel
-          setSearchText={setSearchText}
-          page={page}
-          onFilter={handleOnFilter}
-          filterItems={{ clients, projects, departments, titles }}
+      <PageContainer>
+        <div className={styles.container}>
+          <FilterPanel
+            setSearchText={setSearchText}
+            page={page}
+            onFilter={handleOnFilter}
+            filterItems={{ clients, projects, departments, titles }}
+          />
+          <Cards>
+            {resources &&
+              resources.map((resource: Resource) => {
+                return <ResourceCard resource={resource} key={resource.id} />
+              })}
+          </Cards>
+          <PlusCircle size={'50'} route={'/resources/resource'} />
+        </div>
+        <Pagination
+          setPaginationInputs={setPaginationInputs}
+          total={totalData}
         />
-        <Cards>
-          {resources &&
-            resources.map((resource: Resource) => {
-              return <ResourceCard resource={resource} key={resource.id} />
-            })}
-        </Cards>
-        <PlusCircle size={'50'} route={'/resources/resource'} />
-      </div>
+      </PageContainer>
     )
   } else if (loading) {
     return <p>Loading...</p>

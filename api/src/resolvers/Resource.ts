@@ -19,6 +19,9 @@ export class ResourceResolver {
   ): Promise<Resource[] | null> {
     const where: { [key: string]: any } = {}
     let resourceIds: any = []
+    const skip =
+      (filter?.pagination?.page - 1) * filter?.pagination?.itemsPerPage || 1
+    const take = filter?.pagination?.itemsPerPage || 1000
     let textSearchWhere: Array<{ [key: string]: any }> = [
       {
         firstName: ILike(`${filter.searchItem}%`),
@@ -157,8 +160,16 @@ export class ResourceResolver {
     }
     const foundResource = await Resource.find({
       where: textSearchWhere,
+      order: {
+        firstName: 'ASC',
+        preferredName: 'ASC',
+      },
+      skip: skip,
+      take: take,
       relations: ['resourceAllocations'],
     })
+
+    console.log('FOUND RESOURCE: ', foundResource)
 
     return foundResource
   }
