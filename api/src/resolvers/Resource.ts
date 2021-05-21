@@ -1,5 +1,13 @@
 import { ILike, In, LessThan, MoreThan, Equal } from 'typeorm'
-import { Resolver, Query, Mutation, Arg, Args } from 'type-graphql'
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Arg,
+  Args,
+  ObjectType,
+  Field,
+} from 'type-graphql'
 import {
   Department,
   Resource,
@@ -11,16 +19,25 @@ import { CreateResourceInput, UpdateResourceInput } from '../inputs'
 import { GetResourcesWithFilter } from '../filters'
 import { format } from 'date-fns'
 
+@ObjectType()
+export class ResourceQuery {
+  @Field(() => [Resource])
+  resources: Resource[]
+
+  @Field(() => Number)
+  count: Number
+}
+
 @Resolver()
 export class ResourceResolver {
-  @Query(() => [Resource])
+  @Query(() => ResourceQuery)
   async resources(
     @Args() filter: GetResourcesWithFilter,
-  ): Promise<Resource[] | null> {
+  ): Promise<ResourceQuery | null> {
     const where: { [key: string]: any } = {}
     let resourceIds: any = []
     const skip =
-      (filter?.pagination?.page - 1) * filter?.pagination?.itemsPerPage || 1
+      (filter?.pagination?.page - 1) * filter?.pagination?.itemsPerPage || 0
     const take = filter?.pagination?.itemsPerPage || 1000
     let textSearchWhere: Array<{ [key: string]: any }> = [
       {
@@ -158,50 +175,27 @@ export class ResourceResolver {
       })
       textSearchWhere = textSearchWhere.concat(updatedWhere)
     }
-    const foundResource = await Resource.find({
+
+    const [resources, count] = await Resource.findAndCount({
       where: textSearchWhere,
       order: {
         firstName: 'ASC',
-        preferredName: 'ASC',
       },
       skip: skip,
       take: take,
       relations: ['resourceAllocations'],
     })
 
-    console.log('FOUND RESOURCE: ', foundResource)
-
-    return foundResource
+    return {
+      resources,
+      count,
+    }
   }
 
   @Query(() => Resource, { nullable: true })
   async resource(@Arg('id') id: string): Promise<Resource | null> {
     return Resource.findOne(id, { relations: ['resourceAllocations'] })
   }
-
-  // @Query(() => [Resource])
-  // async resources(
-  //   @Arg('searchItem', { nullable: true }) searchItem: string,
-  // ): Promise<Resource[] | null> {
-  //   const foundResource = await Resource.find({
-  //     relations: ['resourceAllocations'],
-  //     where: [
-  //       {
-  //         firstName: ILike(`${searchItem}%`),
-  //       },
-  //       {
-  //         lastName: ILike(`${searchItem}%`),
-  //       },
-  //       {
-  //         preferredName: ILike(`${searchItem}%`),
-  //       },
-  //       {
-  //         email: ILike(`${searchItem}%`),
-  //       },
-  //     ],
-  //   })
-  //   return foundResource
-  // }
 
   @Mutation(() => Resource)
   async createResource(@Arg('data') data: CreateResourceInput) {

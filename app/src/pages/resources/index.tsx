@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
-import { gql, useLazyQuery, useQuery } from '@apollo/client'
+import { gql, useLazyQuery } from '@apollo/client'
 import { Cards, FilterPanel, PlusCircle, ResourceCard } from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
@@ -33,32 +33,35 @@ export const GET_RESOURCES = gql`
       project: $project
       pagination: $pagination
     ) {
-      id
-      firstName
-      lastName
-      preferredName
-      title
-      startDate
-      terminationDate
-      imageUrl
-      department {
-        name
-      }
-      email
-      resourceAllocations {
+      resources {
         id
+        firstName
+        lastName
+        preferredName
+        title
         startDate
-        endDate
-        endReason
-        percentage
-        project {
+        terminationDate
+        imageUrl
+        department {
+          name
+        }
+        email
+        resourceAllocations {
           id
-          projectName
-          projectType
-          confidence
-          priority
+          startDate
+          endDate
+          endReason
+          percentage
+          project {
+            id
+            projectName
+            projectType
+            confidence
+            priority
+          }
         }
       }
+      count
     }
   }
 `
@@ -93,8 +96,9 @@ const Resources = () => {
   const [paginationInputs, setPaginationInputs] = useState<{
     page: number
     itemsPerPage: number
-  }>({ page: 1, itemsPerPage: 5 })
+  }>({ page: 1, itemsPerPage: 10 })
   const [filter, setFilter] = useState({})
+  const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false)
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
   )
@@ -104,24 +108,12 @@ const Resources = () => {
   const [departments, setDepartments] = useState<Array<string>>([])
   const [titles, setTitles] = useState<Array<string>>([])
   const [data, setData] = useState<{ [key: string]: any }>({})
-  const [totalData, setTotalData] = useState<number>(0)
 
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: Array<{ [key: string]: any }>) => {
-      setData(res)
-    },
-    onError: (err: any) => {
-      setError(err)
-    },
-  })
-
-  const [getAllResourcesWithoutPagination] = useLazyQuery(GET_RESOURCES, {
-    fetchPolicy: 'network-only',
-    onCompleted: (res: Array<{ [key: string]: any }>) => {
-      const resLength = res && Object.values(res)[0].length
-      console.log('HEREEEE: ', resLength)
-      setTotalData(resLength)
+      const resValues = res && Object.values(res)[0]
+      setData(resValues)
     },
     onError: (err: any) => {
       setError(err)
@@ -164,9 +156,10 @@ const Resources = () => {
   const [getResourceTitles] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: { [key: string]: any }) => {
+      const resValue = res && Object.values(res)[0]
       const _titles =
-        res?.resources &&
-        res.resources.map((item: { title: string }) => item.title)
+        resValue?.resources &&
+        resValue.resources.map((item: { title: string }) => item.title)
       setTitles(Array.from(new Set(_titles)))
     },
     onError: () => {},
@@ -180,34 +173,32 @@ const Resources = () => {
   }, [])
 
   useEffect(() => {
-    handleOnFilter({ searchItem: searchText })
-  }, [searchText])
-
-  useEffect(() => {
-    handleOnFilter({ searchItem: searchText, pagination: paginationInputs })
-  }, [paginationInputs])
+    handleOnFilter(
+      { searchItem: searchText, pagination: paginationInputs },
+      false,
+    )
+  }, [searchText, paginationInputs])
 
   useEffect(() => {
     setData({})
     setError(undefined)
     getAllResources({ variables: filter })
-
-    let filterCopy: { [key: string]: any } = { ...filter }
-    if (filterCopy.hasOwnProperty('pagination')) {
-      delete filterCopy['pagination']
-    }
-    getAllResourcesWithoutPagination({ variables: filterCopy })
-    // console.log('TOTAL RESOURCE COUNT: ', totalResourceCount)
-    // const totalDataCount = data?.resources?.length
-    // setTotalData(totalDataCount)
   }, [filter, getAllResources])
 
-  const handleOnFilter = (queryFilter: any) => {
+  const handleOnFilter = (queryFilter: any, filterClicked: boolean) => {
+    setIsFilterClicked(filterClicked)
     if (!queryFilter.hasOwnProperty('searchItem')) {
       queryFilter['searchItem'] = searchText
     }
+    if (!queryFilter.hasOwnProperty('pagination')) {
+      queryFilter['pagination'] = paginationInputs
+    }
     setFilter((prev: any) => {
-      if (prev.searchItem !== queryFilter.searchItem) {
+      if (
+        prev.searchItem !== queryFilter.searchItem ||
+        prev.pagination?.page !== queryFilter.pagination?.page ||
+        prev.pagination?.itemsPerPage !== queryFilter.pagination?.itemsPerPage
+      ) {
         return { ...prev, ...queryFilter }
       } else {
         return { ...queryFilter }
@@ -215,7 +206,7 @@ const Resources = () => {
     })
   }
 
-  const { resources } = data
+  const { resources, count } = data
 
   if (error) {
     return <p>Error: {error.message}</p>
@@ -238,8 +229,10 @@ const Resources = () => {
           <PlusCircle size={'50'} route={'/resources/resource'} />
         </div>
         <Pagination
+          filterClicked={isFilterClicked}
+          searchText={searchText}
           setPaginationInputs={setPaginationInputs}
-          total={totalData}
+          total={count}
         />
       </PageContainer>
     )

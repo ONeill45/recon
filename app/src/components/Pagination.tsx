@@ -1,28 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, ChangeEvent } from 'react'
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri'
 import styled from '@emotion/styled'
-import { css } from '@emotion/react'
-
-type displayProps = {
-  displayed: boolean
-  direction?: string
-}
 
 type paginationProps = {
   total: number
   setPaginationInputs: (inputs: { page: number; itemsPerPage: number }) => void
+  searchText: string
+  filterClicked: boolean
 }
 
 type pageNumberProps = {
   active: boolean
 }
 
-const isDisplayed = ({ displayed }: displayProps) => css`
-  display: ${displayed ? 'flex' : 'none'};
-`
-
-export const PaginationContainer = styled.div<displayProps>`
-  ${isDisplayed};
+export const PaginationContainer = styled.div`
   position: relative;
   display: flex;
   justify-content: center;
@@ -33,6 +24,15 @@ export const PaginationContainer = styled.div<displayProps>`
     &:hover {
       cursor: pointer;
     }
+  }
+`
+
+export const ArrowButton = styled.button`
+  background: none;
+  border: none;
+
+  &:hover {
+    cursor: pointer;
   }
 `
 
@@ -61,17 +61,26 @@ export const PageNumber = styled.div<pageNumberProps>`
   }
 `
 
-export const Pagination = ({ total, setPaginationInputs }: paginationProps) => {
-  console.log('TOTAL: ', total)
+const ItemsPerPageSelect = styled.select`
+  width: 2.5rem;
+  margin: 0.5rem;
+`
+
+export const Pagination = ({
+  total,
+  setPaginationInputs,
+  searchText,
+  filterClicked,
+}: paginationProps) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(5)
-  const [totalItems, setTotalItems] = useState()
-  const [pageNumbers, setPageNumbers] = useState<number[]>()
+  const [itemsPerPage, setItemsPerPage] = useState(10)
+  const itemsPerPageNumbers = [10, 20, 30]
+  const [pageNumbers, setPageNumbers] = useState<number[]>([1])
 
   useEffect(() => {
-    if (total >= 5) {
+    if (total) {
       const totalPages = Math.ceil(total / itemsPerPage)
-      let pageNumberArr = []
+      let pageNumberArr: any = []
       for (let i = 1; i <= totalPages; i++) {
         pageNumberArr.push(i)
       }
@@ -79,31 +88,65 @@ export const Pagination = ({ total, setPaginationInputs }: paginationProps) => {
     }
   }, [total])
 
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchText])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [filterClicked])
+
   const pageChange = (page: number) => {
-    // setCurrentPage((prev: any) => prev - 1)
     setCurrentPage(page)
-    // setCurrentPage((prev: any) => prev + 1)
+  }
+
+  const itemsPerPageChange = (limit: any) => {
+    const limitNumber = parseInt(limit, 10)
+    setItemsPerPage(limitNumber)
   }
 
   useEffect(() => {
     setPaginationInputs({ page: currentPage, itemsPerPage: itemsPerPage })
-  }, [currentPage])
+  }, [currentPage, itemsPerPage])
 
   return (
-    <PaginationContainer displayed={total >= 5}>
-      <RiArrowLeftSLine onClick={() => pageChange(currentPage - 1)} size={30} />
+    <PaginationContainer>
+      <ArrowButton
+        disabled={currentPage === 1}
+        onClick={() => pageChange(currentPage - 1)}
+      >
+        <RiArrowLeftSLine size={30} />
+      </ArrowButton>
       {pageNumbers?.map((page: number) => (
         <PageNumber
+          key={page}
           active={page === currentPage}
           onClick={() => pageChange(page)}
         >
           {page}
         </PageNumber>
       ))}
-      <RiArrowRightSLine
+      <ArrowButton
+        disabled={currentPage === pageNumbers.length}
         onClick={() => pageChange(currentPage + 1)}
-        size={30}
-      />
+      >
+        <RiArrowRightSLine size={30} />
+      </ArrowButton>
+      <ItemsPerPageSelect
+        value={itemsPerPage}
+        aria-label="items per page"
+        onChange={(event: ChangeEvent<HTMLSelectElement>) =>
+          itemsPerPageChange(event.target.value)
+        }
+      >
+        {itemsPerPageNumbers.map((num: number) => {
+          return (
+            <option key={num} value={num}>
+              {num}
+            </option>
+          )
+        })}
+      </ItemsPerPageSelect>
     </PaginationContainer>
   )
 }
