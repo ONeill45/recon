@@ -90,11 +90,7 @@ export const Pagination = ({
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchText])
-
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [filterClicked])
+  }, [searchText, filterClicked])
 
   const pageChange = (page: number) => {
     setCurrentPage(page)
