@@ -1,5 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from 'react'
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri'
+import { HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi'
+// HiChevronDoubleLeft HiChevronDoubleRight
 import styled from '@emotion/styled'
 
 type paginationProps = {
@@ -30,6 +32,7 @@ export const PaginationContainer = styled.div`
 export const ArrowButton = styled.button`
   background: none;
   border: none;
+  padding: 0;
 
   &:hover {
     cursor: pointer;
@@ -107,6 +110,9 @@ export const Pagination = ({
 
   return (
     <PaginationContainer>
+      <ArrowButton disabled={currentPage === 1} onClick={() => pageChange(1)}>
+        <HiChevronDoubleLeft size={25} />
+      </ArrowButton>
       <ArrowButton
         disabled={currentPage === 1}
         onClick={() => pageChange(currentPage - 1)}
@@ -127,6 +133,12 @@ export const Pagination = ({
         onClick={() => pageChange(currentPage + 1)}
       >
         <RiArrowRightSLine size={30} />
+      </ArrowButton>
+      <ArrowButton
+        disabled={currentPage === pageNumbers.length}
+        onClick={() => pageChange(pageNumbers.length)}
+      >
+        <HiChevronDoubleRight size={25} />
       </ArrowButton>
       <ItemsPerPageSelect
         value={itemsPerPage}
