@@ -1,7 +1,6 @@
 import React, { useEffect, useState, ChangeEvent } from 'react'
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri'
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi'
-// HiChevronDoubleLeft HiChevronDoubleRight
 import styled from '@emotion/styled'
 
 type paginationProps = {
@@ -101,6 +100,7 @@ export const Pagination = ({
 
   const itemsPerPageChange = (limit: any) => {
     const limitNumber = parseInt(limit, 10)
+    setCurrentPage(1)
     setItemsPerPage(limitNumber)
   }
 
