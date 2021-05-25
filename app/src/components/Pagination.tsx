@@ -20,7 +20,7 @@ export const PaginationContainer = styled.div`
   justify-content: center;
 
   svg {
-    margin-top: 0.4rem;
+    margin-top: 0.65rem;
 
     &:hover {
       cursor: pointer;
@@ -50,12 +50,11 @@ export const Arrow = styled.div`
 
 export const PageNumber = styled.div<pageNumberProps>`
   border: ${(props) => (props.active ? '1px solid black' : '')};
-  margin-top: 0.3rem;
-  font-size: 1.2rem;
-  padding-top: 0.1rem;
+  margin-top: 0.6rem;
+  font-size: 1rem;
   text-align: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 100%;
 
   &:hover {
@@ -111,13 +110,13 @@ export const Pagination = ({
   return (
     <PaginationContainer>
       <ArrowButton disabled={currentPage === 1} onClick={() => pageChange(1)}>
-        <HiChevronDoubleLeft size={25} />
+        <HiChevronDoubleLeft size={20} />
       </ArrowButton>
       <ArrowButton
         disabled={currentPage === 1}
         onClick={() => pageChange(currentPage - 1)}
       >
-        <RiArrowLeftSLine size={30} />
+        <RiArrowLeftSLine size={24} />
       </ArrowButton>
       {pageNumbers?.map((page: number) => (
         <PageNumber
@@ -132,13 +131,13 @@ export const Pagination = ({
         disabled={currentPage === pageNumbers.length}
         onClick={() => pageChange(currentPage + 1)}
       >
-        <RiArrowRightSLine size={30} />
+        <RiArrowRightSLine size={24} />
       </ArrowButton>
       <ArrowButton
         disabled={currentPage === pageNumbers.length}
         onClick={() => pageChange(pageNumbers.length)}
       >
-        <HiChevronDoubleRight size={25} />
+        <HiChevronDoubleRight size={20} />
       </ArrowButton>
       <ItemsPerPageSelect
         value={itemsPerPage}
