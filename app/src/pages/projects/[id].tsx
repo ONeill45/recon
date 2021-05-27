@@ -1,7 +1,11 @@
 import { gql, useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 
-import { ProjectDetailCards, ProjectHeader } from 'components'
+import {
+  ProjectDetailCards,
+  ProjectHeader,
+  ResourceAllocationProjectView,
+} from 'components'
 
 export const GET_PROJECT = gql`
   query GetProject($id: String!) {
@@ -45,6 +49,7 @@ const Project = () => {
     <>
       <ProjectHeader project={project} />
       <ProjectDetailCards project={project} />
+      <ResourceAllocationProjectView project={project} />
     </>
   )
 }

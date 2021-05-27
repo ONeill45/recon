@@ -6,7 +6,7 @@ export const Layout: React.FC = ({ children }) => {
     <>
       <NavBar />
       {children}
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }

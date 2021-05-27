@@ -5,6 +5,8 @@ import { EmotionComponentProps } from 'styles/theme'
 const StyledFooter = styled.footer<EmotionComponentProps>`
   background-color: ${({ theme }) => theme.background};
   color: ${({ theme }) => theme.text};
+  position: fixed;
+  bottom: 0;
   width: 100%;
   height: 70px;
   border-top: 1px solid #eaeaea;

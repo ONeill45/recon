@@ -8,7 +8,7 @@ const CardsDiv = styled.div`
   grid-auto-rows: auto;
   grid-gap: 12px;
   width: 100%;
-  height: 300px;
+  /* height: 300px; */
 `
 
 export const Cards: FC = ({ children }) => <CardsDiv>{children}</CardsDiv>
