@@ -1,5 +1,5 @@
 import styled from '@emotion/styled'
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import { SearchBarProps } from 'interfaces'
 
 const SearchInput = styled.input`
@@ -21,7 +21,7 @@ export const SearchBar = ({ setSearchText, searchQuery }: SearchBarProps) => {
           type="text"
           placeholder="Search..."
           value={searchText}
-          onChange={(e) => {
+          onChange={(e: FormEvent<HTMLInputElement>) => {
             setSearchQuery(e.currentTarget.value)
           }}
         />

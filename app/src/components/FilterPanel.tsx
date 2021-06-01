@@ -96,6 +96,13 @@ export const FilterPanel = ({
     }
   }
 
+  const filterCategories = useMemo(() => {
+    if (page) {
+      return filterCategoryProperties.filter((item) => item.title === page)
+    }
+    return filterCategoryProperties
+  }, [page])
+
   return (
     <>
       <SideFilterPanelDiv
