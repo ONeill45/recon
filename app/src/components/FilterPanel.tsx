@@ -82,13 +82,6 @@ export const FilterPanel = ({
   const [expanded, setExpanded] = useState(false)
   const [searchText, onSetSearchText] = useState<string | undefined>(undefined)
 
-  const filterCategories = useMemo(() => {
-    if (page) {
-      return filterCategoryProperties.filter((item) => item.title === page)
-    }
-    return filterCategoryProperties
-  }, [page])
-
   const onHandleSearch = (text: string) => {
     onSetSearchText(text)
     if (onFilter) {
