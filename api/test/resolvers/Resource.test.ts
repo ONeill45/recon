@@ -247,6 +247,54 @@ describe('ResourceResolver', () => {
       })
     })
 
+    it('should return resource if the search text matches the first name of a resource', async () => {
+      const getResourceWithFirstNameQuery = (searchItem: string) => `{
+        resource (searchItem: "${searchItem}") {
+          id
+          firstName
+          lastName
+          title
+          startDate
+          terminationDate
+        }
+      }`
+      
+      const department = DepartmentFactory.build()
+      const resource = ResourceFactory().build({ department, firstName: 'Kealoha' })
+
+      await Department.insert(department)
+      await Resource.insert(resource)
+
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        startDate,
+        terminationDate,
+      } = resource
+
+      const response = await gqlCall({
+        source: getResourceWithFirstNameQuery('Kealoha'),
+      })
+
+      expect(response).toMatchObject({
+        data: {
+          resource: {
+            id,
+            firstName,
+            lastName,
+            title,
+            startDate,
+            terminationDate,
+          },
+        },
+      })
+
+      }
+    )
+  
+
     it('should not return a deleted resource', async () => {
       const department = DepartmentFactory.build()
       const resource = ResourceFactory().build({

@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
 import { FiFilter } from 'react-icons/fi'
-
 import { FilterCategory, SearchBar } from './'
 
 type displayProps = {
@@ -44,6 +43,14 @@ const filterCategoryProperties = [
   },
   {
     title: 'Projects',
+    children: [
+      { field: 'clientNames', type: 'checkbox', label: 'Client Name' },
+      { field: 'confidence', type: 'number', label: 'Confidence' },
+      { field: 'priorities', type: 'checkbox', label: 'Priority' },
+      { field: 'projectTypes', type: 'checkbox', label: 'Project Type' },
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'endDate', type: 'date', label: 'End Date' },
+    ],
   },
   {
     title: 'Resources',
@@ -114,7 +121,7 @@ export const FilterPanel = ({
         displayed={expanded}
       >
         <SearchBar setSearchText={onHandleSearch} searchQuery={searchText} />
-        {filterCategories.map((property) => (
+        {filterCategories.map((property: any) => (
           <FilterCategory
             key={property.title}
             title={property.title}

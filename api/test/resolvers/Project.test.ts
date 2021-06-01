@@ -120,6 +120,7 @@ describe('ProjectResolver', () => {
       })
     })
   })
+
   describe('project()', () => {
     const getProjectQuery = (id: string) => `{
       project (id: "${id}") {

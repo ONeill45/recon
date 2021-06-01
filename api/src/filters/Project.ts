@@ -2,28 +2,22 @@ import { ArgsType, Field } from 'type-graphql'
 import { DateInput } from '../inputs/Date'
 
 @ArgsType()
-export class GetResourcesWithFilter {
+export class GetProjectsWithFilter {
+  @Field(() => [String], { nullable: true })
+  projectTypes: Array<string | null>
+
+  @Field(() => [String], { nullable: true })
+  clientNames: Array<string | null>
+
+  @Field(() => [String], { nullable: true })
+  priorities: Array<string | null>
+
   @Field({ nullable: true })
-  searchItem: string | null
-
-  @Field(() => [String], { nullable: true })
-  clients: Array<string | null>
-
-  @Field(() => [String], { nullable: true })
-  title: Array<string | null>
-
-  @Field(() => [String], { nullable: true })
-  departmentName: Array<string | null>
-
-  @Field(() => [String], { nullable: true })
-  project: Array<string | null>
+  confidence: string
 
   @Field({ nullable: true })
   startDate: DateInput
 
   @Field({ nullable: true })
   endDate: DateInput
-
-  @Field({ nullable: true })
-  skills: string
 }
