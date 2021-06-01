@@ -194,15 +194,7 @@ const Resources = () => {
       queryFilter['pagination'] = paginationInputs
     }
     setFilter((prev: any) => {
-      if (
-        prev.searchItem !== queryFilter.searchItem ||
-        prev.pagination?.page !== queryFilter.pagination?.page ||
-        prev.pagination?.itemsPerPage !== queryFilter.pagination?.itemsPerPage
-      ) {
-        return { ...prev, ...queryFilter }
-      } else {
-        return { ...queryFilter }
-      }
+      return filterClicked ? { ...queryFilter } : { ...prev, ...queryFilter }
     })
   }
 

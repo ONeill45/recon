@@ -63,8 +63,8 @@ export const PageNumber = styled.div<pageNumberProps>`
 `
 
 const ItemsPerPageSelect = styled.select`
-  width: 2.5rem;
-  margin: 0.5rem;
+  height: 1.5rem;
+  margin: 0.65rem 0.5rem 0 0.5rem;
 `
 
 export const Pagination = ({
@@ -87,11 +87,20 @@ export const Pagination = ({
       }
       setPageNumbers(pageNumberArr)
     }
+    if (total === 0) {
+      setPageNumbers([1])
+    }
   }, [total])
 
   useEffect(() => {
     setCurrentPage(1)
-  }, [searchText, filterClicked])
+  }, [searchText])
+
+  useEffect(() => {
+    if (filterClicked) {
+      setCurrentPage(1)
+    }
+  }, [filterClicked])
 
   const pageChange = (page: number) => {
     setCurrentPage(page)
