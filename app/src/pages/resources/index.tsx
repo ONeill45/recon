@@ -85,7 +85,6 @@ export const GET_ALL_RESOURCE_TITLE = gql`
   }
 `
 
-
 const MockSkills = [
   'React',
   'React Native',

@@ -61,7 +61,7 @@ const filterCategoryProperties = [
       { field: 'clients', type: 'checkbox', label: 'Client' },
       { field: 'skills', type: 'checkbox', label: 'Skill' },
       { field: 'startDate', type: 'date', label: 'Start Date' },
-      { field: 'terminationdate', type: 'date', label: 'Termination Date' },
+      { field: 'endDate', type: 'date', label: 'Termination Date' },
     ],
   },
 ]
@@ -89,15 +89,6 @@ export const FilterPanel = ({
     return filterCategoryProperties
   }, [page])
 
-  const onHandleFilter = (filter: { [key: string]: any }) => {
-    if (searchText) {
-      filter.searchItem = searchText
-    }
-    if (onFilter) {
-      onFilter(filter)
-    }
-  }
-
   const onHandleSearch = (text: string) => {
     onSetSearchText(text)
     if (onFilter) {
@@ -122,13 +113,14 @@ export const FilterPanel = ({
       >
         <SearchBar setSearchText={onHandleSearch} searchQuery={searchText} />
         {filterCategories.map((property: any) => (
-          <FilterCategory
-            key={property.title}
-            title={property.title}
-            fields={property.children}
-            filterItems={filterItems}
-            onChange={onHandleFilter}
-          />
+          <div key={property.title}>
+            <FilterCategory
+              title={property.title}
+              fields={property.children}
+              filterItems={filterItems}
+              onChange={onFilter}
+            />
+          </div>
         ))}
       </ExpandedFilterPanelDiv>
     </>

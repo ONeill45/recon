@@ -28,7 +28,7 @@ export const GET_ALL_CLIENTS = gql`
 `
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const Clients = () => {
+const Clients: React.FC = () => {
   const [data, setData] = useState<{ [key: string]: any }>({})
   const [error, setError] = useState<{ [key: string]: any } | null>(null)
 
