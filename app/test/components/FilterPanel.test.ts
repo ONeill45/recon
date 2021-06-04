@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/dom'
 import userEvent from '@testing-library/user-event'
 
 import { FilterPanel } from 'components'
@@ -5,17 +6,22 @@ import { render } from '../testUtils'
 
 describe('<FilterPanel />', () => {
   it('should not show expanded filter panel by default', async () => {
-    const { getByTestId } = await render(FilterPanel)
+    const { queryByTestId } = await render(FilterPanel)
 
-    expect(getByTestId('SideFilterPanel')).toBeVisible()
-    expect(getByTestId('ExpandedFilterPanel')).not.toBeVisible()
+    expect(queryByTestId('FilterPanelButton')).toBeVisible()
+    expect(queryByTestId('FilterPanelDrawer')).not.toBeInTheDocument()
   })
 
   it('should show expanded filter panel when side filter bar is clicked', async () => {
-    const { getByTestId } = await render(FilterPanel)
+    const { queryByTestId, getByTestId, container } = await render(FilterPanel)
 
-    userEvent.click(getByTestId('SideFilterPanel'))
+    userEvent.click(getByTestId('FilterPanelButton'))
 
-    expect(getByTestId('ExpandedFilterPanel')).toBeVisible()
+    await waitFor(
+      () => expect(queryByTestId('FilterPanelDrawer')).toBeInTheDocument(),
+      {
+        container,
+      },
+    )
   })
 })

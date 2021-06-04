@@ -20,7 +20,7 @@ const ThumbnailImage = styled.img`
   width: 48px;
 `
 
-export const UserSelect = () => {
+export const UserSelect: React.FC = () => {
   const [thumbnailSrc, setThumbnailSrc] = useState<string>('')
   const router = useRouter()
 

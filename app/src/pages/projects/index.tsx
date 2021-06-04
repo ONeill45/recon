@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { gql, useLazyQuery } from '@apollo/client'
 import {
   ProjectCard,
-  PlusCircle,
   CardsContainer,
   FilterPanel,
   LinkButton,

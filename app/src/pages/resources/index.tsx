@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { Link as ChakraLink } from '@chakra-ui/react'
 import { gql, useLazyQuery } from '@apollo/client'
 
 import {
-  Button,
   CardsContainer,
   FilterPanel,
   LinkButton,
-  PlusCircle,
   ResourceCard,
 } from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
 import { PageHeader } from '../../components/PageHeader'
-import { FaFilter, FaPlus } from 'react-icons/fa'
+import { FaPlus } from 'react-icons/fa'
 
 export const GET_RESOURCES = gql`
   query GetAllResource(

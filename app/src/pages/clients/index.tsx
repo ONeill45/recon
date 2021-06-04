@@ -1,13 +1,7 @@
 import styles from '../../styles/Home.module.css'
 
 import { Client } from 'interfaces'
-import {
-  CardsContainer,
-  PlusCircle,
-  ClientCard,
-  FilterPanel,
-  LinkButton,
-} from 'components'
+import { CardsContainer, ClientCard, FilterPanel, LinkButton } from 'components'
 import { gql, useQuery } from '@apollo/client'
 import { useState } from 'react'
 import React from 'react'

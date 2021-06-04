@@ -8,7 +8,7 @@ type ProjectCardProps = {
   project: Project
 }
 
-export const ProjectCard = ({ project }: ProjectCardProps) => {
+export const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
   const {
     id,
     projectName,

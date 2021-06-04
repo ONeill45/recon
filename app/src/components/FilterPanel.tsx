@@ -1,6 +1,4 @@
-import styled from '@emotion/styled'
 import React, { useMemo } from 'react'
-import { css } from '@emotion/react'
 import { FilterCategory, SearchBar } from './'
 import {
   Portal,
@@ -15,10 +13,6 @@ import {
 } from '@chakra-ui/react'
 import { FaFilter } from 'react-icons/fa'
 import { Button } from './Button'
-
-type displayProps = {
-  displayed: boolean
-}
 
 const filterCategoryProperties = [
   {
@@ -75,6 +69,7 @@ export const FilterPanel = (props: FilterPanelProps) => {
         colorScheme="primary"
         onClick={onOpen}
         ref={buttonRef}
+        data-testid="FilterPanelButton"
       >
         Filter
       </Button>
