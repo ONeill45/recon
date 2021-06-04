@@ -1,9 +1,18 @@
 import styles from '../../styles/Home.module.css'
 
 import { Client } from 'interfaces'
-import { Cards, PlusCircle, ClientCard, FilterPanel } from 'components'
+import {
+  CardsContainer,
+  PlusCircle,
+  ClientCard,
+  FilterPanel,
+  LinkButton,
+} from 'components'
 import { gql, useQuery } from '@apollo/client'
 import { useState } from 'react'
+import React from 'react'
+import { FaPlus } from 'react-icons/fa'
+import { PageHeader } from '../../components/PageHeader'
 
 export const GET_ALL_CLIENTS = gql`
   query clients($searchItem: String) {
@@ -35,15 +44,19 @@ const Clients: React.FC = () => {
   } else if (data) {
     return (
       <>
-        <div className={styles.container}>
+        <PageHeader headerText="Clients">
+          <LinkButton href="/clients/client" rightIcon={<FaPlus />}>
+            Create
+          </LinkButton>
           <FilterPanel onFilter={() => {}} setSearchText={setSearchText} />
-          <Cards>
+        </PageHeader>
+        <div className={styles.container}>
+          <CardsContainer>
             {searchClients &&
               searchClients.map((client: Client) => {
                 return <ClientCard key={client.id} client={client} />
               })}
-          </Cards>
-          <PlusCircle size="50" route="/clients/client" />
+          </CardsContainer>
         </div>
       </>
     )

@@ -1,27 +1,19 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
 import { useRouter } from 'next/router'
 
-import { useAccessToken, useClickOutside, useMsAccount } from 'utils/hooks'
-import { Button, SideNavDiv } from 'components'
+import { useAccessToken, useMsAccount } from 'utils/hooks'
+import { Button } from 'components'
 import { callMsGraph, MsGraphEndpoints } from 'utils/functions'
-
-const UserSelectDiv = styled.div({
-  cursor: 'pointer',
-  fontWeight: 'bold',
-  paddingRight: '10px',
-  display: 'flex',
-  alignItems: 'center',
-})
-
-const GreetingDiv = styled.div`
-  padding-right: 10px;
-`
-
-const NoBulletUl = styled.ul({
-  listStyle: 'none',
-})
+import {
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Box,
+  MenuDivider,
+} from '@chakra-ui/react'
 
 const ThumbnailImage = styled.img`
   border-radius: 24px;
@@ -29,9 +21,7 @@ const ThumbnailImage = styled.img`
 `
 
 export const UserSelect = () => {
-  const [show, setShow] = useState(false)
   const [thumbnailSrc, setThumbnailSrc] = useState<string>('')
-  const selectRef = useRef(null)
   const router = useRouter()
 
   const { instance } = useMsal()
@@ -52,16 +42,7 @@ export const UserSelect = () => {
     getMsAccountThumbnail()
   }, [accessToken])
 
-  const divId = 'userSelectButton',
-    greetingId = 'userSelectGreeting',
-    imageId = 'userSelectImage'
-  useClickOutside(selectRef, () => setShow(false), [divId, greetingId, imageId])
-  const toggleShow = () => {
-    setShow(!show)
-  }
-
   const { homeAccountId, name } = account || {}
-  const greeting = `Hi ${name?.split(' ')[0]}`
 
   const logout = () => {
     if (homeAccountId) {
@@ -76,24 +57,26 @@ export const UserSelect = () => {
   return (
     <>
       {thumbnailSrc ? (
-        <UserSelectDiv id={divId} onClick={toggleShow}>
-          <GreetingDiv id={greetingId}>{greeting}</GreetingDiv>
-          <ThumbnailImage id={imageId} src={thumbnailSrc} />
-        </UserSelectDiv>
+        <Menu>
+          <MenuButton
+            as={Button}
+            variant="link"
+            data-testid="UserSelectMenuButton"
+          >
+            <ThumbnailImage src={thumbnailSrc} data-testid="UserSelectAvatar" />
+          </MenuButton>
+          <MenuList data-testid="UserSelectMenu">
+            <Box fontSize="sm" paddingX="3" paddingY="2">
+              <strong>Logged in As:</strong> {name}
+            </Box>
+            <MenuDivider />
+            <MenuItem>Profile</MenuItem>
+            <MenuItem onClick={logout} data-testid="LogOutMenuItem">
+              Log Out
+            </MenuItem>
+          </MenuList>
+        </Menu>
       ) : null}
-
-      <SideNavDiv
-        data-testid="UserSelectMenu"
-        displayed={show}
-        ref={selectRef}
-        direction="right"
-      >
-        <NoBulletUl>
-          <li>
-            <Button onClick={logout}>Log Out</Button>
-          </li>
-        </NoBulletUl>
-      </SideNavDiv>
     </>
   )
 }

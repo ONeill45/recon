@@ -1,1 +1,9 @@
 node_modules/
+
+# OS X Files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.lnk
+*~

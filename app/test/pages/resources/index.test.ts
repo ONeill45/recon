@@ -59,13 +59,4 @@ describe('Resource page test', () => {
 
     expect(getByText('Error: An error occurred')).toBeVisible()
   })
-  it('should route to appropriate resource page when its card is clicked', async () => {
-    const { getByText } = await render(Resources, {}, mocks)
-
-    userEvent.click(getByText(`${resources[0].email}`))
-    expect(mockUseRouter.push).toHaveBeenCalledWith({
-      pathname: '/resources/[id]',
-      query: { id: resources[0].id },
-    })
-  })
 })

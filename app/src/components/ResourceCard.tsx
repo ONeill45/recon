@@ -1,8 +1,8 @@
-import { useRouter } from 'next/router'
+import React from 'react'
 
 import { Resource } from 'interfaces'
 import { getRelativeTime } from '../utils'
-import { CardDescriptionDiv, CardDiv, CardNameDiv } from './Card'
+import { Card, CardDescriptionDiv, CardNameDiv } from './Card'
 import { LogoDiv, LogoImg } from './Logo'
 import { CurrentResourceAllocationDetail } from 'components'
 
@@ -10,7 +10,7 @@ type ResourceCardProps = {
   resource: Resource
 }
 
-export const ResourceCard = ({ resource }: ResourceCardProps) => {
+export const ResourceCard: React.FC<ResourceCardProps> = ({ resource }) => {
   const {
     id,
     firstName,
@@ -24,7 +24,6 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
     terminationDate,
     resourceAllocations,
   } = resource
-  const router = useRouter()
 
   const duration = getRelativeTime(startDate, terminationDate)
   const currentAllocation = resourceAllocations.filter(
@@ -32,13 +31,7 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
   )
 
   return (
-    <CardDiv
-      data-testid="ResourceCardDiv"
-      clickable={true}
-      onClick={() =>
-        router.push({ pathname: '/resources/[id]', query: { id } })
-      }
-    >
+    <Card link={`/resources/${id}`}>
       <LogoDiv>
         <LogoImg src={imageUrl || '/images/default-avatar-500x500.png'} />
       </LogoDiv>
@@ -59,6 +52,6 @@ export const ResourceCard = ({ resource }: ResourceCardProps) => {
           <div />
         )}
       </CardDescriptionDiv>
-    </CardDiv>
+    </Card>
   )
 }
