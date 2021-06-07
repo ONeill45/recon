@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { gql, useLazyQuery } from '@apollo/client'
-import { ProjectCard, PlusCircle, Cards, FilterPanel } from 'components'
+import {
+  ProjectCard,
+  CardsContainer,
+  FilterPanel,
+  LinkButton,
+} from 'components'
 import { Project, Priority, ProjectType } from 'interfaces'
 import styles from '../../styles/Home.module.css'
+import { FaPlus } from 'react-icons/fa'
+import { PageHeader } from '../../components/PageHeader'
 
 export const GET_PROJECTS = gql`
   query GetAllProjects(
@@ -116,7 +123,10 @@ const Projects = () => {
 
   return (
     <>
-      <div className={styles.container}>
+      <PageHeader headerText="Projects">
+        <LinkButton href="/projects/project" rightIcon={<FaPlus />}>
+          Create
+        </LinkButton>
         <FilterPanel
           page={page}
           onFilter={handleOnFilter}
@@ -127,13 +137,14 @@ const Projects = () => {
             projectTypes,
           }}
         />
-        <Cards>
+      </PageHeader>
+      <div className={styles.container}>
+        <CardsContainer>
           {projects &&
             projects.map((project: Project) => {
               return <ProjectCard project={project} key={project.id} />
             })}
-        </Cards>
-        <PlusCircle size="50" route="/projects/project" />
+        </CardsContainer>
       </div>
     </>
   )

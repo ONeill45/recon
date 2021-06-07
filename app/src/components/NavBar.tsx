@@ -1,14 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
-import Image from 'next/image'
-import { NavButtons } from './'
+import { Button } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { AuthenticatedTemplate } from '@azure/msal-react'
+import {
+  Box,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+  Portal,
+  Stack,
+  useBreakpointValue,
+  useDisclosure,
+} from '@chakra-ui/react'
+import { FaBinoculars } from 'react-icons/fa'
 
 import { DisplayType } from 'interfaces'
-import { UserSelect } from 'components'
-import { useClickOutside } from 'utils/hooks'
+import { UserSelect, NavLinks } from 'components'
+import { useRouter } from 'next/router'
 
 type displayProps = {
   displayed: boolean
@@ -20,21 +33,10 @@ const isDisplayed = ({ displayed }: displayProps) => css`
 `
 
 export const MainDiv = styled.div`
-  height: 60px;
-  background-color: orange;
+  padding: 0px 20px;
+  background-color: var(--chakra-colors-primary-500);
   display: flex;
   justify-content: space-between;
-  align-items: center;
-`
-
-export const FullNavDiv = styled.div<displayProps>`
-  ${isDisplayed};
-`
-export const CollapsedNavDiv = styled.div<displayProps>`
-  ${isDisplayed};
-  height: 100%;
-  padding-left: 5px;
-  justify-content: flex-start;
   align-items: center;
 `
 
@@ -49,17 +51,51 @@ export const SideNavDiv = styled.div<displayProps>`
   z-index: 1;
 `
 
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  font-family: 'MuseoModerno', Arial, sans-serif;
+  font-weight: bold;
+  color: #ffffff;
+  font-size: 36px;
+  > * {
+    margin-right: 12px;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+  svg {
+    line-height: 1em;
+    font-size: 32px;
+  }
+`
+
 export const NavBar = () => {
-  const [collapsed, setCollapsed] = useState(false)
-  const [displaySideMenu, setDisplaySideMenu] = useState(false)
+  const hamburgerRef = React.useRef(null)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const router = useRouter()
 
-  const menuRef = useRef(null),
-    buttonId = 'hamburgerButton',
-    menuDiv = 'hamburgerDiv'
+  useEffect(() => {
+    const handleRouteChange = () => {
+      if (isOpen) {
+        onClose()
+      }
+    }
 
-  useClickOutside(menuRef, () => setDisplaySideMenu(false), [buttonId, menuDiv])
+    if (router?.events) {
+      router.events.off('routeChangeStart', handleRouteChange)
+      router.events.on('routeChangeStart', handleRouteChange)
+    }
+    return () => {
+      if (router?.events) {
+        router.events.off('routeChangeStart', handleRouteChange)
+      }
+    }
+  }, [router, isOpen, onClose])
 
-  const buttonProperties = [
+  const showHamburger = useBreakpointValue({ base: true, md: false })
+
+  const navLinks = [
     {
       title: 'Home',
       route: '/',
@@ -78,62 +114,59 @@ export const NavBar = () => {
     },
   ]
 
-  useEffect(() => {
-    const handleResize = () => {
-      const collapsed = window.innerWidth < 768
-      setCollapsed(collapsed)
-
-      if (!collapsed) setDisplaySideMenu(false)
-    }
-
-    handleResize()
-
-    window.addEventListener('resize', handleResize)
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
   return (
     <>
       <MainDiv>
-        <CollapsedNavDiv
-          data-testid="CollapsedNav"
-          id={menuDiv}
-          displayed={collapsed}
-        >
-          <GiHamburgerMenu
-            data-testid="HamburgerMenu"
-            id={buttonId}
-            size="40px"
-            onClick={() => {
-              setDisplaySideMenu(!displaySideMenu)
-            }}
-          />
-        </CollapsedNavDiv>
-        <FullNavDiv data-testid="FullNav" displayed={!collapsed}>
-          <Image src="/images/recon-192x192.png" height="60" width="60" />
-          <AuthenticatedTemplate>
-            <NavButtons
-              buttonProperties={buttonProperties}
-              displayType={DisplayType.ROW}
-            />
-          </AuthenticatedTemplate>
-        </FullNavDiv>
+        {showHamburger ? (
+          <Button
+            ref={hamburgerRef}
+            onClick={onOpen}
+            variant="link"
+            color="white"
+            data-testid="CollapsedNav"
+          >
+            <GiHamburgerMenu data-testid="HamburgerMenu" size="40px" />
+          </Button>
+        ) : (
+          <Stack direction="row" spacing="10" data-testid="FullNav">
+            <LogoContainer>
+              <span>RECON</span>
+              <FaBinoculars />
+            </LogoContainer>
+            <AuthenticatedTemplate>
+              <Box alignSelf="flex-end">
+                <NavLinks routes={navLinks} displayType={DisplayType.ROW} />
+              </Box>
+            </AuthenticatedTemplate>
+          </Stack>
+        )}
         <AuthenticatedTemplate>
           <UserSelect />
         </AuthenticatedTemplate>
       </MainDiv>
-      <SideNavDiv
-        data-testid="SideNav"
-        displayed={displaySideMenu}
-        ref={menuRef}
-        direction="left"
-      >
-        <NavButtons
-          buttonProperties={buttonProperties}
-          displayType={DisplayType.COLUMN}
-        />
-      </SideNavDiv>
+      <Portal>
+        <Drawer
+          isOpen={isOpen}
+          placement="left"
+          onClose={onClose}
+          finalFocusRef={hamburgerRef}
+        >
+          <DrawerOverlay data-testid="SideNavOverlay" />
+          <DrawerContent data-testid="SideNav">
+            <DrawerCloseButton />
+            <DrawerHeader>
+              <LogoContainer>
+                <span>RECON</span>
+                <FaBinoculars />
+              </LogoContainer>
+            </DrawerHeader>
+
+            <DrawerBody>
+              <NavLinks routes={navLinks} displayType={DisplayType.COLUMN} />
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Portal>
     </>
   )
 }

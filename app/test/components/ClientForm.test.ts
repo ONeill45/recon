@@ -11,6 +11,7 @@ applyMockUseRouter()
 
 applyMockUseMsal()
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
 
 describe('<ClientForm />', () => {
@@ -28,13 +29,13 @@ describe('<ClientForm />', () => {
       },
     ]
 
-    const { getByLabelText } = await render(ClientForm, {}, mocks, false)
+    const { getByTestId } = await render(ClientForm, {}, mocks, false)
 
     const [clientName, description, logoUrl] = [
-      'client-name',
-      'description',
-      'logo-url',
-    ].map((text) => getByLabelText(text))
+      'client-name-field',
+      'description-field',
+      'logo-url-field',
+    ].map((text) => getByTestId(text))
 
     await waitFor(() => {
       userEvent.type(clientName, 'Test Client')
@@ -60,15 +61,10 @@ describe('<ClientForm />', () => {
       },
     ]
 
-    const { getByLabelText } = await render(
-      ClientForm,
-      { client },
-      mocks,
-      false,
-    )
+    const { getByTestId } = await render(ClientForm, { client }, mocks, false)
 
-    expect(getByLabelText('client-name')).toHaveValue(client.clientName)
-    expect(getByLabelText('description')).toHaveValue(client.description)
+    expect(getByTestId('client-name-field')).toHaveValue(client.clientName)
+    expect(getByTestId('description-field')).toHaveValue(client.description)
 
     await new Promise((resolve) => setTimeout(resolve, 0))
   })
