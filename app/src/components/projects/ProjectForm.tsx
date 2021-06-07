@@ -7,9 +7,10 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
 import { Client, ProjectType, Project } from 'interfaces'
-import { Priority } from '../interfaces/Enum'
+import { Priority } from 'interfaces/Enum'
 import { Toast } from 'components'
 import { useToast } from 'hooks'
+import { CREATE_PROJECT, UPDATE_PROJECT } from 'queries'
 
 const ProjectTypeValues = Object.entries(ProjectType).map((a) => a[1])
 const PriorityValues = Object.entries(Priority).map((a) => a[1])
@@ -51,27 +52,11 @@ export const GET_ALL_CLIENTS = gql`
   }
 `
 
-export const CREATE_PROJECT = gql`
-  mutation CreateProject($data: CreateProjectInput!) {
-    createProject(data: $data) {
-      id
-    }
-  }
-`
-
-export const UPDATE_PROJECT = gql`
-  mutation updateProject($id: String!, $data: UpdateProjectInput!) {
-    updateProject(id: $id, data: $data) {
-      id
-    }
-  }
-`
-
 type ProjectProps = {
   project?: Project
 }
 
-export const ProjectForm = ({ project }: ProjectProps) => {
+export const ProjectForm: React.FC<ProjectProps> = ({ project }) => {
   const [projectName, setProjectName] = useState(project?.projectName || '')
   const [client, setClient] = useState(project?.client || undefined)
   const [projectType, setProjectType] = useState<string>(

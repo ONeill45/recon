@@ -1,6 +1,6 @@
-import { ProjectHeader } from 'components'
-import { ProjectFactory } from '../factories'
-import { render } from '../testUtils'
+import { ProjectHeader } from 'components/projects/ProjectHeader'
+import { ProjectFactory } from '../../factories'
+import { render } from '../../testUtils'
 
 describe('<ProjectHeader />', () => {
   it('should initialize project header', async () => {

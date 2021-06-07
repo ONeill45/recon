@@ -1,15 +1,17 @@
 import { Resource } from 'interfaces'
-import { Sections } from './Sections'
-import { Histogram, Skills } from './Histogram'
-import { ProjectAllocation } from './ProjectAllocation'
-import { ResourceDetails } from './ResourceDetails'
-import { SectionContainer, Section, SectionTitle } from './Section'
+import { Sections } from 'components/Sections'
+import { Histogram, Skills } from 'components/Histogram'
+import { ProjectAllocation } from 'components/projects/ProjectAllocation'
+import { ResourceDetails } from 'components/ResourceDetails'
+import { SectionContainer, Section, SectionTitle } from 'components/Section'
 
 type ResourceDetailCardsProps = {
   resource: Resource
 }
 
-export const ResourceDetailCards = ({ resource }: ResourceDetailCardsProps) => {
+export const ResourceDetailCards: React.FC<ResourceDetailCardsProps> = ({
+  resource,
+}) => {
   const { resourceAllocations } = resource
   const currentDate = new Date()
   const currentAllocation = resourceAllocations.filter(

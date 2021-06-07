@@ -1,8 +1,8 @@
 import faker from 'faker'
 
-import { ProjectDetailCards } from 'components'
-import { ProjectFactory, ResourceFactory } from '../factories'
-import { render } from '../testUtils'
+import { ProjectDetailCards } from 'components/projects/ProjectDetailCards'
+import { ProjectFactory, ResourceFactory } from '../../factories'
+import { render } from '../../testUtils'
 import { DateFormat, formatDate, getDuration } from 'utils'
 
 describe('<ProjectDetailCards />', () => {

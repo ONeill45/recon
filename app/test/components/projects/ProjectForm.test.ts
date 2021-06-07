@@ -1,18 +1,17 @@
 import { waitFor } from '@testing-library/react'
-import { render } from '../testUtils'
+import { render, applyMockUseMsal, applyMockUseRouter } from '../../testUtils'
 import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
-import { CREATE_PROJECT } from 'components'
-import { applyMockUseMsal, applyMockUseRouter } from '../testUtils'
-import { ProjectForm, UPDATE_PROJECT } from '../../src/components/ProjectForm'
-import { ProjectFactory } from '../factories'
+import { CREATE_PROJECT, UPDATE_PROJECT } from 'queries'
+import { ProjectForm } from 'components/projects/ProjectForm'
+import { ProjectFactory } from '../../factories'
 
 applyMockUseRouter()
 
 applyMockUseMsal()
 
-jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
+jest.mock('utils/hooks/msal', () => require('../../testUtils').mockMsalHook)
 
 describe('<ProjectForm />', () => {
   it('should create a new project with user provided info', async () => {

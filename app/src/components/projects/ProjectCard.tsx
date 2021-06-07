@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { Project } from 'interfaces'
-import { getRelativeTime } from '../utils'
-import { Card, CardDescriptionDiv, CardNameDiv } from './Card'
+import { getRelativeTime } from 'utils'
+import { Card, CardDescriptionDiv, CardNameDiv } from 'components/Card'
 
 type ProjectCardProps = {
   project: Project

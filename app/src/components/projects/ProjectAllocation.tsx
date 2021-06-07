@@ -6,7 +6,7 @@ import {
   SectionTableHeaderRow,
   SectionTableHeaderData,
   SectionTableData,
-} from './Section'
+} from 'components/Section'
 
 const ProjectAllocationContainer = styled.div``
 
@@ -22,10 +22,10 @@ type ResourceAllocationProps = {
   pastAllocations: ResourceAllocation[]
 }
 
-export const ProjectAllocation = ({
+export const ProjectAllocation: React.FC<ResourceAllocationProps> = ({
   currentAllocations,
   pastAllocations,
-}: ResourceAllocationProps) => {
+}) => {
   return (
     <ProjectAllocationContainer>
       {currentAllocations && (

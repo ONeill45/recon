@@ -1,8 +1,8 @@
 import userEvent from '@testing-library/user-event'
 
-import { ProjectCard } from 'components'
-import { ProjectFactory } from '../factories'
-import { applyMockUseRouter, mockUseRouter, render } from '../testUtils'
+import { ProjectCard } from 'components/projects/ProjectCard'
+import { ProjectFactory } from '../../factories'
+import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
 import { getRelativeTime } from 'utils'
 
 applyMockUseRouter()

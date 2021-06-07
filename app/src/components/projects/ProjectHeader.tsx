@@ -4,14 +4,14 @@ import {
   HeaderDiv,
   HeaderNameDiv,
   SubHeaderDiv,
-} from './Header'
-import { Pencil } from './Pencil'
+} from 'components/Header'
+import { Pencil } from 'components/Pencil'
 
 type ProjectHeaderProps = {
   project: Project
 }
 
-export const ProjectHeader = ({ project }: ProjectHeaderProps) => {
+export const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project }) => {
   const { projectName, id } = project
 
   return (
