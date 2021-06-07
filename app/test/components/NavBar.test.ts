@@ -1,66 +1,88 @@
+// import { mockMatchMedia } from '../testUtils/mockMatchMedia'
 import { act } from 'react-dom/test-utils'
 import userEvent from '@testing-library/user-event'
+import MatchMediaMock from 'jest-matchmedia-mock'
 
 import { NavBar } from 'components'
-import { applyMockUseRouter, render, setInnerWidth } from '../testUtils'
+import { applyMockUseRouter, render } from '../testUtils'
+import { mockBreakpointsMediaQueries } from '../testUtils/breakpoints'
+import { waitFor } from '@testing-library/dom'
+
+let matchMedia: MatchMediaMock
 
 applyMockUseRouter()
 
 describe('<NavBar />', () => {
+  beforeAll(() => {
+    matchMedia = new MatchMediaMock()
+  })
+
   beforeEach(() => {
-    setInnerWidth(1024)
+    matchMedia.useMediaQuery(mockBreakpointsMediaQueries.md)
+  })
+
+  afterEach(() => {
+    matchMedia.clear()
   })
 
   it('should show the full nav bar by default', async () => {
-    const { getByTestId } = await render(NavBar)
+    const { queryByTestId } = await render(NavBar)
 
-    expect(getByTestId('FullNav')).toBeVisible()
-    expect(getByTestId('CollapsedNav')).not.toBeVisible()
-    expect(getByTestId('SideNav')).not.toBeVisible()
+    expect(queryByTestId('FullNav')).toBeInTheDocument()
+    expect(queryByTestId('CollapsedNav')).not.toBeInTheDocument()
+    expect(queryByTestId('SideNav')).not.toBeInTheDocument()
   })
 
   it('should show the collapsed nav when screen is too small for full nav', async () => {
-    setInnerWidth()
-    const { getByTestId } = await render(NavBar)
+    matchMedia.useMediaQuery(mockBreakpointsMediaQueries.sm)
+    const { queryByTestId } = await render(NavBar)
 
-    expect(getByTestId('FullNav')).not.toBeVisible()
-    expect(getByTestId('CollapsedNav')).toBeVisible()
-    expect(getByTestId('SideNav')).not.toBeVisible()
+    expect(queryByTestId('FullNav')).not.toBeInTheDocument()
+    expect(queryByTestId('CollapsedNav')).toBeInTheDocument()
+    expect(queryByTestId('SideNav')).not.toBeInTheDocument()
   })
 
   it('should collapse nav bar when screen is resized below threshold', async () => {
-    const { getByTestId } = await render(NavBar)
-    setInnerWidth()
+    const { queryByTestId, container } = await render(NavBar)
+    expect(queryByTestId('FullNav')).toBeInTheDocument()
+    expect(queryByTestId('CollapsedNav')).not.toBeInTheDocument()
     act(() => {
-      global.dispatchEvent(new Event('resize'))
+      matchMedia.useMediaQuery(mockBreakpointsMediaQueries.sm)
     })
 
-    expect(getByTestId('FullNav')).not.toBeVisible()
-    expect(getByTestId('CollapsedNav')).toBeVisible()
-    expect(getByTestId('SideNav')).not.toBeVisible()
+    waitFor(
+      () => {
+        expect(queryByTestId('FullNav')).not.toBeInTheDocument()
+        expect(queryByTestId('CollapsedNav')).toBeInTheDocument()
+      },
+      {
+        container: container,
+      },
+    )
   })
 
   it('should open side nav when hamburger menu is clicked', async () => {
-    setInnerWidth()
-    const { getByTestId } = await render(NavBar)
+    matchMedia.useMediaQuery(mockBreakpointsMediaQueries.sm)
+    const { queryByTestId } = await render(NavBar)
 
-    userEvent.click(getByTestId('HamburgerMenu'))
+    queryByTestId('CollapsedNav')?.click()
 
-    expect(getByTestId('SideNav')).toBeVisible()
+    expect(queryByTestId('SideNav')).toBeVisible()
   })
 
-  it('should open side nav when hamburger menu is clicked', async () => {
-    setInnerWidth()
-    const component = await render(NavBar)
+  it('should close side nav when area outside is clicked', async () => {
+    matchMedia.useMediaQuery(mockBreakpointsMediaQueries.sm)
 
-    const { getByTestId } = component
+    const { getByTestId, queryByTestId, container } = await render(NavBar)
 
-    userEvent.click(getByTestId('HamburgerMenu'))
+    userEvent.click(getByTestId('CollapsedNav'))
 
-    expect(getByTestId('SideNav')).toBeVisible()
+    expect(queryByTestId('SideNav')).toBeInTheDocument()
 
-    userEvent.click(component.baseElement)
+    userEvent.click(getByTestId('SideNavOverlay'))
 
-    expect(getByTestId('SideNav')).not.toBeVisible()
+    waitFor(() => expect(queryByTestId('SideNav')).not.toBeInTheDocument(), {
+      container: container,
+    })
   })
 })

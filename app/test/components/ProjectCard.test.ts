@@ -31,9 +31,10 @@ describe('<ProjectCard />', () => {
     const { getByText } = await render(ProjectCard, { project })
 
     userEvent.click(getByText(`${projectName}`))
-    expect(mockUseRouter.push).toHaveBeenCalledWith({
-      pathname: '/projects/[id]',
-      query: { id },
-    })
+    expect(mockUseRouter.prefetch).toHaveBeenCalledWith(
+      `/projects/${id}`,
+      expect.anything(),
+      expect.anything(),
+    )
   })
 })

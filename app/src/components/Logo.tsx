@@ -11,6 +11,7 @@ export const LogoDiv = styled.div`
     0 1px 5px 0 rgb(0 0 0 / 12%);
   overflow: hidden;
   margin: 4px;
+  background: white;
 `
 export const LogoImg = styled.img`
   height: auto;

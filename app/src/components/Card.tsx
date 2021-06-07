@@ -1,47 +1,22 @@
-import { css } from '@emotion/react'
+import React from 'react'
+import {
+  LinkBox,
+  LinkOverlay,
+  Stack,
+  useColorModeValue,
+} from '@chakra-ui/react'
 import styled from '@emotion/styled'
+import Link from 'next/link'
 
-type cardProps = {
-  clickable?: boolean
-}
-
-const isClickable = ({ clickable }: cardProps) => {
-  if (clickable) {
-    return css`
-      cursor: pointer;
-      &:hover {
-        outline: 1px solid black;
-      }
-    `
-  }
-  return ''
-}
-
-export const CardDiv = styled.div<cardProps>`
-  ${isClickable}
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
-    0 1px 5px 0 rgb(0 0 0 / 12%);
-  height: fit-content;
-  padding: 16px;
-  width: 100%;
-  flex-grow: 1;
-`
 export const CardNameDiv = styled.div`
   font-size: 16px;
   font-weight: bold;
-  padding: 4px;
   text-align: center;
 `
 
 export const CardDetailsDiv = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 12px;
   align-self: flex-start;
   text-align: left;
 `
@@ -57,3 +32,26 @@ export const CardDescriptionDiv = styled.div<cardDescriptionProps>`
   ${(props) =>
     props.color ? `color: ${props.color}` /* istanbul ignore next */ : ''};
 `
+
+export const Card: React.FC<{ link?: string }> = ({ link, children }) => {
+  return (
+    <LinkBox
+      as={Stack}
+      borderWidth="1px"
+      borderRadius="md"
+      boxShadow="md"
+      direction="column"
+      alignItems="center"
+      spacing="4"
+      padding="4"
+      bg={useColorModeValue('white', 'gray.700')}
+    >
+      {link && (
+        <Link href={link} passHref>
+          <LinkOverlay />
+        </Link>
+      )}
+      {children}
+    </LinkBox>
+  )
+}

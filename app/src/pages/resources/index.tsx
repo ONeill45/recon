@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { gql, useLazyQuery } from '@apollo/client'
-import { Cards, FilterPanel, PlusCircle, ResourceCard } from 'components'
+
+import {
+  CardsContainer,
+  FilterPanel,
+  LinkButton,
+  ResourceCard,
+} from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
+import { PageHeader } from '../../components/PageHeader'
+import { FaPlus } from 'react-icons/fa'
 
 export const GET_RESOURCES = gql`
   query GetAllResource(
@@ -181,21 +189,27 @@ const Resources = () => {
     return <p>Error: {error.message}</p>
   } else if (data) {
     return (
-      <div className={styles.container}>
-        <FilterPanel
-          setSearchText={setSearchText}
-          page={page}
-          onFilter={handleOnFilter}
-          filterItems={{ clients, projects, departments, titles }}
-        />
-        <Cards>
-          {resources &&
-            resources.map((resource: Resource) => {
-              return <ResourceCard resource={resource} key={resource.id} />
-            })}
-        </Cards>
-        <PlusCircle size={'50'} route={'/resources/resource'} />
-      </div>
+      <>
+        <PageHeader headerText="Resources">
+          <LinkButton href="/resources/resource" rightIcon={<FaPlus />}>
+            Create
+          </LinkButton>
+          <FilterPanel
+            setSearchText={setSearchText}
+            page={page}
+            onFilter={handleOnFilter}
+            filterItems={{ clients, projects, departments, titles }}
+          />
+        </PageHeader>
+        <div className={styles.container}>
+          <CardsContainer>
+            {resources &&
+              resources.map((resource: Resource) => {
+                return <ResourceCard resource={resource} key={resource.id} />
+              })}
+          </CardsContainer>
+        </div>
+      </>
     )
   } else if (loading) {
     return <p>Loading...</p>

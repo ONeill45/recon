@@ -9,23 +9,7 @@ import { useMsAccount } from 'utils/hooks'
 import { Client } from 'interfaces'
 import { Toast } from 'components'
 import { useToast } from 'hooks'
-
-const CreateClientForm = styled.form`
-  margin: 1rem 0;
-  padding-left: 35%;
-`
-const CreateClientFormLabel = styled.label`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0.6rem 0;
-`
-
-const CreateClientFormInput = styled.input`
-  width: 50%;
-  padding: 0.3rem 0.6rem;
-  margin: 0.5rem 0;
-`
+import { FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react'
 
 const SubmitButton = styled.button`
   display: block;
@@ -224,44 +208,62 @@ export const ClientForm = ({ client }: ClientProps) => {
         display={displayToast}
         setDisplayToast={setDisplayToast}
       />
-      <CreateClientForm onChange={() => setHasFormChanged(true)}>
-        <CreateClientFormLabel>Client Name</CreateClientFormLabel>
-        <CreateClientFormInput
-          type="text"
-          aria-label="client-name"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setClientName(e.currentTarget.value)
-          }
-          value={clientName}
-        ></CreateClientFormInput>
-        <CreateClientFormLabel>Description</CreateClientFormLabel>
-        <CreateClientFormInput
-          type="text"
-          aria-label="description"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setDescription(e.currentTarget.value)
-          }
-          value={description}
-        ></CreateClientFormInput>
-        <CreateClientFormLabel>Logo Url (Optional)</CreateClientFormLabel>
-        <CreateClientFormInput
-          type="text"
-          aria-label="logo-url"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setLogoUrl(e.currentTarget.value)
-          }
-          defaultValue={logoUrl}
-        ></CreateClientFormInput>
-        <CreateClientFormLabel>Start Date</CreateClientFormLabel>
-        <DatePicker
-          selected={startDate}
-          onChange={(date: Date) => setStartDate(date)}
-        ></DatePicker>
-        <CreateClientFormLabel>End Date (Optional)</CreateClientFormLabel>
-        <DatePicker
-          selected={endDate}
-          onChange={(date: Date) => setEndDate(date)}
-        ></DatePicker>
+      <form onChange={() => setHasFormChanged(true)}>
+        <FormControl id="clientName">
+          <FormLabel>Client Name</FormLabel>
+          <Input
+            data-testid="client-name-field"
+            type="text"
+            placeholder="e.g Ascendum"
+            value={clientName}
+            onChange={(e: FormEvent<HTMLInputElement>) =>
+              setClientName(e.currentTarget.value)
+            }
+          />
+        </FormControl>
+        <FormControl id="description">
+          <FormLabel>Description</FormLabel>
+          <Textarea
+            data-testid="description-field"
+            placeholder="A description of the client"
+            onChange={(e: FormEvent<HTMLTextAreaElement>) =>
+              setDescription(e.currentTarget.value)
+            }
+            value={description}
+          />
+        </FormControl>
+        <FormControl id="logoUrl" data-testid="logo-url-field">
+          <FormLabel>Description</FormLabel>
+          <Textarea
+            placeholder="A description of the client"
+            onChange={(e: FormEvent<HTMLTextAreaElement>) =>
+              setLogoUrl(e.currentTarget.value)
+            }
+            value={logoUrl}
+          />
+        </FormControl>
+        <FormControl id="startDate">
+          <FormLabel>Start Date</FormLabel>
+          <DatePicker
+            selected={startDate}
+            onChange={(date: Date) => setStartDate(date)}
+          ></DatePicker>
+        </FormControl>
+        <FormControl id="logoUrl">
+          <FormLabel>Description</FormLabel>
+          <DatePicker
+            selected={startDate}
+            onChange={(date: Date) => setStartDate(date)}
+          ></DatePicker>
+        </FormControl>
+        <FormControl id="endDate">
+          <FormLabel>End Date (Optional)</FormLabel>
+          <DatePicker
+            selected={endDate}
+            onChange={(date: Date) => setEndDate(date)}
+          ></DatePicker>
+        </FormControl>
+
         {id ? (
           <SubmitButton
             name="Update"
@@ -275,7 +277,7 @@ export const ClientForm = ({ client }: ClientProps) => {
             Submit
           </SubmitButton>
         )}
-      </CreateClientForm>
+      </form>
     </>
   )
 }
