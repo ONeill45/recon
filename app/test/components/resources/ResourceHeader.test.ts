@@ -1,8 +1,8 @@
 import faker from 'faker'
 
-import { ResourceHeader } from 'components'
-import { ResourceFactory } from '../factories'
-import { render } from '../testUtils'
+import { ResourceHeader } from 'components/resources/ResourceHeader'
+import { ResourceFactory } from '../../factories'
+import { render } from '../../testUtils'
 
 describe('<ResourceHeader />', () => {
   it('should initialize resource details', async () => {

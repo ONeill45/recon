@@ -4,13 +4,13 @@ import { FaPlus } from 'react-icons/fa'
 import { Project, Priority, ProjectType } from 'interfaces'
 import styles from 'styles/Home.module.css'
 import { GET_PROJECTS, GET_ALL_CLIENTS_NAME } from 'queries'
-import { CardsContainer } from 'components/CardsContainer'
+import { CardsContainer } from 'components/layouts/CardsContainer'
 import { FilterPanel } from 'components/FilterPanel'
-import { LinkButton } from 'components/Button'
-import { PageHeader } from 'components/PageHeader'
+import { LinkButton } from 'components/common/Button'
+import { PageHeader } from 'components/common/PageHeader'
 import { ProjectCard } from 'components/projects/ProjectCard'
 
-const Projects: React.FC = () => {
+export const Projects: React.FC = () => {
   const [filter, setFilter] = useState({})
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
@@ -109,5 +109,3 @@ const Projects: React.FC = () => {
     </>
   )
 }
-
-export { Projects }

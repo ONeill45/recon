@@ -2,7 +2,10 @@
 import React, { useState } from 'react'
 import styled from '@emotion/styled'
 import styles from '../styles/Home.module.css'
-import { Button, FullPageSpinner, Spinner, FilterPanel } from '../components'
+import { Button } from 'components/common/Button'
+import { FullPageSpinner } from 'components/Spinner'
+import { Spinner } from 'components/Spinner'
+import { FilterPanel } from 'components/FilterPanel'
 import { EmotionComponentProps } from 'styles/theme'
 import { useColorMode } from '@chakra-ui/react'
 

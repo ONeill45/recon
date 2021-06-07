@@ -6,7 +6,7 @@ import {
   SectionTableHeaderRow,
   SectionTableHeaderData,
   SectionTableData,
-} from './Section'
+} from 'components/common/Section'
 
 const ResourceDetailsContainer = styled.div``
 
@@ -14,7 +14,9 @@ type ResourceDetailsProps = {
   resource: Resource
 }
 
-export const ResourceDetails = ({ resource }: ResourceDetailsProps) => {
+export const ResourceDetails: React.FC<ResourceDetailsProps> = ({
+  resource,
+}) => {
   const { department, startDate, terminationDate } = resource
   const duration = getDuration(startDate, terminationDate)
 

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Project } from 'interfaces'
 import { getRelativeTime } from 'utils'
-import { Card, CardDescriptionDiv, CardNameDiv } from 'components/Card'
+import { Card, CardDescriptionDiv, CardNameDiv } from 'components/common/Card'
 
 type ProjectCardProps = {
   project: Project

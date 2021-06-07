@@ -1,9 +1,9 @@
 import React from 'react'
 
 import { Resource } from 'interfaces'
-import { getRelativeTime } from '../utils'
-import { Card, CardDescriptionDiv, CardNameDiv } from './Card'
-import { LogoDiv, LogoImg } from './Logo'
+import { getRelativeTime } from 'utils'
+import { Card, CardDescriptionDiv, CardNameDiv } from 'components/common/Card'
+import { LogoDiv, LogoImg } from 'components/Logo'
 import { CurrentResourceAllocationDetail } from 'components'
 
 type ResourceCardProps = {

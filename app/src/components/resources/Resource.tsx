@@ -1,14 +1,15 @@
+import React from 'react'
 import { useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 
-import { GET_PROJECT } from 'queries'
-import { ProjectForm } from 'components/projects/ProjectForm'
+import { ResourceForm } from 'components/resources/ResourceForm'
+import { GET_RESOURCE } from 'queries'
 
-export const Project: React.FC = () => {
+export const Resource: React.FC = () => {
   const router = useRouter()
   const { id } = router.query
 
-  const { data, loading, error } = useQuery(GET_PROJECT, {
+  const { data, loading, error } = useQuery(GET_RESOURCE, {
     fetchPolicy: 'network-only',
     variables: { id },
     skip: !id,
@@ -17,11 +18,7 @@ export const Project: React.FC = () => {
   if (loading) return <p>Loading...</p>
   if (error) return <p>Error: {error.message}</p>
 
-  const { project } = data || {}
+  const { resource } = data || {}
 
-  return (
-    <>
-      <ProjectForm project={project} />
-    </>
-  )
+  return <ResourceForm resource={resource} />
 }

@@ -1,19 +1,18 @@
 import { waitFor } from '@testing-library/react'
-
 import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
-import { ResourceForm, CREATE_RESOURCE } from 'components'
-import { applyMockUseMsal, applyMockUseRouter, render } from '../testUtils'
-
-import { GET_ALL_DEPARTMENTS } from 'components'
-import { DepartmentFactory } from '../factories'
+import { ResourceForm } from 'components/resources/ResourceForm'
+import { applyMockUseMsal, applyMockUseRouter, render } from '../../testUtils'
+import { DepartmentFactory } from '../../factories'
+import { GET_DEPARTMENTS, CREATE_RESOURCE } from 'queries'
 
 applyMockUseRouter()
 
 applyMockUseMsal()
 
-jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+jest.mock('utils/hooks/msal', () => require('../../testUtils').mockMsalHook)
 
 describe('<ResourceForm />', () => {
   it('should create a new resource with user provided info', async () => {
@@ -31,7 +30,7 @@ describe('<ResourceForm />', () => {
       },
       {
         request: {
-          query: GET_ALL_DEPARTMENTS,
+          query: GET_DEPARTMENTS,
         },
         result: {
           data: {

@@ -1,8 +1,8 @@
 import { Project, ResourceAllocation } from 'interfaces'
 import React from 'react'
 import { formatDate, DateFormat, getDuration } from 'utils'
-import { Card, CardDetailsDiv, CardNameDiv } from 'components/Card'
-import { CardsContainer } from 'components/CardsContainer'
+import { Card, CardDetailsDiv, CardNameDiv } from 'components/common/Card'
+import { CardsContainer } from 'components/layouts/CardsContainer'
 
 type ProjectDetailCardsProps = {
   project: Project

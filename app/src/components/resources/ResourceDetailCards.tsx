@@ -2,8 +2,12 @@ import { Resource } from 'interfaces'
 import { Sections } from 'components/Sections'
 import { Histogram, Skills } from 'components/Histogram'
 import { ProjectAllocation } from 'components/projects/ProjectAllocation'
-import { ResourceDetails } from 'components/ResourceDetails'
-import { SectionContainer, Section, SectionTitle } from 'components/Section'
+import { ResourceDetails } from 'components/resources/ResourceDetails'
+import {
+  SectionContainer,
+  Section,
+  SectionTitle,
+} from 'components/common/Section'
 
 type ResourceDetailCardsProps = {
   resource: Resource

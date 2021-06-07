@@ -8,7 +8,7 @@ import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
 import { Client, ProjectType, Project } from 'interfaces'
 import { Priority } from 'interfaces/Enum'
-import { Toast } from 'components'
+import { Toast } from 'components/common/Toast'
 import { useToast } from 'utils/hooks'
 import { CREATE_PROJECT, UPDATE_PROJECT } from 'queries'
 

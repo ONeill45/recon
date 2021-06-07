@@ -1,8 +1,9 @@
 import faker from 'faker'
-import { ResourceCard } from 'components'
-import { ProjectFactory, ResourceFactory } from '../factories'
-import { applyMockUseRouter, mockUseRouter, render } from '../testUtils'
 import userEvent from '@testing-library/user-event'
+
+import { ResourceCard } from 'components/resources/ResourceCard'
+import { ProjectFactory, ResourceFactory } from '../../factories'
+import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
 
 applyMockUseRouter()
 

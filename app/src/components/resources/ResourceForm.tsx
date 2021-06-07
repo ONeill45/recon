@@ -1,14 +1,16 @@
-import { useRouter } from 'next/router'
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { gql, useMutation, useQuery } from '@apollo/client'
+import { useRouter } from 'next/router'
+import { useMutation, useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+
 import { Resource, Department } from 'interfaces'
 import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
-import { Toast } from 'components'
+import { Toast } from 'components/common/Toast'
 import { useToast } from 'utils/hooks'
+import { UPDATE_RESOURCE, CREATE_RESOURCE, GET_DEPARTMENTS } from 'queries'
 
 const CreateResourceForm = styled.form`
   margin: 1rem 0;
@@ -38,36 +40,11 @@ const SubmitButton = styled.button`
   margin-top: 1rem;
 `
 
-export const GET_ALL_DEPARTMENTS = gql`
-  {
-    departments {
-      id
-      name
-    }
-  }
-`
-
-export const CREATE_RESOURCE = gql`
-  mutation CreateResource($data: CreateResourceInput!) {
-    createResource(data: $data) {
-      id
-    }
-  }
-`
-
-const UPDATE_RESOURCE = gql`
-  mutation UpdateResource($id: String!, $data: UpdateResourceInput!) {
-    updateResource(id: $id, data: $data) {
-      id
-    }
-  }
-`
-
 type ResourceProps = {
   resource?: Resource
 }
 
-export const ResourceForm = ({ resource }: ResourceProps) => {
+export const ResourceForm: React.FC<ResourceProps> = ({ resource }) => {
   const [firstName, setFirstName] = useState(resource?.firstName || '')
   const [lastName, setLastName] = useState(resource?.lastName || '')
   const [preferredName, setPreferredName] = useState(
@@ -278,7 +255,7 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
     setHasFormChanged(false)
   }, [])
 
-  const { data, error } = useQuery(GET_ALL_DEPARTMENTS, {
+  const { data, error } = useQuery(GET_DEPARTMENTS, {
     fetchPolicy: 'network-only',
   })
 
@@ -408,5 +385,3 @@ export const ResourceForm = ({ resource }: ResourceProps) => {
     </>
   )
 }
-
-export default ResourceForm

@@ -4,7 +4,7 @@ import {
   HeaderDiv,
   HeaderNameDiv,
   SubHeaderDiv,
-} from 'components/Header'
+} from 'components/layouts/Header'
 import { Pencil } from 'components/Pencil'
 
 type ProjectHeaderProps = {

@@ -4,11 +4,11 @@ import { useQuery } from '@apollo/client'
 
 import styles from 'styles/Home.module.css'
 import { Client } from 'interfaces'
-import { CardsContainer } from 'components/CardsContainer'
+import { CardsContainer } from 'components/layouts/CardsContainer'
 import { ClientCard } from 'components/clients/ClientCard'
 import { FilterPanel } from 'components/FilterPanel'
-import { LinkButton } from 'components/Button'
-import { PageHeader } from 'components/PageHeader'
+import { LinkButton } from 'components/common/Button'
+import { PageHeader } from 'components/common/PageHeader'
 
 import { GET_ALL_CLIENTS } from 'queries'
 

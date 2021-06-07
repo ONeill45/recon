@@ -1,18 +1,20 @@
+import React from 'react'
+
 import { Resource } from 'interfaces'
 import {
   HeaderDescriptionDiv,
   HeaderDiv,
   HeaderNameDiv,
   SubHeaderDiv,
-} from './Header'
-import { LogoDiv, LogoImg } from './Logo'
-import { Pencil } from './Pencil'
+} from 'components/layouts/Header'
+import { LogoDiv, LogoImg } from 'components/Logo'
+import { Pencil } from 'components/Pencil'
 
 type ResourceHeaderProps = {
   resource: Resource
 }
 
-export const ResourceHeader = ({ resource }: ResourceHeaderProps) => {
+export const ResourceHeader: React.FC<ResourceHeaderProps> = ({ resource }) => {
   const {
     id,
     firstName,

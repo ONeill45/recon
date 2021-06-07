@@ -10,7 +10,7 @@ import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
 import { useToast } from 'utils/hooks'
 import { Client } from 'interfaces'
-import { Toast } from 'components/Toast'
+import { Toast } from 'components/common/Toast'
 import { CREATE_CLIENT, UPDATE_CLIENT } from 'queries'
 
 const SubmitButton = styled.button`

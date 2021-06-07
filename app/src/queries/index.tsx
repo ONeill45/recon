@@ -68,6 +68,14 @@ export const UPDATE_PROJECT = gql`
   }
 `
 
+export const GET_ALL_PROJECTS_NAME = gql`
+  {
+    projects {
+      projectName
+    }
+  }
+`
+
 /**
  * Client queries
  */
@@ -113,6 +121,118 @@ export const GET_ALL_CLIENTS = gql`
       logoUrl
       startDate
       endDate
+    }
+  }
+`
+
+/**
+ * Resource queries
+ */
+
+export const GET_RESOURCES = gql`
+  query GetAllResource(
+    $searchItem: String
+    $title: [String!]
+    $clients: [String!]
+    $departmentName: [String!]
+    $project: [String!]
+    $startDate: DateInput
+    $endDate: DateInput
+  ) {
+    resources(
+      searchItem: $searchItem
+      title: $title
+      startDate: $startDate
+      endDate: $endDate
+      clients: $clients
+      departmentName: $departmentName
+      project: $project
+    ) {
+      id
+      firstName
+      lastName
+      preferredName
+      title
+      startDate
+      terminationDate
+      imageUrl
+      department {
+        name
+      }
+      email
+      resourceAllocations {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
+    }
+  }
+`
+
+export const GET_RESOURCE = gql`
+  query GetResource($id: String!) {
+    resource(id: $id) {
+      id
+      firstName
+      lastName
+      preferredName
+      title
+      startDate
+      terminationDate
+      imageUrl
+      department {
+        id
+        name
+      }
+      email
+      resourceAllocations {
+        id
+        startDate
+        endDate
+        endReason
+        percentage
+        project {
+          id
+          projectName
+          projectType
+          confidence
+          priority
+        }
+      }
+    }
+  }
+`
+
+export const GET_DEPARTMENTS = gql`
+  {
+    departments {
+      id
+      name
+    }
+  }
+`
+
+export const CREATE_RESOURCE = gql`
+  mutation CreateResource($data: CreateResourceInput!) {
+    createResource(data: $data) {
+      id
+    }
+  }
+`
+
+export const UPDATE_RESOURCE = gql`
+  mutation UpdateResource($id: String!, $data: UpdateResourceInput!) {
+    updateResource(id: $id, data: $data) {
+      id
     }
   }
 `

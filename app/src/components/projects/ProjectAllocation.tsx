@@ -6,7 +6,7 @@ import {
   SectionTableHeaderRow,
   SectionTableHeaderData,
   SectionTableData,
-} from 'components/Section'
+} from 'components/common/Section'
 
 const ProjectAllocationContainer = styled.div``
 

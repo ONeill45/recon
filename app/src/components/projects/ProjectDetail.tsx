@@ -5,7 +5,7 @@ import { GET_PROJECT } from 'queries'
 import { ProjectHeader } from 'components/projects/ProjectHeader'
 import { ProjectDetailCards } from 'components/projects/ProjectDetailCards'
 
-const ProjectDetail: React.FC = () => {
+export const ProjectDetail: React.FC = () => {
   const router = useRouter()
   const id = router.query.id
 
@@ -27,5 +27,3 @@ const ProjectDetail: React.FC = () => {
     </>
   )
 }
-
-export { ProjectDetail }

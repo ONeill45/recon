@@ -1,7 +1,8 @@
 import faker from 'faker'
-import { ResourceDetails } from 'components'
-import { ResourceFactory } from '../factories'
-import { render } from '../testUtils'
+
+import { ResourceDetails } from 'components/resources/ResourceDetails'
+import { ResourceFactory } from '../../factories'
+import { render } from '../../testUtils'
 import { DateFormat, formatDate, getDuration } from 'utils'
 
 describe('<ResourceAllocation />', () => {
