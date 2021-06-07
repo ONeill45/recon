@@ -7,6 +7,7 @@ type filterCategoryProps = {
   fields: Array<{ [key: string]: any }> | undefined
   filterItems: { [key: string]: any } | undefined
   onChange?: (queryData: { [key: string]: string }) => void
+  key?: string | number | undefined
 }
 
 type filterItemDivProps = {

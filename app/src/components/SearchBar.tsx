@@ -11,9 +11,11 @@ const SearchComponentConatainer = styled.div`
   position: relative;
 `
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+let timer: NodeJS.Timeout
+
 export const SearchBar = ({ setSearchText, searchQuery }: SearchBarProps) => {
-  const [searchText, setSearchQuery] = useState<string | undefined>(searchQuery)
+  const [searchText, setSearchQuery] = useState<string>(searchQuery || '')
+
   return (
     <SearchComponentConatainer>
       <form>
@@ -22,17 +24,13 @@ export const SearchBar = ({ setSearchText, searchQuery }: SearchBarProps) => {
           placeholder="Search..."
           value={searchText}
           onChange={(e: FormEvent<HTMLInputElement>) => {
+            clearTimeout(timer)
+            timer = setTimeout(() => {
+              setSearchText && setSearchText(searchText)
+            }, 2000)
             setSearchQuery(e.currentTarget.value)
           }}
         />
-        <button
-          type="button"
-          onClick={() => {
-            setSearchText && searchText && setSearchText(searchText)
-          }}
-        >
-          Search
-        </button>
       </form>
     </SearchComponentConatainer>
   )

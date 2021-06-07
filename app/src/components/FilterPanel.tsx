@@ -73,7 +73,6 @@ type FilterPanelProps = {
   setSearchText?: (s: string) => void
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const FilterPanel = ({
   page,
   onFilter,
@@ -82,7 +81,7 @@ export const FilterPanel = ({
   const [expanded, setExpanded] = useState(false)
   const [searchText, onSetSearchText] = useState<string | undefined>(undefined)
 
-  const onHandleSearch = (text: string) => {
+  const onHandleSearch = (text: string | undefined) => {
     onSetSearchText(text)
     if (onFilter) {
       onFilter({ searchItem: text })

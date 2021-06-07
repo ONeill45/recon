@@ -1,4 +1,4 @@
 export interface SearchBarProps {
-  setSearchText?: (s: string) => void
+  setSearchText?: (s: string | undefined) => void
   searchQuery?: string
 }
