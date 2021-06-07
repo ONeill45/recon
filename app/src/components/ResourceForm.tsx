@@ -8,7 +8,7 @@ import { Resource, Department } from 'interfaces'
 import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
 import { Toast } from 'components'
-import { useToast } from 'hooks'
+import { useToast } from 'utils/hooks'
 
 const CreateResourceForm = styled.form`
   margin: 1rem 0;

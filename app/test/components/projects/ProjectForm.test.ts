@@ -11,6 +11,7 @@ applyMockUseRouter()
 
 applyMockUseMsal()
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 jest.mock('utils/hooks/msal', () => require('../../testUtils').mockMsalHook)
 
 describe('<ProjectForm />', () => {

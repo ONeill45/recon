@@ -1,5 +1,8 @@
 import { gql } from '@apollo/client'
 
+/**
+ * Project queries
+ */
 export const GET_PROJECT = gql`
   query GetProject($id: String!) {
     project(id: $id) {
@@ -49,14 +52,6 @@ export const GET_PROJECTS = gql`
   }
 `
 
-export const GET_ALL_CLIENTS_NAME = gql`
-  query clients($searchItem: String) {
-    clients(searchItem: $searchItem) {
-      clientName
-    }
-  }
-`
-
 export const CREATE_PROJECT = gql`
   mutation CreateProject($data: CreateProjectInput!) {
     createProject(data: $data) {
@@ -69,6 +64,55 @@ export const UPDATE_PROJECT = gql`
   mutation updateProject($id: String!, $data: UpdateProjectInput!) {
     updateProject(id: $id, data: $data) {
       id
+    }
+  }
+`
+
+/**
+ * Client queries
+ */
+export const CREATE_CLIENT = gql`
+  mutation CreateClient($data: CreateClientInput!) {
+    createClient(data: $data) {
+      id
+    }
+  }
+`
+export const UPDATE_CLIENT = gql`
+  mutation UpdateClient($id: String!, $data: UpdateClientInput!) {
+    updateClient(id: $id, data: $data) {
+      id
+    }
+  }
+`
+export const GET_ALL_CLIENTS_NAME = gql`
+  query clients($searchItem: String) {
+    clients(searchItem: $searchItem) {
+      clientName
+    }
+  }
+`
+export const GET_CLIENT_FROM_ID = gql`
+  query GetClient($id: String!) {
+    client(id: $id) {
+      id
+      clientName
+      description
+      logoUrl
+      startDate
+      endDate
+    }
+  }
+`
+export const GET_ALL_CLIENTS = gql`
+  query clients($searchItem: String) {
+    clients(searchItem: $searchItem) {
+      id
+      clientName
+      description
+      logoUrl
+      startDate
+      endDate
     }
   }
 `

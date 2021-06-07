@@ -1,18 +1,18 @@
 import { waitFor } from '@testing-library/react'
-import { render } from '../testUtils'
 import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
-import { ClientForm, CREATE_CLIENT, UPDATE_CLIENT } from 'components'
-import { applyMockUseMsal, applyMockUseRouter } from '../testUtils'
-import { ClientFactory } from '../factories'
+import { ClientForm } from 'components/clients/ClientForm'
+import { CREATE_CLIENT, UPDATE_CLIENT } from 'queries'
+import { render, applyMockUseMsal, applyMockUseRouter } from '../../testUtils'
+import { ClientFactory } from '../../factories'
 
 applyMockUseRouter()
 
 applyMockUseMsal()
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-jest.mock('utils/hooks/msal', () => require('../testUtils').mockMsalHook)
+jest.mock('utils/hooks/msal', () => require('../../testUtils').mockMsalHook)
 
 describe('<ClientForm />', () => {
   it('should create a new client with user provided info', async () => {

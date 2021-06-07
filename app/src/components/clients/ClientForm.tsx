@@ -1,40 +1,28 @@
-import { useRouter } from 'next/router'
 import React, { FormEvent, useState, useEffect } from 'react'
-import { gql, useMutation } from '@apollo/client'
+import { useRouter } from 'next/router'
+import { useMutation } from '@apollo/client'
+
+import { FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
+import { useToast } from 'utils/hooks'
 import { Client } from 'interfaces'
-import { Toast } from 'components'
-import { useToast } from 'hooks'
-import { FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react'
+import { Toast } from 'components/Toast'
+import { CREATE_CLIENT, UPDATE_CLIENT } from 'queries'
 
 const SubmitButton = styled.button`
   display: block;
   margin-top: 1rem;
 `
 
-export const CREATE_CLIENT = gql`
-  mutation CreateClient($data: CreateClientInput!) {
-    createClient(data: $data) {
-      id
-    }
-  }
-`
-export const UPDATE_CLIENT = gql`
-  mutation UpdateClient($id: String!, $data: UpdateClientInput!) {
-    updateClient(id: $id, data: $data) {
-      id
-    }
-  }
-`
 type ClientProps = {
   client?: Client
 }
 
-export const ClientForm = ({ client }: ClientProps) => {
+export const ClientForm: React.FC<ClientProps> = ({ client }) => {
   const [clientName, setClientName] = useState(client?.clientName || '')
   const [description, setDescription] = useState(client?.description || '')
   const [logoUrl, setLogoUrl] = useState(client?.logoUrl || '')

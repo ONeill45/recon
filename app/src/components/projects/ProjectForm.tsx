@@ -9,7 +9,7 @@ import { useMsAccount } from 'utils/hooks'
 import { Client, ProjectType, Project } from 'interfaces'
 import { Priority } from 'interfaces/Enum'
 import { Toast } from 'components'
-import { useToast } from 'hooks'
+import { useToast } from 'utils/hooks'
 import { CREATE_PROJECT, UPDATE_PROJECT } from 'queries'
 
 const ProjectTypeValues = Object.entries(ProjectType).map((a) => a[1])

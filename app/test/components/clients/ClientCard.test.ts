@@ -1,7 +1,7 @@
 import { getRelativeTime } from 'utils'
-import { ClientCard } from 'components'
-import { ClientFactory } from '../factories'
-import { render } from '../testUtils'
+import { ClientCard } from 'components/clients/ClientCard'
+import { ClientFactory } from '../../factories'
+import { render } from '../../testUtils'
 
 describe('<ClientCard />', () => {
   it('should initialize client details', async () => {
