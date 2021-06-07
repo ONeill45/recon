@@ -6,6 +6,7 @@ import styles from '../../styles/Home.module.css'
 
 export const GET_PROJECTS = gql`
   query GetAllProjects(
+    $searchItem: String
     $projectTypes: [String!]
     $clientNames: [String!]
     $priorities: [String!]
@@ -14,6 +15,7 @@ export const GET_PROJECTS = gql`
     $endDate: DateInput
   ) {
     projects(
+      searchItem: $searchItem
       projectTypes: $projectTypes
       clientNames: $clientNames
       priorities: $priorities
@@ -44,6 +46,8 @@ export const GET_ALL_CLIENTS_NAME = gql`
 `
 
 const Projects = () => {
+  const page = 'Projects'
+  const [searchText, setSearchText] = useState('')
   const [filter, setFilter] = useState({})
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
@@ -97,7 +101,9 @@ const Projects = () => {
     getProjectTypes()
   }, [])
 
-  const page = 'Projects'
+  useEffect(() => {
+    handleOnFilter({ searchItem: searchText })
+  }, [searchText])
 
   useEffect(() => {
     setData({})
@@ -109,15 +115,24 @@ const Projects = () => {
   if (error) return <p>Error: {error.message}</p>
 
   const handleOnFilter = (queryFilter: any) => {
-    setFilter(queryFilter)
+    if (!queryFilter.hasOwnProperty('searchItem')) {
+      queryFilter['searchItem'] = searchText
+    }
+    setFilter((prev: any) => {
+      if (prev.searchItem !== queryFilter.searchItem) {
+        return { ...prev, ...queryFilter }
+      } else {
+        return { ...queryFilter }
+      }
+    })
   }
-
   const { projects } = data
 
   return (
     <>
       <div className={styles.container}>
         <FilterPanel
+          setSearchText={setSearchText}
           page={page}
           onFilter={handleOnFilter}
           filterItems={{

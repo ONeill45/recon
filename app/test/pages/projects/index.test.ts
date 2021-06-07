@@ -1,5 +1,3 @@
-import { gql } from '@apollo/client'
-
 import Projects, { GET_PROJECTS } from 'pages/projects'
 import { ProjectFactory } from '../../factories'
 import { render } from '../../testUtils/render'
@@ -10,6 +8,9 @@ const mocks = [
   {
     request: {
       query: GET_PROJECTS,
+      variables: {
+        searchItem: '',
+      },
     },
     result: {
       data: {
@@ -22,7 +23,10 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: GET_PROJECTS
+      query: GET_PROJECTS,
+      variables: {
+        searchItem: '',
+      },
     },
     error: new Error('An error occurred'),
   },
