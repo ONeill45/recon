@@ -1,5 +1,5 @@
 import React from 'react'
-import { NavBar, Footer } from '../'
+import { NavBar } from '../'
 
 export const Layout: React.FC = ({ children }) => {
   return (
