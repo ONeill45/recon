@@ -1,8 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { gql, useLazyQuery } from '@apollo/client'
-import { ProjectCard, PlusCircle, Cards, FilterPanel } from 'components'
+import {
+  ProjectCard,
+  PlusCircle,
+  Cards,
+  FilterPanel,
+  ResourceAllocationProjectView,
+} from 'components'
 import { Project, Priority, ProjectType } from 'interfaces'
 import styles from '../../styles/Home.module.css'
+import styled from '@emotion/styled'
+
+const PageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+`
 
 export const GET_PROJECTS = gql`
   query GetAllProjects(

@@ -24,6 +24,7 @@ export const GET_PROJECT = gql`
           firstName
           lastName
           preferredName
+          title
         }
       }
     }
