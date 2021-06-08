@@ -33,7 +33,7 @@ const Container = styled.div<ContainerProps>`
 const RAProjectViewContainer = styled.div`
   position: relative;
   display: grid;
-  grid-template-columns: 20% repeat(7, 2fr);
+  grid-template-columns: 15% repeat(7, 2fr);
   grid-template-rows: auto;
 `
 
@@ -41,8 +41,8 @@ const BackgroundGrid = styled.div`
   display: flex;
   position: absolute;
   justify-content: flex-start;
-  width: 80%;
-  margin-left: 20%;
+  width: 85%;
+  margin-left: 15%;
   margin-top: 4.5rem;
   height: calc(100% - 4.5rem);
   z-index: -1;
