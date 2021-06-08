@@ -23,7 +23,7 @@ const UtilizationBackgroundDiv = styled.div`
 `
 
 type utilizationInnerDivProps = {
-  percentage: Number
+  percentage: number
 }
 
 const generateUtilizationCSS = ({ percentage }: utilizationInnerDivProps) => {
@@ -62,9 +62,9 @@ type CurrentResourceAllocationDetailProps = {
   currentAllocation: ResourceAllocation[]
 }
 
-export const CurrentResourceAllocationDetail = ({
+export const CurrentResourceAllocationDetail: React.FC<CurrentResourceAllocationDetailProps> = ({
   currentAllocation,
-}: CurrentResourceAllocationDetailProps) => {
+}) => {
   return (
     <>
       <OuterDiv>

@@ -4,7 +4,7 @@ import { Resource } from 'interfaces'
 import { getRelativeTime } from 'utils'
 import { Card, CardDescriptionDiv, CardNameDiv } from 'components/common/Card'
 import { LogoDiv, LogoImg } from 'components/Logo'
-import { CurrentResourceAllocationDetail } from 'components'
+import { CurrentResourceAllocationDetail } from 'components/allocations/CurrentResourceAllocationDetail'
 
 type ResourceCardProps = {
   resource: Resource
