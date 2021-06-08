@@ -1,5 +1,4 @@
 export * from './Login'
-export * from './CurrentResourceAllocationDetail'
 export * from './FilterCategory'
 export * from './FilterPanel'
 export * from './Histogram'
