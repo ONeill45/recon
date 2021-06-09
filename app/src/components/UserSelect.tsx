@@ -4,7 +4,7 @@ import styled from '@emotion/styled'
 import { useRouter } from 'next/router'
 
 import { useAccessToken, useMsAccount } from 'utils/hooks'
-import { Button } from 'components'
+import { Button } from 'components/common/Button'
 import { callMsGraph, MsGraphEndpoints } from 'utils/functions'
 import {
   Menu,
