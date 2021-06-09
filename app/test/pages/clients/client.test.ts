@@ -1,6 +1,7 @@
-import { Client, GET_CLIENT_FROM_ID } from 'pages/clients/client'
+import { Client } from 'pages/clients/client'
 import { ClientFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
+import { GET_CLIENT_FROM_ID } from 'queries'
 
 const client = ClientFactory().build()
 

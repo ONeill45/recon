@@ -6,7 +6,8 @@ import {
   UnauthenticatedTemplate,
 } from '@azure/msal-react'
 
-import { Login, Layout } from 'components'
+import { Login } from 'components/Login'
+import { Layout } from 'components/layouts/Layout'
 import { AppProviders } from '../utils/context'
 import React from 'react'
 import { chakraTheme } from '../styles/theme'
