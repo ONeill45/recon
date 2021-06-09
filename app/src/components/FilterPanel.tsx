@@ -12,7 +12,7 @@ import {
   Stack,
 } from '@chakra-ui/react'
 import { FaFilter } from 'react-icons/fa'
-import { Button } from './Button'
+import { Button } from 'components/common/Button'
 
 const filterCategoryProperties = [
   {

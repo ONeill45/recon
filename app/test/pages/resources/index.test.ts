@@ -1,8 +1,7 @@
-import userEvent from '@testing-library/user-event'
-
-import Resources, { GET_RESOURCES } from 'pages/resources'
+import Resources from 'pages/resources'
 import { ResourceFactory } from '../../factories'
-import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
+import { applyMockUseRouter, render } from '../../testUtils'
+import { GET_RESOURCES } from 'queries'
 
 applyMockUseRouter()
 

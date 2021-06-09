@@ -1,6 +1,7 @@
-import Clients, { GET_ALL_CLIENTS } from 'pages/clients/index'
+import Clients from 'pages/clients/index'
 import { ClientFactory } from '../../factories'
 import { render } from '../../testUtils/render'
+import { GET_ALL_CLIENTS } from 'queries'
 
 const clients = ClientFactory().buildList(5)
 

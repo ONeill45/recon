@@ -1,6 +1,7 @@
-import Resource, { GET_RESOURCE } from 'pages/resources/[id]'
+import Resource from 'pages/resources/[id]'
 import { ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
+import { GET_RESOURCE } from 'queries'
 
 const resource = ResourceFactory().build()
 

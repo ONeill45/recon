@@ -1,6 +1,5 @@
-import { gql } from '@apollo/client'
-
-import Projects, { GET_PROJECTS } from 'pages/projects'
+import Projects from 'pages/projects'
+import { GET_PROJECTS } from 'queries'
 import { ProjectFactory } from '../../factories'
 import { render } from '../../testUtils/render'
 

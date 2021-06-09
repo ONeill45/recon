@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import styled from '@emotion/styled'
 import { css } from '@emotion/react'
-import { Button } from './'
 import { GiHamburgerMenu } from 'react-icons/gi'
 import { AuthenticatedTemplate } from '@azure/msal-react'
 import {
@@ -20,7 +19,9 @@ import {
 import { FaBinoculars } from 'react-icons/fa'
 
 import { DisplayType } from 'interfaces'
-import { UserSelect, NavLinks } from 'components'
+import { UserSelect } from 'components/UserSelect'
+import { NavLinks } from 'components/NavLinks'
+import { Button } from 'components/common/Button'
 import { useRouter } from 'next/router'
 
 type displayProps = {
