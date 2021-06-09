@@ -1,7 +1,9 @@
 import React, { useEffect, useState, ChangeEvent } from 'react'
 import { RiArrowLeftSLine, RiArrowRightSLine } from 'react-icons/ri'
 import { HiChevronDoubleLeft, HiChevronDoubleRight } from 'react-icons/hi'
+import { EmotionComponentProps } from 'styles/theme'
 import styled from '@emotion/styled'
+import { Select } from '@chakra-ui/select'
 
 type paginationProps = {
   total: number
@@ -12,7 +14,7 @@ type paginationProps = {
 
 type pageNumberProps = {
   active: boolean
-}
+} & EmotionComponentProps
 
 export const PaginationContainer = styled.div`
   position: relative;
@@ -20,8 +22,6 @@ export const PaginationContainer = styled.div`
   justify-content: center;
 
   svg {
-    margin-top: 0.65rem;
-
     &:hover {
       cursor: pointer;
     }
@@ -49,7 +49,8 @@ export const Arrow = styled.div`
 `
 
 export const PageNumber = styled.div<pageNumberProps>`
-  border: ${(props) => (props.active ? '1px solid black' : '')};
+  border: ${(props) => (props.active ? `1px solid` : '')};
+  border-color: ${({ theme }) => theme.text};
   margin-top: 0.7rem;
   font-size: 1rem;
   text-align: center;
@@ -60,11 +61,6 @@ export const PageNumber = styled.div<pageNumberProps>`
   &:hover {
     cursor: pointer;
   }
-`
-
-const ItemsPerPageSelect = styled.select`
-  height: 1.5rem;
-  margin: 0.65rem 0.5rem 0 0.5rem;
 `
 
 export const Pagination = ({
@@ -148,7 +144,11 @@ export const Pagination = ({
       >
         <HiChevronDoubleRight size={20} />
       </ArrowButton>
-      <ItemsPerPageSelect
+      <Select
+        w="auto"
+        size="sm"
+        m={[2]}
+        iconSize={'16'}
         value={itemsPerPage}
         aria-label="items per page"
         onChange={(event: ChangeEvent<HTMLSelectElement>) =>
@@ -162,7 +162,7 @@ export const Pagination = ({
             </option>
           )
         })}
-      </ItemsPerPageSelect>
+      </Select>
     </PaginationContainer>
   )
 }
