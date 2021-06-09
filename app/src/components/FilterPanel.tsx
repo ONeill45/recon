@@ -49,8 +49,12 @@ type FilterPanelProps = {
   setSearchText?: (s: string) => void
 }
 
-export const FilterPanel = (props: FilterPanelProps) => {
-  const { page, onFilter, filterItems, setSearchText } = props
+export const FilterPanel: React.FC<FilterPanelProps> = ({
+  page,
+  onFilter,
+  filterItems,
+  setSearchText,
+}) => {
   const buttonRef = React.useRef(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
