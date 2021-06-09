@@ -77,9 +77,10 @@ describe('<ResourceCard />', () => {
     const { getByText } = await render(ResourceCard, { resource })
 
     userEvent.click(getByText(`${email}`))
-    expect(mockUseRouter.push).toHaveBeenCalledWith({
-      pathname: '/resources/[id]',
-      query: { id },
-    })
+    expect(mockUseRouter.prefetch).toHaveBeenCalledWith(
+      `/resources/${id}`,
+      expect.anything(),
+      expect.anything(),
+    )
   })
 })

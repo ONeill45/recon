@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import styled from '@emotion/styled'
 import { gql, useLazyQuery } from '@apollo/client'
-import { Cards, FilterPanel, PlusCircle, ResourceCard } from 'components'
+
+import {
+  CardsContainer,
+  FilterPanel,
+  LinkButton,
+  ResourceCard,
+} from 'components'
 import styles from '../../styles/Home.module.css'
 import { Resource } from 'interfaces'
 import { Pagination } from 'components'
+import { PageHeader } from '../../components/PageHeader'
+import { FaPlus } from 'react-icons/fa'
 
 export const PageContainer = styled.div`
   display: flex;
@@ -205,20 +213,24 @@ const Resources = () => {
   } else if (data) {
     return (
       <PageContainer>
-        <div className={styles.container}>
+        <PageHeader headerText="Resources">
+          <LinkButton href="/resources/resource" rightIcon={<FaPlus />}>
+            Create
+          </LinkButton>
           <FilterPanel
             setSearchText={setSearchText}
             page={page}
             onFilter={handleOnFilter}
             filterItems={{ clients, projects, departments, titles }}
           />
-          <Cards>
+        </PageHeader>
+        <div className={styles.container}>
+          <CardsContainer>
             {resources &&
               resources.map((resource: Resource) => {
                 return <ResourceCard resource={resource} key={resource.id} />
               })}
-          </Cards>
-          <PlusCircle size={'50'} route={'/resources/resource'} />
+          </CardsContainer>
         </div>
         <Pagination
           filterClicked={isFilterClicked}

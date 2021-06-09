@@ -133,7 +133,7 @@ export const FilterCategory = ({
         setQData({ ...qDataCopy })
       }
     } else {
-      let qDataCopy = { ...qData }
+      const qDataCopy = { ...qData }
       const filteredCopy = qDataCopy[field].filter((item: any) => item !== name)
       if (filteredCopy.length > 0) {
         qDataCopy[field] = [...filteredCopy]
@@ -244,7 +244,7 @@ export const FilterCategory = ({
 
   useEffect(() => {
     const qDataCopy = { ...qData }
-    let qDataCopyStartDate = { ...qDataCopy['startDate'] }
+    const qDataCopyStartDate = { ...qDataCopy['startDate'] }
     if (qDataCopyStartDate.date) {
       qDataCopy['startDate'] = {
         ...qDataCopyStartDate,
@@ -256,7 +256,7 @@ export const FilterCategory = ({
 
   useEffect(() => {
     const qDataCopy = { ...qData }
-    let qDataCopyEndDate = { ...qDataCopy['endDate'] }
+    const qDataCopyEndDate = { ...qDataCopy['endDate'] }
     if (qDataCopyEndDate.date) {
       qDataCopy['endDate'] = {
         ...qDataCopyEndDate,

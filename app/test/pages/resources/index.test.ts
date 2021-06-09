@@ -54,8 +54,8 @@ describe('Resource page test', () => {
   //   expect(getByText('Loading...')).toBeVisible()
   // })
   it('should render resource page and display filter sidebar', async () => {
-    const { getByText } = await render(Resources, {}, mocks)
-    expect(getByText('Filters')).toBeVisible()
+    const { getByTestId } = await render(Resources, {}, mocks)
+    expect(getByTestId('FilterPanelButton')).toBeVisible()
   })
   it('should fetch all resources and display their cards', async () => {
     const { getByText } = await render(Resources, {}, mocks)
@@ -70,14 +70,5 @@ describe('Resource page test', () => {
     const { getByText } = await render(Resources, {}, errorMocks)
 
     expect(getByText('Error: An error occurred')).toBeVisible()
-  })
-  it('should route to appropriate resource page when its card is clicked', async () => {
-    const { getByText } = await render(Resources, {}, mocks)
-
-    userEvent.click(getByText(`${resources[0].email}`))
-    expect(mockUseRouter.push).toHaveBeenCalledWith({
-      pathname: '/resources/[id]',
-      query: { id: resources[0].id },
-    })
   })
 })

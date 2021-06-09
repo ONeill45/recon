@@ -1,37 +1,18 @@
-import styled from '@emotion/styled'
-import { useMemo, useState } from 'react'
-import { css } from '@emotion/react'
-import { FiFilter } from 'react-icons/fi'
+import React, { useMemo } from 'react'
 import { FilterCategory, SearchBar } from './'
-
-type displayProps = {
-  displayed: boolean
-}
-
-export const SideFilterPanelDiv = styled.div`
-  width: 20px;
-  background-color: orange;
-  border-right: 1px solid black;
-  align-items: center;
-`
-const SideFilterPanelContentDiv = styled.div`
-  text-align: center;
-`
-
-const FiltersTextDiv = styled.div`
-  transform: rotate(90deg);
-`
-
-const isDisplayed = ({ displayed }: displayProps) => css`
-  display: ${displayed ? 'flex' : 'none'};
-`
-
-export const ExpandedFilterPanelDiv = styled.div<displayProps>`
-  ${isDisplayed};
-  width: 400px;
-  background-color: orange;
-  flex-direction: column;
-`
+import {
+  Portal,
+  Drawer,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerHeader,
+  DrawerBody,
+  useDisclosure,
+  Stack,
+} from '@chakra-ui/react'
+import { FaFilter } from 'react-icons/fa'
+import { Button } from './Button'
 
 const filterCategoryProperties = [
   {
@@ -62,15 +43,17 @@ const filterCategoryProperties = [
 ]
 
 type FilterPanelProps = {
-  page?: String | null | undefined
+  page?: string | null | undefined
   filterItems?: { [key: string]: any } | undefined
   onFilter: (queryData: { [key: string]: any }, filterClicked: boolean) => void
   setSearchText?: (s: string) => void
 }
 
 export const FilterPanel = (props: FilterPanelProps) => {
+  const buttonRef = React.useRef(null)
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   const { page, onFilter, filterItems, setSearchText } = props
-  const [expanded, setExpanded] = useState(false)
 
   const filterCategories = useMemo(() => {
     if (page) {
@@ -81,31 +64,49 @@ export const FilterPanel = (props: FilterPanelProps) => {
 
   return (
     <>
-      <SideFilterPanelDiv
-        data-testid="SideFilterPanel"
-        onClick={() => setExpanded(!expanded)}
+      <Button
+        rightIcon={<FaFilter />}
+        colorScheme="primary"
+        onClick={onOpen}
+        ref={buttonRef}
+        data-testid="FilterPanelButton"
       >
-        <SideFilterPanelContentDiv>
-          <FiFilter />
-          <FiltersTextDiv>Filters</FiltersTextDiv>
-        </SideFilterPanelContentDiv>
-      </SideFilterPanelDiv>
-      <ExpandedFilterPanelDiv
-        data-testid="ExpandedFilterPanel"
-        displayed={expanded}
-      >
-        <SearchBar setSearchText={setSearchText} />
-        {filterCategories.map((property: any) => (
-          <div key={property.title}>
-            <FilterCategory
-              title={property.title}
-              fields={property.children}
-              filterItems={filterItems}
-              onChange={onFilter}
-            />
-          </div>
-        ))}
-      </ExpandedFilterPanelDiv>
+        Filter
+      </Button>
+      <Portal>
+        <Drawer
+          isOpen={isOpen}
+          placement="right"
+          onClose={onClose}
+          finalFocusRef={buttonRef}
+        >
+          <DrawerOverlay data-testid="FilterPanelOverlay" />
+          <DrawerContent data-testid="FilterPanelDrawer">
+            <DrawerCloseButton />
+            <DrawerHeader>
+              <Stack spacing="4" direction="row" alignItems="center">
+                <FaFilter />
+                <span>Filters</span>
+              </Stack>
+            </DrawerHeader>
+
+            <DrawerBody>
+              <SearchBar />
+              <SearchBar setSearchText={setSearchText} />
+              {filterCategories.map((property: any) => (
+                <div key={property.title}>
+                  <FilterCategory
+                    title={property.title}
+                    fields={property.children}
+                    filterItems={filterItems}
+                    onChange={onFilter}
+                  />
+                </div>
+              ))}
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+      </Portal>
     </>
   )
 }

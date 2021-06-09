@@ -50,7 +50,7 @@ export const Arrow = styled.div`
 
 export const PageNumber = styled.div<pageNumberProps>`
   border: ${(props) => (props.active ? '1px solid black' : '')};
-  margin-top: 0.6rem;
+  margin-top: 0.7rem;
   font-size: 1rem;
   text-align: center;
   width: 1.5rem;
