@@ -1,5 +1,6 @@
 import { ArgsType, Field } from 'type-graphql'
 import { DateInput } from '../inputs/Date'
+import { PaginationInput } from '../inputs/Pagination'
 
 @ArgsType()
 export class GetResourcesWithFilter {
@@ -23,4 +24,7 @@ export class GetResourcesWithFilter {
 
   @Field({ nullable: true })
   endDate: DateInput
+
+  @Field({ nullable: true })
+  pagination: PaginationInput
 }

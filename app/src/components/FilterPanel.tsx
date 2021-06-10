@@ -45,7 +45,7 @@ const filterCategoryProperties = [
 type FilterPanelProps = {
   page?: string | null | undefined
   filterItems?: { [key: string]: any } | undefined
-  onFilter: (queryData: { [key: string]: any }) => void
+  onFilter: (queryData: { [key: string]: any }, filterClicked: boolean) => void
   setSearchText?: (s: string) => void
 }
 
@@ -53,7 +53,7 @@ export const FilterPanel = (props: FilterPanelProps) => {
   const buttonRef = React.useRef(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { page, onFilter, filterItems } = props
+  const { page, onFilter, filterItems, setSearchText } = props
 
   const filterCategories = useMemo(() => {
     if (page) {
@@ -92,7 +92,7 @@ export const FilterPanel = (props: FilterPanelProps) => {
 
             <DrawerBody>
               <SearchBar />
-              {/* <SearchBar setSearchText={setSearchText} /> */}
+              <SearchBar setSearchText={setSearchText} />
               {filterCategories.map((property: any) => (
                 <div key={property.title}>
                   <FilterCategory
