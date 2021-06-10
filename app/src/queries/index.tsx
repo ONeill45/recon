@@ -140,6 +140,7 @@ export const GET_RESOURCES = gql`
     $project: [String!]
     $startDate: DateInput
     $endDate: DateInput
+    $pagination: PaginationInput
   ) {
     resources(
       searchItem: $searchItem
@@ -149,33 +150,37 @@ export const GET_RESOURCES = gql`
       clients: $clients
       departmentName: $departmentName
       project: $project
+      pagination: $pagination
     ) {
-      id
-      firstName
-      lastName
-      preferredName
-      title
-      startDate
-      terminationDate
-      imageUrl
-      department {
-        name
-      }
-      email
-      resourceAllocations {
+      resources {
         id
+        firstName
+        lastName
+        preferredName
+        title
         startDate
-        endDate
-        endReason
-        percentage
-        project {
+        terminationDate
+        imageUrl
+        department {
+          name
+        }
+        email
+        resourceAllocations {
           id
-          projectName
-          projectType
-          confidence
-          priority
+          startDate
+          endDate
+          endReason
+          percentage
+          project {
+            id
+            projectName
+            projectType
+            confidence
+            priority
+          }
         }
       }
+      count
     }
   }
 `

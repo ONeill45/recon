@@ -45,7 +45,7 @@ const filterCategoryProperties = [
 type FilterPanelProps = {
   page?: string | null | undefined
   filterItems?: { [key: string]: any } | undefined
-  onFilter: (queryData: { [key: string]: any }) => void
+  onFilter: (queryData: { [key: string]: any }, filterClicked: boolean) => void
   setSearchText?: (s: string) => void
 }
 

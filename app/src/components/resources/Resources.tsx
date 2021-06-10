@@ -4,11 +4,14 @@ import { FaPlus } from 'react-icons/fa'
 
 import styles from 'styles/Home.module.css'
 import { Resource } from 'interfaces'
+import { PageContainer } from 'components/common/PageContainer'
 import { PageHeader } from 'components/common/PageHeader'
 import { CardsContainer } from 'components/layouts/CardsContainer'
 import { FilterPanel } from 'components/FilterPanel'
 import { LinkButton } from 'components/common/Button'
 import { ResourceCard } from 'components/resources/ResourceCard'
+import { Pagination } from '../Pagination'
+
 import {
   GET_RESOURCES,
   GET_ALL_CLIENTS_NAME,
@@ -19,7 +22,12 @@ import {
 export const Resources: React.FC = () => {
   const page = 'Resources'
   const [searchText, setSearchText] = useState('')
+  const [paginationInputs, setPaginationInputs] = useState<{
+    page: number
+    itemsPerPage: number
+  }>({ page: 1, itemsPerPage: 10 })
   const [filter, setFilter] = useState({})
+  const [isFilterClicked, setIsFilterClicked] = useState<boolean>(false)
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
   )
@@ -33,7 +41,8 @@ export const Resources: React.FC = () => {
   const [getAllResources, { loading }] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: Array<{ [key: string]: any }>) => {
-      setData(res)
+      const resValues = res && Object.values(res)[0]
+      setData(resValues)
     },
     onError: (err: any) => {
       setError(err)
@@ -76,9 +85,10 @@ export const Resources: React.FC = () => {
   const [getResourceTitles] = useLazyQuery(GET_RESOURCES, {
     fetchPolicy: 'network-only',
     onCompleted: (res: { [key: string]: any }) => {
+      const resValue = res && Object.values(res)[0]
       const _titles =
-        res?.resources &&
-        res.resources.map((item: { title: string }) => item.title)
+        resValue?.resources &&
+        resValue.resources.map((item: { title: string }) => item.title)
       setTitles(Array.from(new Set(_titles)))
     },
     onError: () => {},
@@ -92,8 +102,11 @@ export const Resources: React.FC = () => {
   }, [])
 
   useEffect(() => {
-    handleOnFilter({ searchItem: searchText })
-  }, [searchText])
+    handleOnFilter(
+      { searchItem: searchText, pagination: paginationInputs },
+      false,
+    )
+  }, [searchText, paginationInputs])
 
   useEffect(() => {
     setData({})
@@ -101,26 +114,26 @@ export const Resources: React.FC = () => {
     getAllResources({ variables: filter })
   }, [filter, getAllResources])
 
-  const handleOnFilter = (queryFilter: any) => {
+  const handleOnFilter = (queryFilter: any, filterClicked: boolean) => {
+    setIsFilterClicked(filterClicked)
     if (!queryFilter.hasOwnProperty('searchItem')) {
       queryFilter['searchItem'] = searchText
     }
+    if (!queryFilter.hasOwnProperty('pagination')) {
+      queryFilter['pagination'] = paginationInputs
+    }
     setFilter((prev: any) => {
-      if (prev.searchItem !== queryFilter.searchItem) {
-        return { ...prev, ...queryFilter }
-      } else {
-        return { ...queryFilter }
-      }
+      return filterClicked ? { ...queryFilter } : { ...prev, ...queryFilter }
     })
   }
 
-  const { resources } = data
+  const { resources, count } = data
 
   if (error) {
     return <p>Error: {error.message}</p>
   } else if (data) {
     return (
-      <>
+      <PageContainer>
         <PageHeader headerText="Resources">
           <LinkButton href="/resources/resource" rightIcon={<FaPlus />}>
             Create
@@ -140,7 +153,13 @@ export const Resources: React.FC = () => {
               })}
           </CardsContainer>
         </div>
-      </>
+        <Pagination
+          filterClicked={isFilterClicked}
+          searchText={searchText}
+          setPaginationInputs={setPaginationInputs}
+          total={count}
+        />
+      </PageContainer>
     )
   } else if (loading) {
     return <p>Loading...</p>
