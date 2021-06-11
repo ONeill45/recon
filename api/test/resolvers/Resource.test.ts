@@ -66,14 +66,14 @@ describe('ResourceResolver', () => {
       const { id, firstName, lastName, title, startDate, terminationDate } =
         resource
 
-      const depres = await Department.insert(department)
-      const resres = await Resource.insert(resource)
+      await Department.insert(department)
+      await Resource.insert(resource)
 
       const response = await gqlCall({
         source: query,
       })
 
-      console.log({ response, resource, depres, resres })
+      console.log('123', response.data.resources)
 
       expect(response).toMatchObject({
         data: {
