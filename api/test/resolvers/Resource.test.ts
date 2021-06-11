@@ -37,12 +37,14 @@ describe('ResourceResolver', () => {
   describe('resources()', () => {
     const query = `{
       resources {
-        id
-        firstName
-        lastName
-        title
-        startDate
-        terminationDate
+        resources {
+          id
+          firstName
+          lastName
+          title
+          startDate
+          terminationDate
+        }
       }
     }`
     it('should return an empty array if no resources exist', async () => {
@@ -52,7 +54,9 @@ describe('ResourceResolver', () => {
 
       expect(response).toEqual({
         data: {
-          resources: [],
+          resources: {
+            resources: [],
+          },
         },
       })
     })
@@ -61,11 +65,15 @@ describe('ResourceResolver', () => {
       const resource = ResourceFactory().build({ department })
       const { id, firstName, lastName, title, startDate, terminationDate } =
         resource
-      await Department.insert(department)
-      await Resource.insert(resource)
+
+      const depres = await Department.insert(department)
+      const resres = await Resource.insert(resource)
+
       const response = await gqlCall({
         source: query,
       })
+
+      console.log({ response, resource, depres, resres })
 
       expect(response).toMatchObject({
         data: {
@@ -98,7 +106,9 @@ describe('ResourceResolver', () => {
 
       expect(response).toMatchObject({
         data: {
-          resources: [],
+          resources: {
+            resources: [],
+          },
         },
       })
     })
