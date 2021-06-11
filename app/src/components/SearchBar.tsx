@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import { FormEvent } from 'react'
 import { SearchBarProps } from 'interfaces'
+import { Input } from '@chakra-ui/input'
 
 const SearchInput = styled.input`
   width: 100%;
@@ -23,7 +24,7 @@ export const SearchBar = ({ setSearchText }: SearchBarProps) => {
   return (
     <SearchComponentConatainer>
       <form>
-        <SearchInput
+        <Input
           type="text"
           placeholder="Search..."
           onChange={(e: FormEvent<HTMLInputElement>) =>

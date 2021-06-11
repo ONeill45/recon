@@ -1,6 +1,20 @@
+import {
+  AccordionPanel,
+  AccordionButton,
+  Box,
+  AccordionIcon,
+  Checkbox,
+  Stack,
+  Input,
+  FormControl,
+  FormLabel,
+} from '@chakra-ui/react'
 import styled from '@emotion/styled'
 import React, { useState, useEffect } from 'react'
 import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
+import { Button } from './Button'
+import DatePicker from 'react-datepicker'
+import format from 'date-fns/format'
 
 type filterCategoryProps = {
   title: string
@@ -356,9 +370,8 @@ export const FilterCategory = ({
             </FilterItemDiv>
             {items &&
               items.map((name: string, i: number) => (
-                <FilterCheckItemDiv key={i}>
-                  <FilterItemInput
-                    type="checkbox"
+                <Stack direction="row" spacing="8" alignItems="center" key={i}>
+                  <Checkbox
                     id={`${item.type}-${item.field}-${name}`}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       handleOnChangeCheckBox({
@@ -376,7 +389,7 @@ export const FilterCategory = ({
                   >
                     {name}
                   </FilterItemLabel>
-                </FilterCheckItemDiv>
+                </Stack>
               ))}
           </>
         )
@@ -384,45 +397,71 @@ export const FilterCategory = ({
       return null
     }
     return (
-      <FilterItemDiv isDate={item.type === 'date'}>
-        <FilterItemLabel htmlFor={`${item.type}-${item.field}`}>
-          {item.label}
-        </FilterItemLabel>
-        <FilterDateDescription isDate={item.type === 'date'}>
-          Check box below to filter before or after the selected date
-          <FilterCheckItemDiv>
-            <FilterItemInput
-              type="checkbox"
-              id={`${item.field}-before`}
-              checked={
-                item.field === 'startDate'
-                  ? dateFilters.startDate.before
-                  : dateFilters.endDate.before
+      <>
+        <FormControl id={item.field}>
+          <FormLabel>
+            {item.label}
+            {item.type === 'date' && (
+              <Box marginTop="4">
+                Check box below to filter before or after the selected date
+                <Stack spacing="4">
+                  <Checkbox
+                    id={`${item.field}-before`}
+                    isChecked={
+                      item.field === 'startDate'
+                        ? dateFilters.startDate.before
+                        : dateFilters.endDate.before
+                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      beforeAfterChange(e.target?.checked, item.field, 'before')
+                    }
+                  >
+                    before
+                  </Checkbox>
+                  <Checkbox
+                    id={`${item.field}-after`}
+                    isChecked={
+                      item.field === 'startDate'
+                        ? dateFilters.startDate.after
+                        : dateFilters.endDate.after
+                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      beforeAfterChange(e.target?.checked, item.field, 'after')
+                    }
+                  >
+                    after
+                  </Checkbox>
+                </Stack>
+              </Box>
+            )}
+          </FormLabel>
+
+          {item.type === 'date' ? (
+            <DatePicker
+              id={item.field}
+              onChange={(date: Date) =>
+                handleOnChange(
+                  format(date, 'yyyy-MM-dd'),
+                  item.field,
+                  item.type === 'date',
+                )
               }
+            ></DatePicker>
+          ) : (
+            <Input
+              type={item.type}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                beforeAfterChange(e.target?.checked, item.field, 'before')
+                handleOnChange(
+                  e.target?.value,
+                  item.field,
+                  item.type === 'date',
+                )
               }
             />
-            <FilterItemLabel>before</FilterItemLabel>
-          </FilterCheckItemDiv>
-          <FilterCheckItemDiv>
-            <FilterItemInput
-              type="checkbox"
-              id={`${item.field}-after`}
-              checked={
-                item.field === 'startDate'
-                  ? dateFilters.startDate.after
-                  : dateFilters.endDate.after
-              }
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                beforeAfterChange(e.target?.checked, item.field, 'after')
-              }
-            />
-            <FilterItemLabel>after</FilterItemLabel>
-          </FilterCheckItemDiv>
-        </FilterDateDescription>
-        <FilterItemInput
-          type={item.type}
+          )}
+
+          {/* <Input
+          type="date"
           id={`${item.type}-${item.field}`}
           isDate={item.type === 'date'}
           isInvalidDate={
@@ -435,73 +474,57 @@ export const FilterCategory = ({
           onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
             handleOnChange(e.target?.value, item.field, item.type === 'date')
           }
-        />
-        <InvalidDateFormat
-          display={
-            item.type === 'date' && item.field === 'startDate'
-              ? isInvalidDate.startDate
-              : item.type === 'date' && item.field === 'endDate'
-              ? isInvalidDate.endDate
-              : false
-          }
-        >
-          *Date format is incorrect. Date input can only contain numbers (e.g.
-          04/04/2021).
-        </InvalidDateFormat>
-      </FilterItemDiv>
+        /> */}
+          <InvalidDateFormat
+            display={
+              item.type === 'date' && item.field === 'startDate'
+                ? isInvalidDate.startDate
+                : item.type === 'date' && item.field === 'endDate'
+                ? isInvalidDate.endDate
+                : false
+            }
+          >
+            *Date format is incorrect. Date input can only contain numbers (e.g.
+            04/04/2021).
+          </InvalidDateFormat>
+        </FormControl>
+      </>
     )
   }
   return (
     <>
-      <FilterCategoryHeaderDiv onClick={() => setExpanded(!expanded)}>
-        {expanded ? <AiOutlineDown /> : <AiOutlineRight />} {title}
-      </FilterCategoryHeaderDiv>
+      <AccordionButton>
+        <Box flex="1" textAlign="left">
+          {title}
+        </Box>
+        <AccordionIcon />
+      </AccordionButton>
 
-      {expanded ? (
-        <FilterCategoryContentDiv data-testid="FilterCategoryContent">
-          {fields ? (
-            fields.map(
-              (item: { field: string; type: string; label: string }) => (
-                <div key={item.label}>{renderFilterItem(item)}</div>
-              ),
-            )
-          ) : (
-            <>
-              <FilterItemDiv>
-                <FilterItemLabel htmlFor="checkbox1">
-                  Relevant filter option 1
-                </FilterItemLabel>
-                <FilterItemInput type="checkbox" id="checkbox1" />
-              </FilterItemDiv>
-              <FilterItemDiv>
-                <FilterItemLabel htmlFor="checkbox2">
-                  Relevant filter option 2
-                </FilterItemLabel>
-                <FilterItemInput type="checkbox" id="checkbox2" />
-              </FilterItemDiv>
-              <FilterItemDiv>
-                <FilterItemLabel htmlFor="checkbox3">
-                  Relevant filter option 3
-                </FilterItemLabel>
-                <FilterItemInput type="checkbox" id="checkbox3" />
-              </FilterItemDiv>
-              <FilterItemDiv>
-                <FilterItemLabel htmlFor="checkbox4">
-                  Relevant filter option 4
-                </FilterItemLabel>
-                <FilterItemInput type="checkbox" id="checkbox4" />
-              </FilterItemDiv>
-            </>
-          )}
-          <FilterSubmitDIv>
-            <FilterSubmitButton type="button" onClick={onFilter}>
-              Filter
-            </FilterSubmitButton>
-          </FilterSubmitDIv>
-        </FilterCategoryContentDiv>
-      ) : (
-        <FilterItemDiv />
-      )}
+      <AccordionPanel pb={4} data-testid="FilterCategoryContent">
+        {fields ? (
+          fields.map((item: { field: string; type: string; label: string }) => (
+            <div key={item.label}>{renderFilterItem(item)}</div>
+          ))
+        ) : (
+          <>
+            <Stack spacing="4">
+              <Checkbox>Relevant filter option 1</Checkbox>
+              <Checkbox>Relevant filter option 2</Checkbox>
+              <Checkbox>Relevant filter option 3</Checkbox>
+              <Checkbox>Relevant filter option 4</Checkbox>
+            </Stack>
+          </>
+        )}
+        <Button
+          type="button"
+          onClick={onFilter}
+          marginTop="4"
+          marginLeft="auto"
+          marginRight="auto"
+        >
+          Filter
+        </Button>
+      </AccordionPanel>
     </>
   )
 }
