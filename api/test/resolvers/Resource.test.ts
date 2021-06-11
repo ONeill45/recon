@@ -59,14 +59,8 @@ describe('ResourceResolver', () => {
     it('should return a populated array if resources exist', async () => {
       const department = DepartmentFactory.build()
       const resource = ResourceFactory().build({ department })
-      const {
-        id,
-        firstName,
-        lastName,
-        title,
-        startDate,
-        terminationDate,
-      } = resource
+      const { id, firstName, lastName, title, startDate, terminationDate } =
+        resource
       await Department.insert(department)
       await Resource.insert(resource)
       const response = await gqlCall({
@@ -139,14 +133,8 @@ describe('ResourceResolver', () => {
       await Department.insert(department)
       await Resource.insert(resource)
 
-      const {
-        id,
-        firstName,
-        lastName,
-        title,
-        startDate,
-        terminationDate,
-      } = resource
+      const { id, firstName, lastName, title, startDate, terminationDate } =
+        resource
 
       const response = await gqlCall({
         source: getResourceQuery(id),
@@ -206,14 +194,8 @@ describe('ResourceResolver', () => {
       await ResourceAllocation.insert(resourceAllocations[0])
       await ResourceAllocation.insert(resourceAllocations[1])
 
-      const {
-        id,
-        firstName,
-        lastName,
-        title,
-        startDate,
-        terminationDate,
-      } = resource
+      const { id, firstName, lastName, title, startDate, terminationDate } =
+        resource
 
       const response = await gqlCall({
         source: getResourceWithAllocationsQuery(id),
@@ -249,30 +231,29 @@ describe('ResourceResolver', () => {
 
     it('should return resource if the search text matches the first name of a resource', async () => {
       const getResourceWithFirstNameQuery = (searchItem: string) => `{
-        resource (searchItem: "${searchItem}") {
-          id
-          firstName
-          lastName
-          title
-          startDate
-          terminationDate
+        resources (searchItem: "${searchItem}") {
+          resources {
+            id
+            firstName
+            lastName
+            title
+            startDate
+            terminationDate
+          }
         }
       }`
-      
+
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory().build({ department, firstName: 'Kealoha' })
+      const resource = ResourceFactory().build({
+        department,
+        firstName: 'Kealoha',
+      })
 
       await Department.insert(department)
       await Resource.insert(resource)
 
-      const {
-        id,
-        firstName,
-        lastName,
-        title,
-        startDate,
-        terminationDate,
-      } = resource
+      const { id, firstName, lastName, title, startDate, terminationDate } =
+        resource
 
       const response = await gqlCall({
         source: getResourceWithFirstNameQuery('Kealoha'),
@@ -280,20 +261,21 @@ describe('ResourceResolver', () => {
 
       expect(response).toMatchObject({
         data: {
-          resource: {
-            id,
-            firstName,
-            lastName,
-            title,
-            startDate,
-            terminationDate,
+          resources: {
+            resources: [
+              {
+                id,
+                firstName,
+                lastName,
+                title,
+                startDate,
+                terminationDate,
+              },
+            ],
           },
         },
       })
-
-      }
-    )
-  
+    })
 
     it('should not return a deleted resource', async () => {
       const department = DepartmentFactory.build()
