@@ -15,7 +15,7 @@ import {
   Input,
 } from '@chakra-ui/react'
 import { FaFilter } from 'react-icons/fa'
-import { Button } from './Button'
+import { Button } from 'components/common/Button'
 
 const filterCategoryProperties = [
   {
@@ -48,7 +48,7 @@ const filterCategoryProperties = [
 type FilterPanelProps = {
   page?: string | null | undefined
   filterItems?: { [key: string]: any } | undefined
-  onFilter: (queryData: { [key: string]: any }) => void
+  onFilter: (queryData: { [key: string]: any }, filterClicked: boolean) => void
   setSearchText?: (s: string) => void
 }
 
@@ -56,7 +56,7 @@ export const FilterPanel = (props: FilterPanelProps) => {
   const buttonRef = React.useRef(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { page, onFilter, filterItems } = props
+  const { page, onFilter, filterItems, setSearchText } = props
 
   const filterCategories = useMemo(() => {
     if (page) {

@@ -20,7 +20,10 @@ type filterCategoryProps = {
   title: string
   fields: Array<{ [key: string]: any }> | undefined
   filterItems: { [key: string]: any } | undefined
-  onChange?: (queryData: { [key: string]: string }) => void
+  onChange?: (
+    queryData: { [key: string]: string },
+    filterClicked: boolean,
+  ) => void
 }
 
 type filterItemDivProps = {
@@ -249,7 +252,7 @@ export const FilterCategory = ({
 
   const onFilter = () => {
     if (onChange) {
-      onChange(qData)
+      onChange(qData, true)
     }
   }
 

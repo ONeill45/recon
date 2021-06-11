@@ -1,12 +1,12 @@
-import userEvent from '@testing-library/user-event'
-
-import Resources, { GET_RESOURCES } from 'pages/resources'
+import Resources from 'pages/resources'
 import { ResourceFactory } from '../../factories'
-import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
+import { applyMockUseRouter, render } from '../../testUtils'
+import { GET_RESOURCES } from 'queries'
 
 applyMockUseRouter()
 
 const resources = ResourceFactory().buildList(5)
+const count = 5
 
 const mocks = [
   {
@@ -14,11 +14,18 @@ const mocks = [
       query: GET_RESOURCES,
       variables: {
         searchItem: '',
+        pagination: {
+          page: 1,
+          itemsPerPage: 10,
+        },
       },
     },
     result: {
       data: {
-        resources,
+        resources: {
+          resources: resources,
+          count,
+        },
       },
     },
   },
@@ -30,6 +37,10 @@ const errorMocks = [
       query: GET_RESOURCES,
       variables: {
         searchItem: '',
+        pagination: {
+          page: 1,
+          itemsPerPage: 10,
+        },
       },
     },
     error: new Error('An error occurred'),
