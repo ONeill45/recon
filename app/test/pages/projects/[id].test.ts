@@ -1,4 +1,5 @@
-import Project, { GET_PROJECT } from 'pages/projects/[id]'
+import Project from 'pages/projects/[id]'
+import { GET_PROJECT } from 'queries'
 import { ProjectFactory, ResourceFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 

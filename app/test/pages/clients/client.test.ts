@@ -1,6 +1,7 @@
-import { Client, GET_CLIENT_FROM_ID } from 'pages/clients/client'
+import { Client } from 'pages/clients/client'
 import { ClientFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
+import { GET_CLIENT_FROM_ID } from 'queries'
 
 const client = ClientFactory().build()
 
@@ -59,9 +60,9 @@ describe('Client page test', () => {
     expect(getByText('Loading...')).toBeVisible()
   })
   it('should fetch client by Id', async () => {
-    const { getByLabelText } = await render(Client, {}, mocks)
+    const { getByTestId } = await render(Client, {}, mocks)
 
-    expect(getByLabelText('client-name')).toHaveValue(client.clientName)
+    expect(getByTestId('client-name-field')).toHaveValue(client.clientName)
   })
   it('should show error message when an error occurs', async () => {
     const { getByText } = await render(Client, {}, errorMocks)

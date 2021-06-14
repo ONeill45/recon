@@ -1,10 +1,10 @@
 import React from 'react'
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
-import { Button } from '../components'
+import { Button } from 'components/common/Button'
 import { useRouter } from 'next/router'
 
-const e404 = () => {
+const e404: React.FC = () => {
   const router = useRouter()
 
   return (

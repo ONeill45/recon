@@ -3,7 +3,7 @@ import { useMsal } from '@azure/msal-react'
 import styled from '@emotion/styled'
 
 import styles from '../styles/Home.module.css'
-import { Button } from 'components'
+import { Button } from 'components/common/Button'
 
 const LoginDiv = styled.div`
   text-align: center;
@@ -15,7 +15,7 @@ const loginRequest = {
   prompt: 'select_account',
 }
 
-export const Login = () => {
+export const Login: React.FC = () => {
   const { instance } = useMsal()
 
   const handleLogin = async () => {

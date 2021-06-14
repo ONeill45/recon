@@ -1,6 +1,5 @@
-import { gql } from '@apollo/client'
-
-import Projects, { GET_PROJECTS } from 'pages/projects'
+import Projects from 'pages/projects'
+import { GET_PROJECTS } from 'queries'
 import { ProjectFactory } from '../../factories'
 import { render } from '../../testUtils/render'
 
@@ -22,7 +21,7 @@ const mocks = [
 const errorMocks = [
   {
     request: {
-      query: GET_PROJECTS
+      query: GET_PROJECTS,
     },
     error: new Error('An error occurred'),
   },
@@ -35,8 +34,8 @@ describe('Projects page test', () => {
     expect(getByText('Loading...')).toBeVisible()
   })
   it('should render projects page and display filter sidebar', async () => {
-    const { getByText } = await render(Projects, {}, mocks)
-    expect(getByText('Filters')).toBeVisible()
+    const { getByTestId } = await render(Projects, {}, mocks)
+    expect(getByTestId('FilterPanelButton')).toBeVisible()
   })
   it('should fetch all projects and display their cards', async () => {
     const { getByText } = await render(Projects, {}, mocks)

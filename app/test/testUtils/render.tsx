@@ -1,20 +1,26 @@
 import { MockedProvider } from '@apollo/client/testing'
+import { ThemeProvider } from '@emotion/react'
 import { render as rtlRender, waitFor } from '@testing-library/react'
+import { mockTheme } from './mockTheme'
 
 export const render = async (
   // eslint-disable-next-line no-unused-vars
-  Component: (props: any) => JSX.Element,
+  Component: (props: any) => JSX.Element | null,
   props: any = {},
   mocks: any = undefined,
   waitForRender = true,
 ) => {
   const container = rtlRender(
     mocks === undefined ? (
-      <Component {...props} />
-    ) : (
-      <MockedProvider mocks={mocks} addTypename={false}>
+      <ThemeProvider theme={mockTheme}>
         <Component {...props} />
-      </MockedProvider>
+      </ThemeProvider>
+    ) : (
+      <ThemeProvider theme={mockTheme}>
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Component {...props} />
+        </MockedProvider>
+      </ThemeProvider>
     ),
   )
 
@@ -22,12 +28,4 @@ export const render = async (
 
   await waitFor(() => new Promise((resolve) => setTimeout(resolve, 0)))
   return container
-}
-
-export const setInnerWidth = (width: number = 200) => {
-  Object.defineProperty(window, 'innerWidth', {
-    writable: true,
-    configurable: true,
-    value: width,
-  })
 }

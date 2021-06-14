@@ -1,12 +1,12 @@
-import userEvent from '@testing-library/user-event'
-
-import Resources, { GET_RESOURCES } from 'pages/resources'
+import Resources from 'pages/resources'
 import { ResourceFactory } from '../../factories'
-import { applyMockUseRouter, mockUseRouter, render } from '../../testUtils'
+import { applyMockUseRouter, render } from '../../testUtils'
+import { GET_RESOURCES } from 'queries'
 
 applyMockUseRouter()
 
 const resources = ResourceFactory().buildList(5)
+const count = 5
 
 const mocks = [
   {
@@ -14,11 +14,18 @@ const mocks = [
       query: GET_RESOURCES,
       variables: {
         searchItem: '',
+        pagination: {
+          page: 1,
+          itemsPerPage: 10,
+        },
       },
     },
     result: {
       data: {
-        resources,
+        resources: {
+          resources: resources,
+          count,
+        },
       },
     },
   },
@@ -30,6 +37,10 @@ const errorMocks = [
       query: GET_RESOURCES,
       variables: {
         searchItem: '',
+        pagination: {
+          page: 1,
+          itemsPerPage: 10,
+        },
       },
     },
     error: new Error('An error occurred'),
@@ -42,8 +53,8 @@ describe('Resource page test', () => {
   //   expect(getByText('Loading...')).toBeVisible()
   // })
   it('should render resource page and display filter sidebar', async () => {
-    const { getByText } = await render(Resources, {}, mocks)
-    expect(getByText('Filters')).toBeVisible()
+    const { getByTestId } = await render(Resources, {}, mocks)
+    expect(getByTestId('FilterPanelButton')).toBeVisible()
   })
   it('should fetch all resources and display their cards', async () => {
     const { getByText } = await render(Resources, {}, mocks)
@@ -58,14 +69,5 @@ describe('Resource page test', () => {
     const { getByText } = await render(Resources, {}, errorMocks)
 
     expect(getByText('Error: An error occurred')).toBeVisible()
-  })
-  it('should route to appropriate resource page when its card is clicked', async () => {
-    const { getByText } = await render(Resources, {}, mocks)
-
-    userEvent.click(getByText(`${resources[0].email}`))
-    expect(mockUseRouter.push).toHaveBeenCalledWith({
-      pathname: '/resources/[id]',
-      query: { id: resources[0].id },
-    })
   })
 })

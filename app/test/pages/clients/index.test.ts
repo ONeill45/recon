@@ -1,6 +1,7 @@
-import Clients, { GET_ALL_CLIENTS } from 'pages/clients'
+import Clients from 'pages/clients/index'
 import { ClientFactory } from '../../factories'
 import { render } from '../../testUtils/render'
+import { GET_ALL_CLIENTS } from 'queries'
 
 const clients = ClientFactory().buildList(5)
 
@@ -8,7 +9,7 @@ const mocks = [
   {
     request: {
       query: GET_ALL_CLIENTS,
-      variables: {},
+      variables: { searchItem: '' },
     },
     result: {
       data: {
@@ -22,7 +23,7 @@ const errorMocks = [
   {
     request: {
       query: GET_ALL_CLIENTS,
-      variables: {},
+      variables: { searchItem: '' },
     },
     error: new Error('An error occurred'),
   },
