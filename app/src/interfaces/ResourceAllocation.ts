@@ -1,11 +1,14 @@
-import { Project, Resource } from './'
+import { Project, Resource, ResourceAssignment } from './'
 
 export interface ResourceAllocation {
   id: string
+  role: string
+  roleId: string
+  assignments: ResourceAssignment[]
   startDate: Date
   endDate: Date
-  endReason: String
-  percentage: Number
+  endReason: string
+  percentage: number
   resource: Resource
   project: Project
   createdBy: string

@@ -1,58 +1,7 @@
-import { gql, useQuery } from '@apollo/client'
-import { useRouter } from 'next/router'
+import { ProjectDetail } from 'components/projects/ProjectDetail'
 
-import {
-  ProjectDetailCards,
-  ProjectHeader,
-  ResourceAllocationProjectView,
-} from 'components'
-
-export const GET_PROJECT = gql`
-  query GetProject($id: String!) {
-    project(id: $id) {
-      id
-      projectName
-      startDate
-      endDate
-      resourceAllocations {
-        id
-        startDate
-        endDate
-        endReason
-        percentage
-        resource {
-          firstName
-          lastName
-          preferredName
-          title
-        }
-      }
-    }
-  }
-`
-
-const Project = () => {
-  const router = useRouter()
-  const id = router.query.id
-
-  const { data, loading, error } = useQuery(GET_PROJECT, {
-    variables: {
-      id,
-    },
-  })
-
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error?.message}</p>
-
-  const { project } = data
-
-  return (
-    <>
-      <ProjectHeader project={project} />
-      <ProjectDetailCards project={project} />
-      <ResourceAllocationProjectView project={project} />
-    </>
-  )
+const Project: React.FC = () => {
+  return <ProjectDetail />
 }
 
 export default Project

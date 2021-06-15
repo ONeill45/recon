@@ -8,10 +8,11 @@ import {
   CreateDateColumn,
   JoinColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
-import { Project, Resource } from './'
+import { Project, Resource, ResourceAssignment } from './'
 
 @Entity()
 @ObjectType()
@@ -19,6 +20,21 @@ export class ResourceAllocation extends BaseEntity implements AuditableEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: 'role', nullable: true })
+  role: string | null
+
+  @Field(() => String, { nullable: true })
+  @Column({ name: 'role_id', nullable: true })
+  roleId: string
+
+  @Field(() => [ResourceAssignment], { nullable: true })
+  @OneToMany(() => ResourceAssignment, (ra) => ra.resourceAllocation, {
+    nullable: true,
+    eager: true,
+  })
+  assignments: ResourceAssignment[] | null
 
   @Field(() => Resource)
   @ManyToOne(() => Resource, { eager: true })

@@ -1,11 +1,12 @@
 import React from 'react'
+import { ChakraProvider } from '@chakra-ui/react'
 
 import { ApolloProvider } from '@apollo/client'
 import { MsalProvider } from '@azure/msal-react'
 import { PublicClientApplication, Configuration } from '@azure/msal-browser'
 import client from '../../lib/apolloClient'
 import { loadEnvironmentVariable } from 'utils/functions'
-import { ThemeProvider } from './ThemeProvider'
+import { chakraTheme } from '../../styles/theme'
 
 const getMsalConfig = (): Configuration => ({
   auth: {
@@ -30,9 +31,9 @@ export const AppProviders: React.FC = ({ children }) => {
 
   return (
     <MsalProvider instance={msalInstance}>
-      <ThemeProvider>
+      <ChakraProvider theme={chakraTheme}>
         <ApolloProvider client={client}>{children}</ApolloProvider>
-      </ThemeProvider>
+      </ChakraProvider>
     </MsalProvider>
   )
 }
