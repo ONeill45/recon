@@ -7,7 +7,7 @@ import { ILike } from 'typeorm'
 export class ClientResolver {
   @Query(() => [Client])
   async clients(@Arg('searchItem', { nullable: true }) searchItem: string) {
-    if (searchItem === null) {
+    if (!searchItem) {
       return Client.find()
     } else {
       const foundClient = await Client.find({

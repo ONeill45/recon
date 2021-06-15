@@ -1,0 +1,12 @@
+{
+  "husky": {
+    "hooks": {}
+  },
+  "dependencies": {
+    "husky": "^6.0.0"
+  },
+  "scripts": {
+    "postinstall": "husky install",
+    "prepare": "husky install"
+  }
+}

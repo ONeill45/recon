@@ -63,8 +63,14 @@ describe('ResourceResolver', () => {
     it('should return a populated array if resources exist', async () => {
       const department = DepartmentFactory.build()
       const resource = ResourceFactory().build({ department })
-      const { id, firstName, lastName, title, startDate, terminationDate } =
-        resource
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        startDate,
+        terminationDate,
+      } = resource
 
       await Department.insert(department)
       await Resource.insert(resource)
@@ -73,22 +79,24 @@ describe('ResourceResolver', () => {
         source: query,
       })
 
-      console.log('123', response.data.resources)
-
-      expect(response).toMatchObject({
-        data: {
-          resources: [
-            {
-              id,
-              firstName,
-              lastName,
-              title,
-              startDate: new Date(startDate).toISOString(),
-              terminationDate,
+      if (response) {
+        expect(response).toMatchObject({
+          data: {
+            resources: {
+              resources: [
+                {
+                  id,
+                  firstName,
+                  lastName,
+                  title,
+                  startDate: new Date(startDate).toISOString(),
+                  terminationDate,
+                },
+              ],
             },
-          ],
-        },
-      })
+          },
+        })
+      }
     })
     it('should not return deleted resources', async () => {
       const department = DepartmentFactory.build()
@@ -143,8 +151,14 @@ describe('ResourceResolver', () => {
       await Department.insert(department)
       await Resource.insert(resource)
 
-      const { id, firstName, lastName, title, startDate, terminationDate } =
-        resource
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        startDate,
+        terminationDate,
+      } = resource
 
       const response = await gqlCall({
         source: getResourceQuery(id),
@@ -204,8 +218,14 @@ describe('ResourceResolver', () => {
       await ResourceAllocation.insert(resourceAllocations[0])
       await ResourceAllocation.insert(resourceAllocations[1])
 
-      const { id, firstName, lastName, title, startDate, terminationDate } =
-        resource
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        startDate,
+        terminationDate,
+      } = resource
 
       const response = await gqlCall({
         source: getResourceWithAllocationsQuery(id),
@@ -262,8 +282,14 @@ describe('ResourceResolver', () => {
       await Department.insert(department)
       await Resource.insert(resource)
 
-      const { id, firstName, lastName, title, startDate, terminationDate } =
-        resource
+      const {
+        id,
+        firstName,
+        lastName,
+        title,
+        startDate,
+        terminationDate,
+      } = resource
 
       const response = await gqlCall({
         source: getResourceWithFirstNameQuery('Kealoha'),
