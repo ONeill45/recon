@@ -12,12 +12,14 @@ import {
   Accordion,
   AccordionItem,
   Text,
+  RadioGroup,
+  Radio,
 } from '@chakra-ui/react'
 import format from 'date-fns/format'
 
 import { Button } from './common/Button'
 import { DatePicker } from './common/forms/Datepicker'
-import { useRef } from 'react'
+import { useFormik } from 'formik'
 
 type filterCategoryProps = {
   title: string
@@ -35,103 +37,36 @@ export const FilterCategory: React.FC<filterCategoryProps> = ({
   onChange,
   filterItems,
 }) => {
-  const [qData, setQData] = useState<{ [key: string]: any }>({})
-  const [isInvalidDate, setIsInvalidDate] = useState<{
-    startDate: boolean
-    endDate: boolean
-  }>({ startDate: false, endDate: false })
-  const [dateFilters, setDateFilters] = useState<{
-    startDate: { before: boolean; after: boolean }
-    endDate: { before: boolean; after: boolean }
-  }>({
-    startDate: {
-      before: false,
-      after: false,
-    },
-    endDate: {
-      before: false,
-      after: false,
+  const { setFieldValue, setValues, handleSubmit, values } = useFormik<
+    Record<string, any>
+  >({
+    initialValues: {},
+    onSubmit: (values) => {
+      const submitValues = { ...values }
+      Object.keys(submitValues).forEach((key) => {
+        const value = submitValues[key]
+        if (typeof value !== 'undefined' && value !== null) {
+          if (value.constructor.name === 'Object') {
+            if (
+              (value['beforeAfter'] && !value['date']) ||
+              (value['date'] && !value['beforeAfter'])
+            ) {
+              delete submitValues[key]
+            }
+          } else if (
+            (typeof value === 'string' || Array.isArray(value)) &&
+            value.length < 1
+          ) {
+            delete submitValues[key]
+          }
+        } else {
+          delete submitValues[key]
+        }
+      })
+
+      onChange && onChange(submitValues, true)
     },
   })
-
-  const dateValueRefs = useRef()
-
-  const handleOnChangeCheckBox = ({
-    target,
-    field,
-    name,
-  }: {
-    [key: string]: any
-  }) => {
-    if (target && target.checked === true) {
-      if (!qData[field]) {
-        const qDataCopy = { ...qData }
-        qDataCopy[field] = [name]
-        setQData({ ...qDataCopy })
-      } else {
-        const qDataCopy = { ...qData }
-        qDataCopy[field].push(name)
-        setQData({ ...qDataCopy })
-      }
-    } else {
-      const qDataCopy = { ...qData }
-      const filteredCopy = qDataCopy[field].filter((item: any) => item !== name)
-      if (filteredCopy.length > 0) {
-        qDataCopy[field] = [...filteredCopy]
-      } else {
-        delete qDataCopy[field]
-      }
-      setQData({ ...qDataCopy })
-    }
-  }
-
-  const handleOnChange = (value: string, field: string, date?: boolean) => {
-    if (date) {
-      const isInvalidDateCopy = { ...isInvalidDate }
-      if (value) {
-        if (field === 'startDate') {
-          const qDataCopy = { startDate: {} }
-          qDataCopy['startDate'] = {
-            date: value,
-            beforeAfter: beforeAfterStartDate,
-          }
-          setQData((prev: any) => ({
-            ...prev,
-            ...qDataCopy,
-          }))
-          isInvalidDateCopy.startDate = false
-          setIsInvalidDate({ ...isInvalidDateCopy })
-        } else {
-          const qDataCopy = { endDate: {} }
-          qDataCopy['endDate'] = {
-            date: value,
-            beforeAfter: beforeAfterEndDate,
-          }
-          setQData((prev: any) => ({
-            ...prev,
-            ...qDataCopy,
-          }))
-          isInvalidDateCopy.endDate = false
-          setIsInvalidDate({ ...isInvalidDateCopy })
-        }
-      } else {
-        const qDataCopy = { ...qData }
-        delete qDataCopy[field]
-        setQData({ ...qDataCopy })
-        if (field === 'startDate') {
-          isInvalidDateCopy.startDate = true
-          setIsInvalidDate({ ...isInvalidDateCopy })
-        } else {
-          isInvalidDateCopy.endDate = true
-          setIsInvalidDate({ ...isInvalidDateCopy })
-        }
-      }
-    } else {
-      const qDataCopy = { ...qData }
-      qDataCopy[field] = [value]
-      setQData({ ...qDataCopy })
-    }
-  }
 
   const [clients, setClients] = useState<Array<string>>([])
   const [projects, setProjects] = useState<Array<string>>([])
@@ -143,8 +78,6 @@ export const FilterCategory: React.FC<filterCategoryProps> = ({
   const [projectConfidence, setProjectConfidence] = useState<Array<string>>([])
   const [projectPriorities, setProjectPriorities] = useState<Array<string>>([])
   const [projectTypes, setProjectTypes] = useState<Array<string>>([])
-  const [beforeAfterStartDate, setBeforeAfterStartDate] = useState<string>('')
-  const [beforeAfterEndDate, setBeforeAfterEndDate] = useState<string>('')
 
   useEffect(() => {
     if (filterItems && filterItems.clients) {
@@ -177,99 +110,6 @@ export const FilterCategory: React.FC<filterCategoryProps> = ({
     }
   }, [filterItems])
 
-  const onFilter = () => {
-    if (onChange) {
-      onChange(qData, true)
-    }
-  }
-
-  useEffect(() => {
-    const qDataCopy = { ...qData }
-    const qDataCopyStartDate = { ...qDataCopy['startDate'] }
-    if (qDataCopyStartDate.date) {
-      qDataCopy['startDate'] = {
-        ...qDataCopyStartDate,
-        beforeAfter: beforeAfterStartDate,
-      }
-      setQData({ ...qDataCopy })
-    }
-  }, [beforeAfterStartDate])
-
-  useEffect(() => {
-    const qDataCopy = { ...qData }
-    const qDataCopyEndDate = { ...qDataCopy['endDate'] }
-    if (qDataCopyEndDate.date) {
-      qDataCopy['endDate'] = {
-        ...qDataCopyEndDate,
-        beforeAfter: beforeAfterEndDate,
-      }
-      setQData({ ...qDataCopy })
-    }
-  }, [beforeAfterEndDate])
-
-  const beforeAfterChange = (
-    checked: any,
-    field: string,
-    beforeAfter: string,
-  ) => {
-    if (field === 'startDate') {
-      if (checked) {
-        if (beforeAfter === 'before') {
-          setBeforeAfterStartDate('before')
-        } else {
-          setBeforeAfterStartDate('after')
-        }
-      } else {
-        setBeforeAfterStartDate('')
-      }
-    }
-    if (field === 'endDate') {
-      if (checked) {
-        if (beforeAfter === 'before') {
-          setBeforeAfterEndDate('before')
-        } else {
-          setBeforeAfterEndDate('after')
-        }
-      } else {
-        setBeforeAfterEndDate('')
-      }
-    }
-  }
-
-  useEffect(() => {
-    const dateFiltersCopy = { ...dateFilters }
-    if (beforeAfterEndDate === 'before') {
-      dateFiltersCopy.endDate.before = true
-      dateFiltersCopy.endDate.after = false
-    } else if (beforeAfterEndDate === 'after') {
-      dateFiltersCopy.endDate.before = false
-      dateFiltersCopy.endDate.after = true
-    } else {
-      dateFiltersCopy.endDate.before = false
-      dateFiltersCopy.endDate.after = false
-    }
-    setDateFilters({
-      ...dateFiltersCopy,
-    })
-  }, [beforeAfterEndDate])
-
-  useEffect(() => {
-    const dateFiltersCopy = { ...dateFilters }
-    if (beforeAfterStartDate === 'before') {
-      dateFiltersCopy.startDate.before = true
-      dateFiltersCopy.startDate.after = false
-    } else if (beforeAfterStartDate === 'after') {
-      dateFiltersCopy.startDate.before = false
-      dateFiltersCopy.startDate.after = true
-    } else {
-      dateFiltersCopy.startDate.before = false
-      dateFiltersCopy.startDate.after = false
-    }
-    setDateFilters({
-      ...dateFiltersCopy,
-    })
-  }, [beforeAfterStartDate])
-
   const selectRenderItems = (field: string): Array<string> | null => {
     if (field === 'project') return projects
     if (field === 'clients') return clients
@@ -300,17 +140,20 @@ export const FilterCategory: React.FC<filterCategoryProps> = ({
               {items &&
                 items.map((name: string, i: number) => (
                   <Checkbox
-                    key={i}
+                    key={name}
                     id={`${item.type}-${item.field}-${name}`}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                      handleOnChangeCheckBox({
-                        target: {
-                          name: e.target?.name,
-                          checked: e.target?.checked,
-                        },
-                        field: item.field,
-                        name,
-                      })
+                      let newFieldValue = values[item.field]
+                        ? [...values[item.field]]
+                        : []
+                      if (e.target.checked) {
+                        newFieldValue.push(name)
+                      } else {
+                        newFieldValue = newFieldValue.filter(
+                          (item: any) => item !== name,
+                        )
+                      }
+                      setFieldValue(item.field, newFieldValue)
                     }}
                   >
                     {name}
@@ -323,107 +166,93 @@ export const FilterCategory: React.FC<filterCategoryProps> = ({
       return null
     }
     return (
-      <>
-        <FormControl id={item.field}>
-          <FormLabel>{item.label}</FormLabel>
-          {item.type === 'date' && (
-            <Box marginBottom="2">
-              <Text fontSize="sm">
-                Check box below to filter before or after the selected date
-              </Text>
-              <Stack spacing="2" marginTop="2">
-                <Checkbox
-                  id={`${item.field}-before`}
-                  isChecked={
-                    item.field === 'startDate'
-                      ? dateFilters.startDate.before
-                      : dateFilters.endDate.before
-                  }
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    beforeAfterChange(e.target?.checked, item.field, 'before')
-                  }
-                >
-                  before
-                </Checkbox>
-                <Checkbox
-                  id={`${item.field}-after`}
-                  isChecked={
-                    item.field === 'startDate'
-                      ? dateFilters.startDate.after
-                      : dateFilters.endDate.after
-                  }
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    beforeAfterChange(e.target?.checked, item.field, 'after')
-                  }
-                >
-                  after
-                </Checkbox>
+      <FormControl id={item.field} key={item.label}>
+        <FormLabel>{item.label}</FormLabel>
+        {item.type === 'date' && (
+          <Box marginBottom="4">
+            <Text fontSize="sm" marginBottom="2">
+              Filter before or after the date
+            </Text>
+            <RadioGroup
+              onChange={(value) =>
+                setFieldValue(`${item.field}.beforeAfter`, value)
+              }
+              value={
+                values[item.field] && values[item.field]['beforeAfter']
+                  ? values[item.field]['beforeAfter']
+                  : ''
+              }
+              colorScheme="primary"
+            >
+              <Stack spacing="2">
+                <Radio value="before">Before</Radio>
+                <Radio value="after">After</Radio>
               </Stack>
-            </Box>
-          )}
-          {item.type === 'date' ? (
-            <DatePicker
-              id={item.field}
-              onChange={(date: Date) =>
-                handleOnChange(
-                  format(date, 'yyyy-MM-dd'),
-                  item.field,
-                  item.type === 'date',
-                )
-              }
-            ></DatePicker>
-          ) : (
-            <Input
-              type={item.type}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                handleOnChange(
-                  e.target?.value,
-                  item.field,
-                  item.type === 'date',
-                )
-              }
-            />
-          )}
-        </FormControl>
-      </>
+            </RadioGroup>
+          </Box>
+        )}
+        {item.type === 'date' ? (
+          <DatePicker
+            id={item.field}
+            selected={
+              values[item.field] && values[item.field]['jsDate']
+                ? values[item.field]['jsDate']
+                : null
+            }
+            onChange={(date: Date) => {
+              setFieldValue(`${item.field}.date`, format(date, 'yyyy-MM-dd'))
+              setFieldValue(`${item.field}.jsDate`, date)
+            }}
+          ></DatePicker>
+        ) : (
+          <Input
+            type={item.type}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setFieldValue(item.field, e.target.value)
+            }
+          />
+        )}
+      </FormControl>
     )
   }
   return (
     <AccordionItem>
-      <AccordionButton>
-        <Box flex="1" textAlign="left">
-          {title}
-        </Box>
-        <AccordionIcon />
-      </AccordionButton>
+      <form onSubmit={handleSubmit}>
+        <AccordionButton>
+          <Box flex="1" textAlign="left">
+            {title}
+          </Box>
+          <AccordionIcon />
+        </AccordionButton>
 
-      <AccordionPanel pb={4} data-testid="FilterCategoryContent">
-        <Stack spacing="4">
-          {fields ? (
-            fields.map((item: { field: string; type: string; label: string }) =>
-              item.label ? renderFilterItem(item) : null,
-            )
-          ) : (
-            <>
-              <Stack spacing="4">
-                <Checkbox>Relevant filter option 1</Checkbox>
-                <Checkbox>Relevant filter option 2</Checkbox>
-                <Checkbox>Relevant filter option 3</Checkbox>
-                <Checkbox>Relevant filter option 4</Checkbox>
-              </Stack>
-            </>
-          )}
-        </Stack>
-        <Button
-          type="button"
-          onClick={onFilter}
-          marginTop="10"
-          marginLeft="auto"
-          marginRight="auto"
-        >
-          Filter
-        </Button>
-      </AccordionPanel>
+        <AccordionPanel pb={4} data-testid="FilterCategoryContent">
+          <Stack spacing="4">
+            {fields ? (
+              fields.map(
+                (item: { field: string; type: string; label: string }) =>
+                  item.label ? renderFilterItem(item) : null,
+              )
+            ) : (
+              <>
+                <Stack spacing="4">
+                  <Checkbox>Relevant filter option 1</Checkbox>
+                  <Checkbox>Relevant filter option 2</Checkbox>
+                  <Checkbox>Relevant filter option 3</Checkbox>
+                  <Checkbox>Relevant filter option 4</Checkbox>
+                </Stack>
+              </>
+            )}
+          </Stack>
+          <Button
+            type="submit"
+            marginTop="10"
+            marginLeft="auto"
+            marginRight="auto"
+          >
+            Filter
+          </Button>
+        </AccordionPanel>
+      </form>
     </AccordionItem>
   )
 }
