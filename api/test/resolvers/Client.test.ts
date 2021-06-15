@@ -24,15 +24,15 @@ beforeEach(async () => {
 describe('ClientResolver', () => {
   describe('clients()', () => {
     const query = `{
-    clients {
-      id
-      clientName
-      description
-      logoUrl
-      startDate
-      endDate
-    }
-  }`
+      clients {
+        id
+        clientName
+        description
+        logoUrl
+        startDate
+        endDate
+      }
+    }`
     it('should return an empty array if no clients exist', async () => {
       const response = await gqlCall({
         source: query,

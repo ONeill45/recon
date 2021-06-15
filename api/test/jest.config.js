@@ -15,4 +15,9 @@ module.exports = {
     '.(ts)': 'ts-jest',
   },
   verbose: true,
+  globals: {
+    'ts-jest': {
+      babelConfig: true,
+    },
+  },
 }
