@@ -224,12 +224,9 @@ export const ClientForm: React.FC<ClientProps> = ({ client }) => {
           </FormControl>
           <FormControl id="logoUrl" data-testid="logo-url-field">
             <FormLabel>Logo URL</FormLabel>
-            <FileUpload />
-            <Textarea
-              placeholder="A description of the client"
-              onChange={(e: FormEvent<HTMLTextAreaElement>) =>
-                setLogoUrl(e.currentTarget.value)
-              }
+            <Input
+              placeholder="Url of the Logo"
+              onChange={(e) => setLogoUrl(e.currentTarget.value)}
               value={logoUrl}
             />
           </FormControl>

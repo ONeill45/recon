@@ -13,7 +13,9 @@ export const DatePicker: React.FC<ReactDatePickerProps> = ({
   return (
     // if you don't want to use chakra's colors or you just wwant to use the original ones,
     // set className to "light-theme-original" ↓↓↓↓
-    <div className={isLight ? 'light-theme' : 'dark-theme'}>
+    <div
+      className={isLight ? 'date-picker-light-theme' : 'date-picker-dark-theme'}
+    >
       <ReactDatePicker
         selected={selected}
         onChange={onChange}
