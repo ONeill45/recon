@@ -1,5 +1,5 @@
 import React, { FormEvent, useMemo } from 'react'
-import { FilterCategory, SearchBar } from './'
+import { FilterCategory } from './'
 import {
   Portal,
   Drawer,
@@ -11,7 +11,6 @@ import {
   useDisclosure,
   Stack,
   Accordion,
-  AccordionItem,
   Input,
 } from '@chakra-ui/react'
 import { FaFilter } from 'react-icons/fa'
@@ -98,23 +97,20 @@ export const FilterPanel = (props: FilterPanelProps) => {
                 type="text"
                 placeholder="Search..."
                 onChange={(e: FormEvent<HTMLInputElement>) =>
-                  props.setSearchText &&
-                  props.setSearchText(e.currentTarget.value)
+                  setSearchText && setSearchText(e.currentTarget.value)
                 }
               />
 
               {filterCategories.length > 0 && (
                 <Accordion allowToggle allowMultiple marginTop="4">
                   {filterCategories.map((property) => (
-                    <AccordionItem>
-                      <FilterCategory
-                        title={property.title}
-                        fields={property.children}
-                        filterItems={filterItems}
-                        onChange={onFilter}
-                        key={property.title}
-                      />
-                    </AccordionItem>
+                    <FilterCategory
+                      title={property.title}
+                      fields={property.children}
+                      filterItems={filterItems}
+                      onChange={onFilter}
+                      key={property.title}
+                    />
                   ))}
                 </Accordion>
               )}

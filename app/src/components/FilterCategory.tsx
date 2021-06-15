@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react'
 import {
   AccordionPanel,
   AccordionButton,
@@ -8,13 +9,15 @@ import {
   Input,
   FormControl,
   FormLabel,
+  Accordion,
+  AccordionItem,
+  Text,
 } from '@chakra-ui/react'
-import styled from '@emotion/styled'
-import React, { useState, useEffect } from 'react'
-import { AiOutlineDown, AiOutlineRight } from 'react-icons/ai'
-import { Button } from './Button'
-import DatePicker from 'react-datepicker'
 import format from 'date-fns/format'
+
+import { Button } from './common/Button'
+import { DatePicker } from './common/forms/Datepicker'
+import { useRef } from 'react'
 
 type filterCategoryProps = {
   title: string
@@ -26,90 +29,12 @@ type filterCategoryProps = {
   ) => void
 }
 
-type filterItemDivProps = {
-  isDate?: boolean
-}
-
-type filterInputProps = {
-  isDate?: boolean
-  isInvalidDate?: boolean
-}
-
-type filterDateDescriptionProps = {
-  isDate?: boolean
-}
-
-type invalidDateFormatProps = {
-  display: boolean
-}
-
-export const FilterCategoryHeaderDiv = styled.div`
-  height: 40px;
-  border: 1px solid black;
-`
-
-export const FilterCategoryContentDiv = styled.div`
-  border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-`
-
-export const FilterItemDiv = styled.div<filterItemDivProps>`
-  display: flex;
-  flex-direction: ${(props: any) => (props.isDate ? 'column' : 'row')};
-  justify-content: space-between;
-  margin: ${(props: any) =>
-    props.isDate ? '1.5rem 0.3rem 0 0.3rem' : '0.3rem 0.3rem 0 0.3rem'};
-`
-
-export const FilterSubmitDIv = styled.div`
-  margin: 5px;
-  text-align: center;
-`
-
-export const FilterItemLabel = styled.label`
-  font-size: 15px;
-`
-
-export const FilterItemInput = styled.input<filterInputProps>`
-  margin-left: 0.3rem;
-  width: ${(props: any) => (props.isDate ? '50%' : 'auto')};
-  border: ${(props: any) => (props.isInvalidDate ? '3px solid red' : 'auto')};
-
-  &:focus {
-    outline: none;
-  }
-`
-
-export const FilterDateDescription = styled.div<filterDateDescriptionProps>`
-  display: ${(props: any) => (props.isDate ? 'block' : 'none')};
-  margin: 0.5rem 0;
-  font-size: 0.8rem;
-`
-
-export const FilterSubmitButton = styled.button`
-  width: 100px;
-`
-
-export const FilterCheckItemDiv = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  padding-left: 15px;
-`
-
-export const InvalidDateFormat = styled.div<invalidDateFormatProps>`
-  display: ${(props: any) => (props.display ? 'block' : 'none')};
-  color: red;
-  font-size: 0.8rem;
-`
-
-export const FilterCategory = ({
+export const FilterCategory: React.FC<filterCategoryProps> = ({
   title,
   fields,
   onChange,
   filterItems,
-}: filterCategoryProps) => {
-  const [expanded, setExpanded] = useState(false)
+}) => {
   const [qData, setQData] = useState<{ [key: string]: any }>({})
   const [isInvalidDate, setIsInvalidDate] = useState<{
     startDate: boolean
@@ -128,6 +53,8 @@ export const FilterCategory = ({
       after: false,
     },
   })
+
+  const dateValueRefs = useRef()
 
   const handleOnChangeCheckBox = ({
     target,
@@ -367,14 +294,13 @@ export const FilterCategory = ({
 
       if (items && items.length) {
         return (
-          <>
-            <FilterItemDiv>
-              <FilterItemLabel>{item.label}</FilterItemLabel>
-            </FilterItemDiv>
-            {items &&
-              items.map((name: string, i: number) => (
-                <Stack direction="row" spacing="8" alignItems="center" key={i}>
+          <Box key={item.label}>
+            <FormLabel>{item.label}</FormLabel>
+            <Stack spacing="2">
+              {items &&
+                items.map((name: string, i: number) => (
                   <Checkbox
+                    key={i}
                     id={`${item.type}-${item.field}-${name}`}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                       handleOnChangeCheckBox({
@@ -386,15 +312,12 @@ export const FilterCategory = ({
                         name,
                       })
                     }}
-                  />
-                  <FilterItemLabel
-                    htmlFor={`${item.type}-${item.field}-${name}`}
                   >
                     {name}
-                  </FilterItemLabel>
-                </Stack>
-              ))}
-          </>
+                  </Checkbox>
+                ))}
+            </Stack>
+          </Box>
         )
       }
       return null
@@ -402,43 +325,42 @@ export const FilterCategory = ({
     return (
       <>
         <FormControl id={item.field}>
-          <FormLabel>
-            {item.label}
-            {item.type === 'date' && (
-              <Box marginTop="4">
+          <FormLabel>{item.label}</FormLabel>
+          {item.type === 'date' && (
+            <Box marginBottom="2">
+              <Text fontSize="sm">
                 Check box below to filter before or after the selected date
-                <Stack spacing="4">
-                  <Checkbox
-                    id={`${item.field}-before`}
-                    isChecked={
-                      item.field === 'startDate'
-                        ? dateFilters.startDate.before
-                        : dateFilters.endDate.before
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      beforeAfterChange(e.target?.checked, item.field, 'before')
-                    }
-                  >
-                    before
-                  </Checkbox>
-                  <Checkbox
-                    id={`${item.field}-after`}
-                    isChecked={
-                      item.field === 'startDate'
-                        ? dateFilters.startDate.after
-                        : dateFilters.endDate.after
-                    }
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                      beforeAfterChange(e.target?.checked, item.field, 'after')
-                    }
-                  >
-                    after
-                  </Checkbox>
-                </Stack>
-              </Box>
-            )}
-          </FormLabel>
-
+              </Text>
+              <Stack spacing="2" marginTop="2">
+                <Checkbox
+                  id={`${item.field}-before`}
+                  isChecked={
+                    item.field === 'startDate'
+                      ? dateFilters.startDate.before
+                      : dateFilters.endDate.before
+                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    beforeAfterChange(e.target?.checked, item.field, 'before')
+                  }
+                >
+                  before
+                </Checkbox>
+                <Checkbox
+                  id={`${item.field}-after`}
+                  isChecked={
+                    item.field === 'startDate'
+                      ? dateFilters.startDate.after
+                      : dateFilters.endDate.after
+                  }
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    beforeAfterChange(e.target?.checked, item.field, 'after')
+                  }
+                >
+                  after
+                </Checkbox>
+              </Stack>
+            </Box>
+          )}
           {item.type === 'date' ? (
             <DatePicker
               id={item.field}
@@ -462,40 +384,12 @@ export const FilterCategory = ({
               }
             />
           )}
-
-          {/* <Input
-          type="date"
-          id={`${item.type}-${item.field}`}
-          isDate={item.type === 'date'}
-          isInvalidDate={
-            item.type === 'date' && item.field === 'startDate'
-              ? isInvalidDate.startDate
-              : item.type === 'date' && item.field === 'endDate'
-              ? isInvalidDate.endDate
-              : false
-          }
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            handleOnChange(e.target?.value, item.field, item.type === 'date')
-          }
-        /> */}
-          <InvalidDateFormat
-            display={
-              item.type === 'date' && item.field === 'startDate'
-                ? isInvalidDate.startDate
-                : item.type === 'date' && item.field === 'endDate'
-                ? isInvalidDate.endDate
-                : false
-            }
-          >
-            *Date format is incorrect. Date input can only contain numbers (e.g.
-            04/04/2021).
-          </InvalidDateFormat>
         </FormControl>
       </>
     )
   }
   return (
-    <>
+    <AccordionItem>
       <AccordionButton>
         <Box flex="1" textAlign="left">
           {title}
@@ -504,30 +398,40 @@ export const FilterCategory = ({
       </AccordionButton>
 
       <AccordionPanel pb={4} data-testid="FilterCategoryContent">
-        {fields ? (
-          fields.map((item: { field: string; type: string; label: string }) => (
-            <div key={item.label}>{renderFilterItem(item)}</div>
-          ))
-        ) : (
-          <>
-            <Stack spacing="4">
-              <Checkbox>Relevant filter option 1</Checkbox>
-              <Checkbox>Relevant filter option 2</Checkbox>
-              <Checkbox>Relevant filter option 3</Checkbox>
-              <Checkbox>Relevant filter option 4</Checkbox>
-            </Stack>
-          </>
-        )}
+        <Stack spacing="4">
+          {fields ? (
+            fields.map((item: { field: string; type: string; label: string }) =>
+              item.label ? renderFilterItem(item) : null,
+            )
+          ) : (
+            <>
+              <Stack spacing="4">
+                <Checkbox>Relevant filter option 1</Checkbox>
+                <Checkbox>Relevant filter option 2</Checkbox>
+                <Checkbox>Relevant filter option 3</Checkbox>
+                <Checkbox>Relevant filter option 4</Checkbox>
+              </Stack>
+            </>
+          )}
+        </Stack>
         <Button
           type="button"
           onClick={onFilter}
-          marginTop="4"
+          marginTop="10"
           marginLeft="auto"
           marginRight="auto"
         >
           Filter
         </Button>
       </AccordionPanel>
-    </>
+    </AccordionItem>
+  )
+}
+
+export const TestFilterCategory: React.FC = (props: any) => {
+  return (
+    <Accordion allowToggle allowMultiple marginTop="4">
+      <FilterCategory {...props} />
+    </Accordion>
   )
 }
