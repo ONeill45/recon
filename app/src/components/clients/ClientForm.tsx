@@ -2,21 +2,22 @@ import React, { FormEvent, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useMutation } from '@apollo/client'
 
-import { FormControl, FormLabel, Input, Textarea } from '@chakra-ui/react'
-import styled from '@emotion/styled'
-import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
+import {
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Textarea,
+} from '@chakra-ui/react'
 import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
 import { useToast } from 'utils/hooks'
 import { Client } from 'interfaces'
 import { Toast } from 'components/common/Toast'
 import { CREATE_CLIENT, UPDATE_CLIENT } from 'queries'
-
-const SubmitButton = styled.button`
-  display: block;
-  margin-top: 1rem;
-`
+import { DatePicker } from '../common/forms/Datepicker'
+import { Button } from '../common/Button'
+import { FileUpload } from '../common/forms/FileUpload'
 
 type ClientProps = {
   client?: Client
@@ -197,73 +198,68 @@ export const ClientForm: React.FC<ClientProps> = ({ client }) => {
         setDisplayToast={setDisplayToast}
       />
       <form onChange={() => setHasFormChanged(true)}>
-        <FormControl id="clientName">
-          <FormLabel>Client Name</FormLabel>
-          <Input
-            data-testid="client-name-field"
-            type="text"
-            placeholder="e.g Ascendum"
-            value={clientName}
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setClientName(e.currentTarget.value)
-            }
-          />
-        </FormControl>
-        <FormControl id="description">
-          <FormLabel>Description</FormLabel>
-          <Textarea
-            data-testid="description-field"
-            placeholder="A description of the client"
-            onChange={(e: FormEvent<HTMLTextAreaElement>) =>
-              setDescription(e.currentTarget.value)
-            }
-            value={description}
-          />
-        </FormControl>
-        <FormControl id="logoUrl" data-testid="logo-url-field">
-          <FormLabel>Description</FormLabel>
-          <Textarea
-            placeholder="A description of the client"
-            onChange={(e: FormEvent<HTMLTextAreaElement>) =>
-              setLogoUrl(e.currentTarget.value)
-            }
-            value={logoUrl}
-          />
-        </FormControl>
-        <FormControl id="startDate">
-          <FormLabel>Start Date</FormLabel>
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date) => setStartDate(date)}
-          ></DatePicker>
-        </FormControl>
-        <FormControl id="logoUrl">
-          <FormLabel>Description</FormLabel>
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date) => setStartDate(date)}
-          ></DatePicker>
-        </FormControl>
-        <FormControl id="endDate">
-          <FormLabel>End Date (Optional)</FormLabel>
-          <DatePicker
-            selected={endDate}
-            onChange={(date: Date) => setEndDate(date)}
-          ></DatePicker>
-        </FormControl>
-
+        <Stack spacing="4" marginBottom="8">
+          <FormControl id="clientName">
+            <FormLabel>Client Name</FormLabel>
+            <Input
+              data-testid="client-name-field"
+              type="text"
+              placeholder="e.g Ascendum"
+              value={clientName}
+              onChange={(e: FormEvent<HTMLInputElement>) =>
+                setClientName(e.currentTarget.value)
+              }
+            />
+          </FormControl>
+          <FormControl id="description">
+            <FormLabel>Description</FormLabel>
+            <Textarea
+              data-testid="description-field"
+              placeholder="A description of the client"
+              onChange={(e: FormEvent<HTMLTextAreaElement>) =>
+                setDescription(e.currentTarget.value)
+              }
+              value={description}
+            />
+          </FormControl>
+          <FormControl id="logoUrl" data-testid="logo-url-field">
+            <FormLabel>Logo URL</FormLabel>
+            <FileUpload />
+            <Textarea
+              placeholder="A description of the client"
+              onChange={(e: FormEvent<HTMLTextAreaElement>) =>
+                setLogoUrl(e.currentTarget.value)
+              }
+              value={logoUrl}
+            />
+          </FormControl>
+          <FormControl id="startDate">
+            <FormLabel>Start Date</FormLabel>
+            <DatePicker
+              selected={startDate}
+              onChange={(date: Date) => setStartDate(date)}
+            ></DatePicker>
+          </FormControl>
+          <FormControl id="endDate">
+            <FormLabel>End Date (Optional)</FormLabel>
+            <DatePicker
+              selected={endDate}
+              onChange={(date: Date) => setEndDate(date)}
+            ></DatePicker>
+          </FormControl>
+        </Stack>
         {id ? (
-          <SubmitButton
+          <Button
             name="Update"
             disabled={!hasFormChanged}
             onClick={updateClientById}
           >
             Update
-          </SubmitButton>
+          </Button>
         ) : (
-          <SubmitButton name="Submit" onClick={createNewClient}>
+          <Button name="Submit" onClick={createNewClient}>
             Submit
-          </SubmitButton>
+          </Button>
         )}
       </form>
     </>
