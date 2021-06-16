@@ -23,6 +23,10 @@ type ContainerProps = {
   display: boolean
 }
 
+type ResourceSubtitleProps = {
+  isRoleSubtitle: boolean
+}
+
 const Container = styled.div<ContainerProps>`
   display: ${(props) => (props.display ? 'block' : 'none')};
   margin: 0 1rem;
@@ -56,8 +60,8 @@ const BackgroundGridColumn = styled.div`
 const ResourceTitleColumn = styled.div`
   display: flex;
   align-items: flex-start;
+  justify-content: center;
   flex-direction: column;
-  text-align: center;
   padding: 0.7rem 0;
   border-bottom: 1px solid #555;
   border-right: 1px solid #555;
@@ -111,8 +115,10 @@ const ResourceTileTitle = styled.div`
   font-weight: 700;
 `
 
-const ResourceSubtitle = styled.div`
+const ResourceSubtitle = styled.div<ResourceSubtitleProps>`
+  color: ${(props) => (props.isRoleSubtitle ? '#000000' : '#808080')};
   font-size: 0.8rem;
+  font-weight: 400;
 `
 
 const WeekContainer = styled.div`
@@ -151,7 +157,6 @@ export const ResourceAllocationProjectView = ({
   project,
 }: ResourceAllocationProjectViewProps) => {
   const { resourceAllocations } = project
-  const [titles, setTitles] = useState<Array<string>>([])
   const [activeDate, setActiveDate] = useState<Date>(new Date())
   const [activeDay, setActiveDay] = useState<number>(1)
   const [activeMonth, setActiveMonth] = useState<number>(1)
@@ -194,16 +199,8 @@ export const ResourceAllocationProjectView = ({
   }
 
   useEffect(() => {
-    console.log('PROJECT: ', project)
-    console.log('RESOURCE ALLOCATIONS: ', resourceAllocations)
-    const _titles = resourceAllocations?.map((ra: any) => ra.resource.title)
-    const titlesSet = Array.from(new Set(_titles))
-    setTitles(titlesSet)
-  }, [project])
-
-  useEffect(() => {
     updateDateVariables(activeDate)
-  }, [activeDate, titles])
+  }, [activeDate])
 
   useEffect(() => {
     let tempArray = []
@@ -301,6 +298,30 @@ export const ResourceAllocationProjectView = ({
     return percent
   }
 
+  const displayResourceAllocation = (assignment: ResourceAssignment) => {
+    return (
+      isInDateRange(activeDate, assignment.startDate, assignment.endDate) ||
+      isInDateRange(
+        assignment.startDate,
+        startOfCurrentWeek,
+        endOfCurrentWeek,
+      ) ||
+      isInDateRange(assignment.endDate, startOfCurrentWeek, endOfCurrentWeek)
+    )
+  }
+
+  const displayResourceAllocationRow = (assignments: ResourceAssignment[]) => {
+    let display = false
+    assignments?.map((assignment: ResourceAssignment) => {
+      if (displayResourceAllocation(assignment)) {
+        display = true
+        return
+      }
+    })
+
+    return display
+  }
+
   return (
     <Container display={resourceAllocations?.length > 0}>
       <WeekContainer>
@@ -331,60 +352,52 @@ export const ResourceAllocationProjectView = ({
             </WeekDayTileContainer>
           </WeekDayColumn>
         ))}
-        {resourceAllocations.map((r: ResourceAllocation) => (
-          <>
-            <ResourceTitleColumn>
-              <ResourceTileTitle>{r.role}</ResourceTileTitle>
-              <ResourceSubtitle>
-                {formatDate(r.startDate, 'MM/dd/yyyy')} -{' '}
-                {r.endDate ? formatDate(r.endDate, 'MM/dd/yyyy') : 'N/A'}
-              </ResourceSubtitle>
-            </ResourceTitleColumn>
-            <ResourceAllocationRow>
-              {r.assignments.map(
-                (assignment: ResourceAssignment) =>
-                  (isInDateRange(
-                    activeDate,
-                    assignment.startDate,
-                    assignment.endDate,
-                  ) ||
-                    isInDateRange(
-                      assignment.startDate,
-                      startOfCurrentWeek,
-                      endOfCurrentWeek,
-                    ) ||
-                    isInDateRange(
-                      assignment.endDate,
-                      startOfCurrentWeek,
-                      endOfCurrentWeek,
-                    )) && (
-                    <ResourceTile
-                      margin={getResourceTileMargin(
-                        assignment.startDate,
-                        assignment.endDate,
-                      )}
-                      width={getResourceTileWidth(
-                        assignment.startDate,
-                        assignment.endDate,
-                      )}
-                    >
-                      <ResourceTileTitle>
-                        {assignment.resource.preferredName ||
-                          assignment.resource.firstName}{' '}
-                        {assignment.resource.lastName}
-                      </ResourceTileTitle>
-                      <ResourceSubtitle>
-                        {formatDate(assignment.startDate, 'MM/dd/yyyy')} -{' '}
-                        {r.endDate
-                          ? formatDate(assignment.endDate, 'MM/dd/yyyy')
-                          : 'No scheduled end date'}
-                      </ResourceSubtitle>
-                    </ResourceTile>
-                  ),
-              )}
-            </ResourceAllocationRow>
-          </>
-        ))}
+        {resourceAllocations.map(
+          (r: ResourceAllocation) =>
+            displayResourceAllocationRow(r.assignments) && (
+              <>
+                <ResourceTitleColumn>
+                  <ResourceTileTitle>{r.role}</ResourceTileTitle>
+                  <ResourceSubtitle isRoleSubtitle={true}>
+                    {formatDate(r.startDate, 'MM/dd/yyyy')} -{' '}
+                    {r.endDate ? formatDate(r.endDate, 'MM/dd/yyyy') : 'N/A'}
+                  </ResourceSubtitle>
+                </ResourceTitleColumn>
+                <ResourceAllocationRow>
+                  {r.assignments.map(
+                    (assignment: ResourceAssignment) =>
+                      displayResourceAllocation(assignment) && (
+                        <ResourceTile
+                          margin={getResourceTileMargin(
+                            assignment.startDate,
+                            assignment.endDate,
+                          )}
+                          width={getResourceTileWidth(
+                            assignment.startDate,
+                            assignment.endDate,
+                          )}
+                        >
+                          <ResourceTileTitle>
+                            {assignment.resource.preferredName ||
+                              assignment.resource.firstName}{' '}
+                            {assignment.resource.lastName}
+                          </ResourceTileTitle>
+                          <ResourceSubtitle isRoleSubtitle={false}>
+                            {assignment.percentage + '% allocated'}
+                          </ResourceSubtitle>
+                          <ResourceSubtitle isRoleSubtitle={false}>
+                            {formatDate(assignment.startDate, 'MM/dd/yyyy')} -{' '}
+                            {r.endDate
+                              ? formatDate(assignment.endDate, 'MM/dd/yyyy')
+                              : 'No scheduled end date'}
+                          </ResourceSubtitle>
+                        </ResourceTile>
+                      ),
+                  )}
+                </ResourceAllocationRow>
+              </>
+            ),
+        )}
       </RAProjectViewContainer>
     </Container>
   )
