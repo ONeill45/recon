@@ -1,4 +1,5 @@
 import '../styles/globals.css'
+import '../styles/react-datepicker.css'
 import Head from 'next/head'
 import { AppProps } from 'next/app'
 import {
@@ -13,7 +14,7 @@ import React from 'react'
 import { chakraTheme } from '../styles/theme'
 import { ColorModeScript } from '@chakra-ui/react'
 
-const App = ({ Component, pageProps }: AppProps) => {
+const App: React.FC<AppProps> = ({ Component, pageProps }) => {
   return (
     <>
       <Head>
