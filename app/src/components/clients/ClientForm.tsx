@@ -17,7 +17,6 @@ import { Toast } from 'components/common/Toast'
 import { CREATE_CLIENT, UPDATE_CLIENT } from 'queries'
 import { DatePicker } from '../common/forms/Datepicker'
 import { Button } from '../common/Button'
-import { FileUpload } from '../common/forms/FileUpload'
 
 type ClientProps = {
   client?: Client
