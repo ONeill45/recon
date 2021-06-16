@@ -37,7 +37,7 @@ export const FilterCategory: React.FC<filterCategoryProps> = ({
   onChange,
   filterItems,
 }) => {
-  const { setFieldValue, setValues, handleSubmit, values } = useFormik<
+  const { setFieldValue, handleSubmit, values } = useFormik<
     Record<string, any>
   >({
     initialValues: {},
@@ -138,7 +138,7 @@ export const FilterCategory: React.FC<filterCategoryProps> = ({
             <FormLabel>{item.label}</FormLabel>
             <Stack spacing="2">
               {items &&
-                items.map((name: string, i: number) => (
+                items.map((name: string) => (
                   <Checkbox
                     key={name}
                     id={`${item.type}-${item.field}-${name}`}
