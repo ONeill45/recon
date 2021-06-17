@@ -60,7 +60,10 @@ export const FilterItemLabel = styled.label`
 
 export const FilterItemInput = styled.input<filterInputProps>`
   margin-left: 0.3rem;
-  width: ${(props: any) => (props.isDate ? '50%' : 'auto')};
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 0.5rem;
+  width: ${(props: any) => (props.isDate ? '60%' : 'auto')};
   border: ${(props: any) => (props.isInvalidDate ? '3px solid red' : 'auto')};
 
   &:focus {

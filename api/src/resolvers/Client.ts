@@ -1,5 +1,5 @@
 import { Query, Resolver, Mutation, Arg, Args } from 'type-graphql'
-import { LessThan, ILike, MoreThan, getRepository } from 'typeorm'
+import { ILike } from 'typeorm'
 import { Client } from '../models'
 import { CreateClientInput, UpdateClientInput } from '../inputs'
 import { GetClientsWithFilter } from '../filters'

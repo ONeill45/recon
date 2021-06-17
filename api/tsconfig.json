@@ -13,6 +13,7 @@
     "noImplicitReturns": true,
     "noImplicitThis": false,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "baseUrl": "/",
     "paths": {
       "*": ["node_modules/*"]
