@@ -176,15 +176,20 @@ export class ResourceResolver {
       textSearchWhere = textSearchWhere.concat(updatedWhere)
     }
 
-    const [resources, count] = await Resource.findAndCount({
-      where: textSearchWhere,
+    const query: any = {
       order: {
         firstName: 'ASC',
       },
       skip: skip,
       take: take,
       relations: ['resourceAllocations'],
-    })
+    }
+
+    if (Object.keys(filter).length !== 0) {
+      query.where = textSearchWhere
+    }
+
+    const [resources, count] = await Resource.findAndCount(query)
 
     return {
       resources,

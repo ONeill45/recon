@@ -6,9 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint pages/**/*.{ts,tsx}",
-    "lint-fix": "eslint --fix pages/**/*.{ts,tsx}",
-    "test": "jest -c test/jest.config.js --no-cache --runInBand --forceExit --detectOpenHandles"
+    "lint": "eslint src/pages/**/*.{ts,tsx}",
+    "lint-fix": "eslint --fix src/pages/**/*.{ts,tsx}",
+    "test": "jest -c test/jest.config.js --no-cache --runInBand --forceExit --detectOpenHandles --env=jsdom"
   },
   "dependencies": {
     "@apollo/client": "^3.3.7",
