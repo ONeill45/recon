@@ -63,7 +63,7 @@ const ResourceTitleColumn = styled.div`
   justify-content: center;
   flex-direction: column;
   padding: 0.7rem 0;
-  border-bottom: 1px solid #555;
+  border-bottom: 2px solid #000;
   border-right: 1px solid #555;
 `
 
@@ -73,7 +73,7 @@ const ResourceAllocationRow = styled.div`
   grid-column: 2 / 9;
   padding: 0.7rem 0;
   background: transparent;
-  border-bottom: 1px solid #aaa;
+  border-bottom: 2px solid #000;
 `
 
 const WeekDayColumn = styled.div`
