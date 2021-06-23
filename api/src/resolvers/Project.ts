@@ -118,7 +118,7 @@ export class ProjectResolver {
 
   @Mutation(() => Project)
   async updateProject(
-  @Arg('id') id: string,
+    @Arg('id') id: string,
     @Arg('data') data: UpdateProjectInput,
   ) {
     const project = await Project.findOne({ id })
