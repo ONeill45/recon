@@ -76,9 +76,6 @@ export const Projects: React.FC = () => {
     getAllProjects({ variables: filter })
   }, [filter, getAllProjects])
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error.message}</p>
-
   const handleOnFilter = (queryFilter: any) => {
     if (!queryFilter.hasOwnProperty('searchItem')) {
       queryFilter['searchItem'] = searchText
@@ -92,35 +89,42 @@ export const Projects: React.FC = () => {
     })
   }
 
-  console.log('data : ', data)
   const { projects } = data
 
-  return (
-    <>
-      <PageHeader headerText="Projects">
-        <LinkButton href="/projects/project" rightIcon={<FaPlus />}>
-          Create
-        </LinkButton>
-        <FilterPanel
-          setSearchText={setSearchText}
-          page={page}
-          onFilter={handleOnFilter}
-          filterItems={{
-            clientNames,
-            projectConfidence,
-            projectPriorities,
-            projectTypes,
-          }}
-        />
-      </PageHeader>
-      <div className={styles.container}>
-        <CardsContainer>
-          {projects &&
-            projects.map((project: Project) => {
-              return <ProjectCard project={project} key={project.id} />
-            })}
-        </CardsContainer>
-      </div>
-    </>
-  )
+  if (error) {
+    return <p>Error: {error.message}</p>
+  } else if (data) {
+    return (
+      <>
+        <PageHeader headerText="Projects">
+          <LinkButton href="/projects/project" rightIcon={<FaPlus />}>
+            Create
+          </LinkButton>
+          <FilterPanel
+            setSearchText={setSearchText}
+            page={page}
+            onFilter={handleOnFilter}
+            filterItems={{
+              clientNames,
+              projectConfidence,
+              projectPriorities,
+              projectTypes,
+            }}
+          />
+        </PageHeader>
+        <div className={styles.container}>
+          <CardsContainer>
+            {projects &&
+              projects.map((project: Project) => {
+                return <ProjectCard project={project} key={project.id} />
+              })}
+          </CardsContainer>
+        </div>
+      </>
+    )
+  } else if (loading) {
+    return <p>Loading...</p>
+  } else {
+    return <p></p>
+  }
 }
