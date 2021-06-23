@@ -37,12 +37,14 @@ describe('ResourceResolver', () => {
   describe('resources()', () => {
     const query = `{
       resources {
-        id
-        firstName
-        lastName
-        title
-        startDate
-        terminationDate
+        resources {
+          id
+          firstName
+          lastName
+          title
+          startDate
+          terminationDate
+        }
       }
     }`
     it('should return an empty array if no resources exist', async () => {
@@ -52,7 +54,9 @@ describe('ResourceResolver', () => {
 
       expect(response).toEqual({
         data: {
-          resources: [],
+          resources: {
+            resources: [],
+          },
         },
       })
     })
@@ -67,26 +71,32 @@ describe('ResourceResolver', () => {
         startDate,
         terminationDate,
       } = resource
+
       await Department.insert(department)
       await Resource.insert(resource)
+
       const response = await gqlCall({
         source: query,
       })
 
-      expect(response).toMatchObject({
-        data: {
-          resources: [
-            {
-              id,
-              firstName,
-              lastName,
-              title,
-              startDate: new Date(startDate).toISOString(),
-              terminationDate,
+      if (response) {
+        expect(response).toMatchObject({
+          data: {
+            resources: {
+              resources: [
+                {
+                  id,
+                  firstName,
+                  lastName,
+                  title,
+                  startDate: new Date(startDate).toISOString(),
+                  terminationDate,
+                },
+              ],
             },
-          ],
-        },
-      })
+          },
+        })
+      }
     })
     it('should not return deleted resources', async () => {
       const department = DepartmentFactory.build()
@@ -104,7 +114,9 @@ describe('ResourceResolver', () => {
 
       expect(response).toMatchObject({
         data: {
-          resources: [],
+          resources: {
+            resources: [],
+          },
         },
       })
     })
@@ -249,18 +261,23 @@ describe('ResourceResolver', () => {
 
     it('should return resource if the search text matches the first name of a resource', async () => {
       const getResourceWithFirstNameQuery = (searchItem: string) => `{
-        resource (searchItem: "${searchItem}") {
-          id
-          firstName
-          lastName
-          title
-          startDate
-          terminationDate
+        resources (searchItem: "${searchItem}") {
+          resources {
+            id
+            firstName
+            lastName
+            title
+            startDate
+            terminationDate
+          }
         }
       }`
-      
+
       const department = DepartmentFactory.build()
-      const resource = ResourceFactory().build({ department, firstName: 'Kealoha' })
+      const resource = ResourceFactory().build({
+        department,
+        firstName: 'Kealoha',
+      })
 
       await Department.insert(department)
       await Resource.insert(resource)
@@ -280,20 +297,21 @@ describe('ResourceResolver', () => {
 
       expect(response).toMatchObject({
         data: {
-          resource: {
-            id,
-            firstName,
-            lastName,
-            title,
-            startDate,
-            terminationDate,
+          resources: {
+            resources: [
+              {
+                id,
+                firstName,
+                lastName,
+                title,
+                startDate,
+                terminationDate,
+              },
+            ],
           },
         },
       })
-
-      }
-    )
-  
+    })
 
     it('should not return a deleted resource', async () => {
       const department = DepartmentFactory.build()

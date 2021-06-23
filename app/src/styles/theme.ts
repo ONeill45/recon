@@ -38,6 +38,25 @@ export const chakraTheme = extendTheme({
   config: {
     useSystemColorMode: true,
   },
+  components: {
+    Checkbox: {
+      defaultProps: {
+        colorScheme: 'primary',
+      },
+    },
+    Accordion: {
+      parts: ['button'],
+      baseStyle: ({ colorMode }) => ({
+        button: {
+          _expanded: {
+            color: colorMode === 'dark' ? 'gray.800' : 'white',
+            backgroundColor:
+              colorMode === 'dark' ? 'primary.200' : 'primary.500',
+          },
+        },
+      }),
+    },
+  },
   colors: {
     primary: {
       50: '#ffeae3',
