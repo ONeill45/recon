@@ -35,17 +35,11 @@ const errorMocks = [
 ]
 
 describe('Projects page test', () => {
-<<<<<<< HEAD
   it('should render projects page and display Loading...', async () => {
     const { getByText, container } = await render(Projects, {}, mocks)
     waitFor(() => expect(getByText('Loading...')).toBeVisible(), {
       container: container,
     })
-=======
-  it('should render projects page and display filter sidebar', async () => {
-    const { getByTestId } = await render(Projects, {}, mocks)
-    expect(getByTestId('FilterPanelButton')).toBeVisible()
->>>>>>> RCN-55
   })
   it('should fetch all projects and display their cards', async () => {
     const { getByText, getByTestId } = await render(Projects, {}, mocks)
