@@ -75,6 +75,6 @@ describe('Client page test', () => {
 
     const { getByRole } = await render(Client, {}, mocks_withoutId)
 
-    expect(getByRole('button', { name: 'Submit' })).toBeVisible()
+    expect(getByRole('button', { name: 'Create' })).toBeVisible()
   })
 })
