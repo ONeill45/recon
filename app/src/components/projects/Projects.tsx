@@ -9,6 +9,7 @@ import { FilterPanel } from 'components/FilterPanel'
 import { LinkButton } from 'components/common/Button'
 import { PageHeader } from 'components/common/PageHeader'
 import { ProjectCard } from 'components/projects/ProjectCard'
+import { Spinner } from '@chakra-ui/react'
 
 export const Projects: React.FC = () => {
   const [filter, setFilter] = useState({})
@@ -21,17 +22,15 @@ export const Projects: React.FC = () => {
   const [projectTypes, setProjectTypes] = useState<Array<string>>([])
   const projectConfidence: Array<string> = ['0', '100']
 
-  const [data, setData] = useState<{ [key: string]: any }>({})
-
-  const [getAllProjects, { loading }] = useLazyQuery(GET_PROJECTS, {
-    fetchPolicy: 'network-only',
-    onCompleted: (res: Array<{ [key: string]: any }>) => {
-      setData(res)
+  const [getAllProjects, { loading = true, data }] = useLazyQuery(
+    GET_PROJECTS,
+    {
+      fetchPolicy: 'network-only',
+      onError: (err: any) => {
+        setError(err)
+      },
     },
-    onError: (err: any) => {
-      setError(err)
-    },
-  })
+  )
 
   const [getClientNames] = useLazyQuery(GET_ALL_CLIENTS_NAME, {
     fetchPolicy: 'network-only',
@@ -71,8 +70,6 @@ export const Projects: React.FC = () => {
   }, [searchText])
 
   useEffect(() => {
-    setData({})
-    setError(undefined)
     getAllProjects({ variables: filter })
   }, [filter, getAllProjects])
 
@@ -89,42 +86,46 @@ export const Projects: React.FC = () => {
     })
   }
 
-  const { projects } = data
+  const projects = data?.projects
 
-  if (error) {
-    return <p>Error: {error.message}</p>
-  } else if (data) {
-    return (
-      <>
-        <PageHeader headerText="Projects">
-          <LinkButton href="/projects/project" rightIcon={<FaPlus />}>
-            Create
-          </LinkButton>
-          <FilterPanel
-            setSearchText={setSearchText}
-            page={page}
-            onFilter={handleOnFilter}
-            filterItems={{
-              clientNames,
-              projectConfidence,
-              projectPriorities,
-              projectTypes,
-            }}
-          />
-        </PageHeader>
-        <div className={styles.container}>
-          <CardsContainer>
-            {projects &&
-              projects.map((project: Project) => {
-                return <ProjectCard project={project} key={project.id} />
-              })}
-          </CardsContainer>
-        </div>
-      </>
-    )
-  } else if (loading) {
-    return <p>Loading...</p>
-  } else {
+  const renderContent = () => {
+    if (loading || (!data && !error)) {
+      return <p>Loading...</p>
+    } else if (data) {
+      return (
+        <CardsContainer>
+          {projects &&
+            projects.map((project: Project) => {
+              return <ProjectCard project={project} key={project.id} />
+            })}
+        </CardsContainer>
+      )
+    } else if (error) {
+      return <p>Error: {error.message}</p>
+    }
+
     return <p></p>
   }
+
+  return (
+    <>
+      <PageHeader headerText="Projects">
+        <LinkButton href="/projects/project" rightIcon={<FaPlus />}>
+          Create
+        </LinkButton>
+        <FilterPanel
+          setSearchText={setSearchText}
+          page={page}
+          onFilter={handleOnFilter}
+          filterItems={{
+            clientNames,
+            projectConfidence,
+            projectPriorities,
+            projectTypes,
+          }}
+        />
+      </PageHeader>
+      <div className={styles.container}>{renderContent()}</div>
+    </>
+  )
 }
