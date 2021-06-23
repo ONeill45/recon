@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react'
-import { FilterCategory, SearchBar } from './'
+import React, { FormEvent, useMemo } from 'react'
+import { FilterCategory } from './'
 import {
   Portal,
   Drawer,
@@ -10,6 +10,8 @@ import {
   DrawerBody,
   useDisclosure,
   Stack,
+  Accordion,
+  Input,
 } from '@chakra-ui/react'
 import { FaFilter } from 'react-icons/fa'
 import { Button } from 'components/common/Button'
@@ -91,18 +93,27 @@ export const FilterPanel = (props: FilterPanelProps) => {
             </DrawerHeader>
 
             <DrawerBody>
-              <SearchBar />
-              <SearchBar setSearchText={setSearchText} />
-              {filterCategories.map((property: any) => (
-                <div key={property.title}>
-                  <FilterCategory
-                    title={property.title}
-                    fields={property.children}
-                    filterItems={filterItems}
-                    onChange={onFilter}
-                  />
-                </div>
-              ))}
+              <Input
+                type="text"
+                placeholder="Search..."
+                onChange={(e: FormEvent<HTMLInputElement>) =>
+                  setSearchText && setSearchText(e.currentTarget.value)
+                }
+              />
+
+              {filterCategories.length > 0 && (
+                <Accordion allowToggle allowMultiple marginTop="4">
+                  {filterCategories.map((property) => (
+                    <FilterCategory
+                      title={property.title}
+                      fields={property.children}
+                      filterItems={filterItems}
+                      onChange={onFilter}
+                      key={property.title}
+                    />
+                  ))}
+                </Accordion>
+              )}
             </DrawerBody>
           </DrawerContent>
         </Drawer>
