@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client'
 import { useRouter } from 'next/router'
 import { GET_CLIENT_FROM_ID } from 'queries'
 
-export const Client: React.FC = () => {
+export const ClientDetail: React.FC = () => {
   const router = useRouter()
   const { id } = router.query
 
