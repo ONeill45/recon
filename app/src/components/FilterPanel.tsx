@@ -1,4 +1,4 @@
-import React, { FormEvent, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { FilterCategory } from './'
 import {
   Portal,
@@ -13,6 +13,8 @@ import {
   Accordion,
   Input,
 } from '@chakra-ui/react'
+import debounce from 'lodash.debounce'
+
 import { FaFilter } from 'react-icons/fa'
 import { Button } from 'components/common/Button'
 
@@ -67,6 +69,21 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
     return filterCategoryProperties
   }, [page])
 
+  const searchTextChangeHandler = (value: string) => {
+    setSearchText && setSearchText(value)
+  }
+
+  const debouncedSearchTextHandler = useMemo(
+    () => debounce(searchTextChangeHandler, 500),
+    [setSearchText],
+  )
+
+  useEffect(() => {
+    return () => {
+      debouncedSearchTextHandler.cancel()
+    }
+  }, [])
+
   return (
     <>
       <Button
@@ -99,8 +116,8 @@ export const FilterPanel: React.FC<FilterPanelProps> = ({
               <Input
                 type="text"
                 placeholder="Search..."
-                onChange={(e: FormEvent<HTMLInputElement>) =>
-                  setSearchText && setSearchText(e.currentTarget.value)
+                onChange={(e) =>
+                  debouncedSearchTextHandler(e.currentTarget.value)
                 }
               />
 
