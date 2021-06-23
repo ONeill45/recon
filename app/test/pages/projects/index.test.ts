@@ -34,11 +34,6 @@ const errorMocks = [
 ]
 
 describe('Projects page test', () => {
-  it('should render projects page and display Loading...', async () => {
-    const { getByText } = await render(Projects, {}, mocks, false)
-
-    expect(getByText('Loading...')).toBeVisible()
-  })
   it('should render projects page and display filter sidebar', async () => {
     const { getByTestId } = await render(Projects, {}, mocks)
     expect(getByTestId('FilterPanelButton')).toBeVisible()
