@@ -9,7 +9,6 @@ import { FilterPanel } from 'components/FilterPanel'
 import { LinkButton } from 'components/common/Button'
 import { PageHeader } from 'components/common/PageHeader'
 import { ProjectCard } from 'components/projects/ProjectCard'
-import { Spinner } from '@chakra-ui/react'
 
 export const Projects: React.FC = () => {
   const [filter, setFilter] = useState({})
