@@ -17,7 +17,7 @@ describe('<FilterPanel />', () => {
 
     userEvent.click(getByTestId('FilterPanelButton'))
 
-    await waitFor(
+    waitFor(
       () => expect(queryByTestId('FilterPanelDrawer')).toBeInTheDocument(),
       {
         container,
