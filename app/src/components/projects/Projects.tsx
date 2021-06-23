@@ -72,8 +72,8 @@ export const Projects: React.FC = () => {
     getAllProjects({ variables: filter })
   }, [filter, getAllProjects])
 
-  const handleOnFilter = (queryFilter: any) => {
-    if (!queryFilter.hasOwnProperty('searchItem')) {
+  const handleOnFilter = (queryFilter: Record<string, any>) => {
+    if (!queryFilter['searchItem']) {
       queryFilter['searchItem'] = searchText
     }
     setFilter((prev: any) => {
