@@ -5,4 +5,3 @@ export const loadEnvironmentVariable = (value: any, key: string): string => {
 }
 
 export * from './msal'
-export * from './validateFormFields'
