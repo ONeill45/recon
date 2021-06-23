@@ -41,7 +41,7 @@ const validationSchema = yup
   .shape<Record<keyof ClientFormValues, yup.AnySchema>>({
     clientName: yup.string().required('Client Name is required'),
     description: yup.string().required('Description is required'),
-    logoUrl: yup.string().required('Logo URL is required'),
+    logoUrl: yup.string().optional(),
     startDate: yup.date().required('Start date is required'),
     endDate: yup.date().optional(),
   })

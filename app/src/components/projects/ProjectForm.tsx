@@ -303,7 +303,7 @@ export const ProjectForm: React.FC<ProjectProps> = ({ project }) => {
         isRequired
         isInvalid={Boolean(errors.priority && touched.priority)}
       >
-        <FormLabel>Project Type</FormLabel>
+        <FormLabel>Project Priority</FormLabel>
         <Select
           name="priority"
           value={values.priority}
