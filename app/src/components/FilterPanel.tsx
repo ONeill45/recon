@@ -61,7 +61,7 @@ export const FilterPanel = (props: FilterPanelProps) => {
   const buttonRef = React.useRef(null)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { page, onFilter, filterItems, setSearchText, searchText } = props
+  const { page, onFilter, filterItems, setSearchText } = props
 
   const filterCategories = useMemo(() => {
     if (page) {
