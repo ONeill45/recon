@@ -1,60 +1,97 @@
-import React, { FormEvent, useState, useEffect } from 'react'
+import React from 'react'
 import { useRouter } from 'next/router'
 import { useMutation } from '@apollo/client'
-
+import * as yup from 'yup'
+import { useFormik } from 'formik'
 import {
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
-  Stack,
   Textarea,
 } from '@chakra-ui/react'
-import { validateMutationParams } from 'utils/functions'
+
 import { useMsAccount } from 'utils/hooks'
-import { useToast } from 'utils/hooks'
 import { Client } from 'interfaces'
-import { Toast } from 'components/common/Toast'
 import { CREATE_CLIENT, UPDATE_CLIENT } from 'queries'
 import { DatePicker } from '../common/forms/Datepicker'
-import { Button } from '../common/Button'
+import { displayToast } from '../../utils/toast'
+import { FormContainer } from '../common/forms/FormContainer'
 
-type ClientProps = {
+type ClientFormProps = {
   client?: Client
 }
 
-export const ClientForm: React.FC<ClientProps> = ({ client }) => {
-  const [clientName, setClientName] = useState(client?.clientName || '')
-  const [description, setDescription] = useState(client?.description || '')
-  const [logoUrl, setLogoUrl] = useState(client?.logoUrl || '')
-  const [startDate, setStartDate] = useState(
-    client?.startDate ? new Date(client?.startDate) : new Date(),
-  )
-  const [endDate, setEndDate] = useState<Date | null>(
-    client?.endDate ? new Date(client?.endDate) : null,
-  )
-  const [hasFormChanged, setHasFormChanged] = useState(false)
+type ClientFormValues = {
+  endDate: Date | undefined
+} & Omit<
+  Client,
+  | 'id'
+  | 'endDate'
+  | 'createdBy'
+  | 'createdDate'
+  | 'updatedBy'
+  | 'updatedDate'
+  | 'deletedBy'
+  | 'deletedDate'
+>
+
+const validationSchema = yup
+  .object()
+  .shape<Record<keyof ClientFormValues, yup.AnySchema>>({
+    clientName: yup.string().required('Client Name is required'),
+    description: yup.string().required('Description is required'),
+    logoUrl: yup.string().optional(),
+    startDate: yup.date().required('Start date is required'),
+    endDate: yup.date().optional(),
+  })
+
+export const ClientForm: React.FC<ClientFormProps> = ({ client }) => {
   const id = client?.id
 
   const router = useRouter()
   const account = useMsAccount()
 
+  const {
+    values,
+    setFieldValue,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+    dirty,
+    isSubmitting,
+    setSubmitting,
+    resetForm,
+  } = useFormik<ClientFormValues>({
+    initialValues: {
+      clientName: client?.clientName ?? '',
+      description: client?.description ?? '',
+      logoUrl: client?.logoUrl ?? '',
+      startDate: client?.startDate ? new Date(client.startDate) : new Date(),
+      endDate: client?.endDate ? new Date(client.endDate) : undefined,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      if (client?.id) {
+        updateClientById(values)
+      } else {
+        createNewClient(values)
+      }
+      setSubmitting(false)
+    },
+  })
+
   const [createClient] = useMutation(CREATE_CLIENT)
   const [updateClient] = useMutation(UPDATE_CLIENT)
 
-  const {
-    setDisplayToast,
-    setToastHeader,
-    setUpdateSuccess,
-    displayToast,
-    toastHeader,
-    updateSuccess,
-    toastFields,
-    setToastFields,
-  } = useToast()
-
-  const createNewClient = async (e: FormEvent) => {
-    e.preventDefault()
-
+  const createNewClient = async ({
+    clientName,
+    description,
+    logoUrl,
+    startDate,
+    endDate,
+  }: ClientFormValues) => {
     const mutationVariables = {
       clientName,
       description,
@@ -65,60 +102,38 @@ export const ClientForm: React.FC<ClientProps> = ({ client }) => {
       updatedBy: account?.username,
     }
 
-    const mutationParams = [
-      {
-        clientName: clientName,
-        displayText: 'Client name',
-      },
-      {
-        description: description,
-        displayText: 'Description',
-      },
-      {
-        startDate: startDate,
-        displayText: 'Start date',
-      },
-    ]
+    try {
+      const { data } = await createClient({
+        variables: {
+          id: id,
+          data: mutationVariables,
+        },
+      })
 
-    const toastFuncs = {
-      setDisplayToast,
-      setToastHeader,
-      setUpdateSuccess,
-      setToastFields,
-    }
-
-    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
-
-    if (!isMutationVarNull) {
-      try {
-        const { data } = await createClient({
-          variables: {
-            id: id,
-            data: mutationVariables,
-          },
+      if (data) {
+        displayToast({
+          title: 'Client Created!',
         })
 
-        if (data) {
-          setToastHeader('Successfully created Client!')
-          setToastFields([])
-          setUpdateSuccess(true)
-          setDisplayToast(true)
-          setTimeout(() => {
-            router.push('/clients')
-          }, 3000)
-        }
-      } catch {
-        setToastHeader('Oops! Something went wrong.')
-        setToastFields([])
-        setUpdateSuccess(false)
-        setDisplayToast(true)
+        setTimeout(() => {
+          router.push('/clients')
+        }, 3000)
       }
+    } catch {
+      displayToast({
+        title: 'Oops! Something went wrong.',
+        status: 'error',
+      })
     }
   }
 
-  const updateClientById = async (e: FormEvent) => {
-    e.preventDefault()
-
+  const updateClientById = async ({
+    clientName,
+    description,
+    logoUrl,
+    startDate,
+    endDate,
+  }: ClientFormValues) => {
     const mutationVariables = {
       clientName,
       description,
@@ -127,137 +142,106 @@ export const ClientForm: React.FC<ClientProps> = ({ client }) => {
       endDate,
       updatedBy: account?.username,
     }
+    try {
+      const { data } = await updateClient({
+        variables: {
+          id: id,
+          data: mutationVariables,
+        },
+      })
 
-    const mutationParams = [
-      {
-        clientName: clientName,
-        displayText: 'Client name',
-      },
-      {
-        description: description,
-        displayText: 'Description',
-      },
-      {
-        startDate: startDate,
-        displayText: 'Start date',
-      },
-    ]
-
-    const toastFuncs = {
-      setDisplayToast,
-      setToastHeader,
-      setUpdateSuccess,
-      setToastFields,
-    }
-
-    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
-
-    if (!isMutationVarNull) {
-      try {
-        const { data } = await updateClient({
-          variables: {
-            id: id,
-            data: mutationVariables,
-          },
+      if (data) {
+        displayToast({
+          title: 'Client Updated!',
         })
-
-        if (data) {
-          setToastHeader('Successfully updated Client!')
-          setToastFields([])
-          setUpdateSuccess(true)
-          setDisplayToast(true)
-        }
-      } catch {
-        setToastHeader('Oops! Something went wrong.')
-        setToastFields([])
-        setUpdateSuccess(false)
-        setDisplayToast(true)
+        resetForm({
+          values: values,
+        })
       }
+    } catch {
+      displayToast({
+        title: 'Oops! Something went wrong.',
+        status: 'error',
+      })
     }
   }
 
-  // Added these effects for detecting changes on the date
-  // pickers since they do not trigger a change event on the
-  // <CreateResourceForm> component when they are modified
-  useEffect(() => {
-    setHasFormChanged(true)
-  }, [startDate, endDate])
-
-  useEffect(() => {
-    setHasFormChanged(false)
-  }, [])
-
   return (
-    <>
-      <Toast
-        headerText={toastHeader}
-        fields={toastFields}
-        success={updateSuccess}
-        display={displayToast}
-        setDisplayToast={setDisplayToast}
-      />
-      <form onChange={() => setHasFormChanged(true)}>
-        <Stack spacing="4" marginBottom="8">
-          <FormControl id="clientName">
-            <FormLabel>Client Name</FormLabel>
-            <Input
-              data-testid="client-name-field"
-              type="text"
-              placeholder="e.g Ascendum"
-              value={clientName}
-              onChange={(e: FormEvent<HTMLInputElement>) =>
-                setClientName(e.currentTarget.value)
-              }
-            />
-          </FormControl>
-          <FormControl id="description">
-            <FormLabel>Description</FormLabel>
-            <Textarea
-              data-testid="description-field"
-              placeholder="A description of the client"
-              onChange={(e: FormEvent<HTMLTextAreaElement>) =>
-                setDescription(e.currentTarget.value)
-              }
-              value={description}
-            />
-          </FormControl>
-          <FormControl id="logoUrl" data-testid="logo-url-field">
-            <FormLabel>Logo URL</FormLabel>
-            <Input
-              placeholder="Url of the Logo"
-              onChange={(e) => setLogoUrl(e.currentTarget.value)}
-              value={logoUrl}
-            />
-          </FormControl>
-          <FormControl id="startDate">
-            <FormLabel>Start Date</FormLabel>
-            <DatePicker
-              selected={startDate}
-              onChange={(date: Date) => setStartDate(date)}
-            ></DatePicker>
-          </FormControl>
-          <FormControl id="endDate">
-            <FormLabel>End Date (Optional)</FormLabel>
-            <DatePicker
-              selected={endDate}
-              onChange={(date: Date) => setEndDate(date)}
-            ></DatePicker>
-          </FormControl>
-        </Stack>
-        {id ? (
-          <Button
-            name="Update"
-            disabled={!hasFormChanged}
-            onClick={updateClientById}
-          >
-            Update
-          </Button>
-        ) : (
-          <Button name="Submit" onClick={createNewClient}>
-            Submit
-          </Button>
-        )}
-      </form>
-    </>
+    <FormContainer
+      onSubmit={handleSubmit}
+      submitButtonLabel={id ? 'Update' : 'Create'}
+      disableSubmit={!dirty}
+      isLoading={isSubmitting}
+    >
+      <FormControl
+        id="clientName"
+        isRequired
+        isInvalid={Boolean(errors.clientName && touched.clientName)}
+      >
+        <FormLabel>Client Name</FormLabel>
+        <Input
+          data-testid="client-name-field"
+          type="text"
+          placeholder="e.g Ascendum"
+          value={values.clientName}
+          name="clientName"
+          onChange={handleChange}
+        />
+        <FormErrorMessage>{errors.clientName}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="description"
+        isRequired
+        isInvalid={Boolean(errors.description && touched.description)}
+      >
+        <FormLabel>Description</FormLabel>
+        <Textarea
+          name="description"
+          data-testid="description-field"
+          placeholder="A description of the client"
+          onChange={handleChange}
+          value={values.description}
+        />
+        <FormErrorMessage>{errors.description}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="logoUrl"
+        isRequired
+        isInvalid={Boolean(errors.logoUrl && touched.logoUrl)}
+      >
+        <FormLabel>Logo URL</FormLabel>
+        <Textarea
+          placeholder="Url of the Logo"
+          name="logoUrl"
+          data-testid="logo-url-field"
+          onChange={handleChange}
+          value={values.logoUrl}
+        />
+        <FormErrorMessage>{errors.logoUrl}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="startDate"
+        isRequired
+        isInvalid={Boolean(errors.startDate && touched.startDate)}
+      >
+        <FormLabel>Start Date</FormLabel>
+        <DatePicker
+          selected={values.startDate}
+          onChange={(date: Date) => setFieldValue('startDate', date)}
+        ></DatePicker>
+        <FormErrorMessage>{errors.startDate}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="endDate"
+        isInvalid={Boolean(errors.endDate && touched.endDate)}
+      >
+        <FormLabel>End Date (Optional)</FormLabel>
+        <DatePicker
+          selected={values.endDate}
+          onChange={(date: Date) => setFieldValue('endDate', date)}
+        ></DatePicker>
+        <FormErrorMessage>{errors.endDate}</FormErrorMessage>
+      </FormControl>
+    </FormContainer>
   )
 }

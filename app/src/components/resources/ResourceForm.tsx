@@ -1,67 +1,102 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import React from 'react'
 import { useRouter } from 'next/router'
 import { useMutation, useQuery } from '@apollo/client'
-import styled from '@emotion/styled'
-import DatePicker from 'react-datepicker'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Select,
+} from '@chakra-ui/react'
 
 import { Resource, Department } from 'interfaces'
-import { validateMutationParams } from 'utils/functions'
 import { useMsAccount } from 'utils/hooks'
-import { Toast } from 'components/common/Toast'
-import { useToast } from 'utils/hooks'
 import { UPDATE_RESOURCE, CREATE_RESOURCE, GET_DEPARTMENTS } from 'queries'
+import { DatePicker } from '../common/forms/Datepicker'
+import { displayToast } from '../../utils/toast'
+import { FormContainer } from '../common/forms/FormContainer'
 
-const CreateResourceForm = styled.form`
-  margin: 1rem 0;
-  padding-left: 35%;
-`
-const CreateResourceFormLabel = styled.label`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0.6rem 0;
-`
-
-const CreateResourceFormInput = styled.input`
-  width: 50%;
-  padding: 0.3rem 0.6rem;
-  margin: 0.5rem 0;
-`
-
-const DepartmentSelect = styled.select`
-  width: 50%;
-  padding: 0.3rem 0.6rem;
-  margin: 0.5rem 0;
-`
-
-const SubmitButton = styled.button`
-  display: block;
-  margin-top: 1rem;
-`
-
-type ResourceProps = {
+type ResourceFormProps = {
   resource?: Resource
 }
 
-export const ResourceForm: React.FC<ResourceProps> = ({ resource }) => {
-  const [firstName, setFirstName] = useState(resource?.firstName || '')
-  const [lastName, setLastName] = useState(resource?.lastName || '')
-  const [preferredName, setPreferredName] = useState(
-    resource?.preferredName || '',
-  )
-  const [title, setTitle] = useState(resource?.title || '')
-  const [imageUrl, setImageUrl] = useState(resource?.imageUrl || '')
-  const [email, setEmail] = useState(resource?.email || '')
-  const [startDate, setStartDate] = useState<Date | null>(
-    resource?.startDate ? new Date(resource?.startDate) : new Date(),
-  )
-  const [terminationDate, setTerminationDate] = useState<Date | null>(
-    resource?.terminationDate ? new Date(resource?.terminationDate) : null,
-  )
-  const [department, setDepartment] = useState(resource?.department || null)
+type ResourceFormValues = {
+  terminationDate: Date | undefined
+  departmentId: string
+} & Omit<
+  Resource,
+  | 'id'
+  | 'terminationDate'
+  | 'department'
+  | 'resourceAllocations'
+  | 'createdBy'
+  | 'createdDate'
+  | 'updatedBy'
+  | 'updatedDate'
+  | 'deletedBy'
+  | 'deletedDate'
+>
+
+const validationSchema = yup
+  .object()
+  .shape<Record<keyof ResourceFormValues, yup.AnySchema>>({
+    firstName: yup.string().required('First Name is required'),
+    lastName: yup.string().required('Last Name is required'),
+    preferredName: yup.string().optional(),
+    title: yup.string().required('Title is required'),
+    departmentId: yup.string().required('Department is required'),
+    imageUrl: yup.string().required('Image URL is required'),
+    email: yup
+      .string()
+      .required('Email is required')
+      .email('Must be a valid email address'),
+    startDate: yup.date().required('Start date is required'),
+    terminationDate: yup.date().optional(),
+  })
+
+export const ResourceForm: React.FC<ResourceFormProps> = ({ resource }) => {
+  const {
+    values,
+    setFieldValue,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+    dirty,
+    isSubmitting,
+    setSubmitting,
+    resetForm,
+  } = useFormik<ResourceFormValues>({
+    initialValues: {
+      firstName: resource?.firstName ?? '',
+      lastName: resource?.lastName ?? '',
+      preferredName: resource?.preferredName ?? '',
+      title: resource?.title ?? '',
+      imageUrl: resource?.imageUrl ?? '',
+      email: resource?.email ?? '',
+      departmentId: resource?.department?.id ?? '',
+
+      startDate: resource?.startDate
+        ? new Date(resource.startDate)
+        : new Date(),
+      terminationDate: resource?.terminationDate
+        ? new Date(resource.terminationDate)
+        : undefined,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      if (resource?.id) {
+        updateExistingResource(values)
+      } else {
+        createNewResource(values)
+      }
+      setSubmitting(false)
+    },
+  })
 
   const id = resource?.id
-  const [hasFormChanged, setHasFormChanged] = useState(false)
 
   const router = useRouter()
   const account = useMsAccount()
@@ -69,34 +104,23 @@ export const ResourceForm: React.FC<ResourceProps> = ({ resource }) => {
   const [createResource] = useMutation(CREATE_RESOURCE)
   const [updateResource] = useMutation(UPDATE_RESOURCE)
 
-  const {
-    setDisplayToast,
-    setToastHeader,
-    setUpdateSuccess,
-    displayToast,
-    toastHeader,
-    updateSuccess,
-    toastFields,
-    setToastFields,
-  } = useToast()
-
-  const handleDepartmentInput = (e: ChangeEvent<HTMLSelectElement>) => {
-    setDepartment(
-      departments.find(
-        (department: Department) => e.target.value === department.id,
-      ),
-    )
-  }
-
-  const createNewResource = async (e: FormEvent) => {
-    e.preventDefault()
-
+  const createNewResource = async ({
+    firstName,
+    lastName,
+    preferredName,
+    title,
+    departmentId,
+    imageUrl,
+    email,
+    startDate,
+    terminationDate,
+  }: ResourceFormValues) => {
     const mutationVariables = {
       firstName,
       lastName,
       preferredName,
       title,
-      departmentId: department?.id,
+      departmentId: departmentId,
       imageUrl,
       email,
       startDate,
@@ -105,77 +129,46 @@ export const ResourceForm: React.FC<ResourceProps> = ({ resource }) => {
       createdBy: account?.username,
     }
 
-    const mutationParams = [
-      {
-        firstName: firstName,
-        displayText: 'First name',
-      },
-      {
-        lastName: lastName,
-        displayText: 'Last name',
-      },
-      {
-        title: title,
-        displayText: 'Title',
-      },
-      {
-        department: department?.id,
-        displayText: 'Department name',
-      },
-      {
-        email: email,
-        displayText: 'Email',
-      },
-      {
-        startDate: startDate,
-        displayText: 'Start Date',
-      },
-    ]
+    try {
+      const { data } = await createResource({
+        variables: {
+          data: mutationVariables,
+        },
+      })
 
-    const toastFuncs = {
-      setDisplayToast,
-      setToastHeader,
-      setUpdateSuccess,
-      setToastFields,
-    }
-
-    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
-
-    if (!isMutationVarNull) {
-      try {
-        const { data } = await createResource({
-          variables: {
-            data: mutationVariables,
-          },
+      if (data) {
+        displayToast({
+          title: 'Resource Created!',
         })
-
-        if (data) {
-          setToastHeader('Successfully created Resource!')
-          setToastFields([])
-          setUpdateSuccess(true)
-          setDisplayToast(true)
-          setTimeout(() => {
-            router.push('/resources')
-          }, 3000)
-        }
-      } catch {
-        setToastHeader('Oops! Something went wrong.')
-        setToastFields([])
-        setUpdateSuccess(false)
-        setDisplayToast(true)
+        setTimeout(() => {
+          router.push('/resources')
+        }, 3000)
       }
+    } catch {
+      displayToast({
+        title: 'Oops! Something went wrong.',
+        status: 'error',
+      })
     }
   }
 
-  const updateExistingResource = async (e: FormEvent) => {
-    e.preventDefault()
-
+  const updateExistingResource = async ({
+    firstName,
+    lastName,
+    preferredName,
+    title,
+    departmentId,
+    imageUrl,
+    email,
+    startDate,
+    terminationDate,
+  }: ResourceFormValues) => {
     const mutationVariables = {
       firstName,
       lastName,
       preferredName,
       title,
-      departmentId: department?.id,
+      departmentId,
       imageUrl,
       email,
       startDate,
@@ -183,76 +176,29 @@ export const ResourceForm: React.FC<ResourceProps> = ({ resource }) => {
       updatedBy: account?.username,
     }
 
-    const mutationParams = [
-      {
-        firstName: firstName,
-        displayText: 'First name',
-      },
-      {
-        lastName: lastName,
-        displayText: 'Last name',
-      },
-      {
-        title: title,
-        displayText: 'Title',
-      },
-      {
-        department: department?.id,
-        displayText: 'Department name',
-      },
-      {
-        email: email,
-        displayText: 'Email',
-      },
-      {
-        startDate: startDate,
-        displayText: 'Start Date',
-      },
-    ]
+    try {
+      const { data } = await updateResource({
+        variables: {
+          id: id,
+          data: mutationVariables,
+        },
+      })
 
-    const toastFuncs = {
-      setDisplayToast,
-      setToastHeader,
-      setUpdateSuccess,
-      setToastFields,
-    }
-
-    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
-
-    if (!isMutationVarNull) {
-      try {
-        const { data } = await updateResource({
-          variables: {
-            id: id,
-            data: mutationVariables,
-          },
+      if (data) {
+        displayToast({
+          title: 'Resource Updated!',
         })
-
-        if (data) {
-          setToastHeader('Successfully updated Resource!')
-          setToastFields([])
-          setUpdateSuccess(true)
-          setDisplayToast(true)
-        }
-      } catch {
-        setToastHeader('Oops! Something went wrong.')
-        setToastFields([])
-        setUpdateSuccess(false)
-        setDisplayToast(true)
+        resetForm({
+          values: values,
+        })
       }
+    } catch {
+      displayToast({
+        title: 'Oops! Something went wrong.',
+        status: 'error',
+      })
     }
   }
-
-  // Added these effects for detecting changes on the date
-  // pickers since they do not trigger a change event on the
-  // <CreateResourceForm> component when they are modified
-  useEffect(() => {
-    setHasFormChanged(true)
-  }, [startDate, terminationDate])
-
-  useEffect(() => {
-    setHasFormChanged(false)
-  }, [])
 
   const { data, error } = useQuery(GET_DEPARTMENTS, {
     fetchPolicy: 'network-only',
@@ -260,74 +206,85 @@ export const ResourceForm: React.FC<ResourceProps> = ({ resource }) => {
 
   const { departments = [] } = data || {}
 
-  useEffect(() => {
-    if (departments.length) {
-      if (resource) {
-        const department = departments.find(
-          (d: Department) => d.id === resource.department.id,
-        )
-        setDepartment(department)
-      } else {
-        setDepartment(departments[0])
-      }
-    }
-  }, [departments])
-
   if (error) return <p>Error: {error.message}</p>
 
   return (
-    <>
-      <Toast
-        headerText={toastHeader}
-        fields={toastFields}
-        success={updateSuccess}
-        display={displayToast}
-        setDisplayToast={setDisplayToast}
-      />
-      <CreateResourceForm onChange={() => setHasFormChanged(true)}>
-        <CreateResourceFormLabel>First Name</CreateResourceFormLabel>
-        <CreateResourceFormInput
+    <FormContainer
+      onSubmit={handleSubmit}
+      submitButtonLabel={id ? 'Update' : 'Create'}
+      disableSubmit={!dirty}
+      isLoading={isSubmitting}
+    >
+      <FormControl
+        id="firstName"
+        isRequired
+        isInvalid={Boolean(errors.firstName && touched.firstName)}
+      >
+        <FormLabel>First Name</FormLabel>
+        <Input
+          name="firstName"
           type="text"
           aria-label="first-name"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setFirstName(e.currentTarget.value)
-          }
-          value={firstName}
-        ></CreateResourceFormInput>
-        <CreateResourceFormLabel>Last Name</CreateResourceFormLabel>
-        <CreateResourceFormInput
+          onChange={handleChange}
+          value={values.firstName}
+        />
+        <FormErrorMessage>{errors.firstName}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="lastName"
+        isRequired
+        isInvalid={Boolean(errors.lastName && touched.lastName)}
+      >
+        <FormLabel>Last Name</FormLabel>
+        <Input
+          name="lastName"
           type="text"
           aria-label="last-name"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setLastName(e.currentTarget.value)
-          }
-          value={lastName}
-        ></CreateResourceFormInput>
-        <CreateResourceFormLabel>Preferred Name</CreateResourceFormLabel>
-        <CreateResourceFormInput
+          onChange={handleChange}
+          value={values.lastName}
+        />
+        <FormErrorMessage>{errors.lastName}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="preferredName"
+        isInvalid={Boolean(errors.preferredName && touched.preferredName)}
+      >
+        <FormLabel>Preferred Name</FormLabel>
+        <Input
+          name="preferredName"
           type="text"
           aria-label="preferred-name"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setPreferredName(e.currentTarget.value)
-          }
-          value={preferredName}
-        ></CreateResourceFormInput>
-        <CreateResourceFormLabel>Title</CreateResourceFormLabel>
-        <CreateResourceFormInput
+          onChange={handleChange}
+          value={values.preferredName}
+        />
+        <FormErrorMessage>{errors.preferredName}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="title"
+        isRequired
+        isInvalid={Boolean(errors.title && touched.title)}
+      >
+        <FormLabel>Title</FormLabel>
+        <Input
+          name="title"
           type="text"
           aria-label="title"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setTitle(e.currentTarget.value)
-          }
-          value={title}
-        ></CreateResourceFormInput>
-        <CreateResourceFormLabel>Department</CreateResourceFormLabel>
-        <DepartmentSelect
-          value={department?.id}
+          onChange={handleChange}
+          value={values.title}
+        />
+        <FormErrorMessage>{errors.title}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="departmentId"
+        isRequired
+        isInvalid={Boolean(errors.departmentId && touched.departmentId)}
+      >
+        <FormLabel>Department</FormLabel>
+        <Select
+          name="departmentId"
+          value={values.departmentId}
           aria-label="department-select"
-          onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-            handleDepartmentInput(event)
-          }
+          onChange={handleChange}
         >
           {departments.map((department: Department) => {
             return (
@@ -336,51 +293,64 @@ export const ResourceForm: React.FC<ResourceProps> = ({ resource }) => {
               </option>
             )
           })}
-        </DepartmentSelect>
-        <CreateResourceFormLabel>ImageUrl</CreateResourceFormLabel>
-        <CreateResourceFormInput
+        </Select>
+        <FormErrorMessage>{errors.departmentId}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="imageUrl"
+        isRequired
+        isInvalid={Boolean(errors.imageUrl && touched.imageUrl)}
+      >
+        <FormLabel>Image Url</FormLabel>
+        <Input
+          name="imageUrl"
           type="text"
           aria-label="image-url"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setImageUrl(e.currentTarget.value)
-          }
-          value={imageUrl}
-        ></CreateResourceFormInput>
-        <CreateResourceFormLabel>Email</CreateResourceFormLabel>
-        <CreateResourceFormInput
+          onChange={handleChange}
+          value={values.imageUrl}
+        />
+        <FormErrorMessage>{errors.imageUrl}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="email"
+        isRequired
+        isInvalid={Boolean(errors.email && touched.email)}
+      >
+        <FormLabel>Email</FormLabel>
+        <Input
+          name="email"
           type="text"
           aria-label="email"
-          onChange={(e: FormEvent<HTMLInputElement>) =>
-            setEmail(e.currentTarget.value)
-          }
-          value={email}
-        ></CreateResourceFormInput>
-        <CreateResourceFormLabel>Start Date</CreateResourceFormLabel>
+          onChange={handleChange}
+          value={values.email}
+        />
+        <FormErrorMessage>{errors.email}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="startDate"
+        isRequired
+        isInvalid={Boolean(errors.startDate && touched.startDate)}
+      >
+        <FormLabel>Start Date</FormLabel>
         <DatePicker
-          selected={startDate}
-          onChange={(date: Date) => setStartDate(date)}
+          name="startDate"
+          selected={values.startDate}
+          onChange={(date: Date) => setFieldValue('startDate', date)}
         ></DatePicker>
-        <CreateResourceFormLabel>
-          Termination Date (Optional)
-        </CreateResourceFormLabel>
+        <FormErrorMessage>{errors.startDate}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="terminationDate"
+        isInvalid={Boolean(errors.terminationDate && touched.terminationDate)}
+      >
+        <FormLabel>Termination Date (Optional)</FormLabel>
         <DatePicker
-          selected={terminationDate}
-          onChange={(date: Date) => setTerminationDate(date)}
+          name="terminationDate"
+          selected={values.terminationDate}
+          onChange={(date: Date) => setFieldValue('terminationDate', date)}
         ></DatePicker>
-        {id ? (
-          <SubmitButton
-            name="Update"
-            disabled={!hasFormChanged}
-            onClick={updateExistingResource}
-          >
-            Update
-          </SubmitButton>
-        ) : (
-          <SubmitButton name="Submit" onClick={createNewResource}>
-            Submit
-          </SubmitButton>
-        )}
-      </CreateResourceForm>
-    </>
+        <FormErrorMessage>{errors.terminationDate}</FormErrorMessage>
+      </FormControl>
+    </FormContainer>
   )
 }

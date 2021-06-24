@@ -1,7 +1,7 @@
 import React from 'react'
-import { Client as ClientComponent } from 'components/clients/Client'
+import { ClientDetail } from 'components/clients/ClientDetail'
 
 export const Client: React.FC = () => {
-  return <ClientComponent />
+  return <ClientDetail />
 }
 export default Client

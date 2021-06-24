@@ -1,6 +1,5 @@
-import { waitFor } from '@testing-library/react'
+import { act, fireEvent } from '@testing-library/react'
 import { render, applyMockUseMsal, applyMockUseRouter } from '../../testUtils'
-import userEvent from '@testing-library/user-event'
 import faker from 'faker'
 
 import { CREATE_PROJECT, UPDATE_PROJECT } from 'queries'
@@ -32,21 +31,24 @@ describe('<ProjectForm />', () => {
     const { getByLabelText } = await render(ProjectForm, {}, mocks, false)
 
     const [projectName, client, projectType, priority, confidence] = [
-      'project-name',
+      'project name',
       'client',
-      'project-type',
-      'priority',
+      'project type',
+      'project priority',
       'confidence',
     ].map((text) => getByLabelText(text))
 
-    await waitFor(() => {
-      userEvent.type(projectName, 'Test Project')
-      userEvent.type(client, 'Anthem Healthcare')
-      userEvent.type(projectType, 'internal')
-      userEvent.type(priority, 'High')
-      userEvent.type(confidence, '75')
+    act(() => {
+      fireEvent.change(projectName, { target: { value: 'Test Project' } })
+      fireEvent.change(projectType, { target: { value: 'internal' } })
+      fireEvent.change(priority, { target: { value: 'High' } })
+      fireEvent.keyDown(confidence, { key: 'ArrowRight', code: 'ArrowRight' })
     })
-    await new Promise((resolve) => setTimeout(resolve, 0))
+
+    expect(projectName).toHaveValue('Test Project')
+    expect(projectType).toHaveValue('internal')
+    expect(priority).toHaveValue('High')
+    expect(confidence.parentElement?.querySelector('input')).toHaveValue('1')
   })
 
   it('should update a project with user provided info', async () => {
@@ -72,11 +74,11 @@ describe('<ProjectForm />', () => {
       false,
     )
 
-    expect(getByLabelText('project-name')).toHaveValue(project.projectName)
-    expect(getByLabelText('project-type')).toHaveValue(project.projectType)
-    expect(getByLabelText('confidence')).toHaveValue(String(project.confidence))
-    expect(getByLabelText('priority')).toHaveValue(project.priority)
-
-    await new Promise((resolve) => setTimeout(resolve, 0))
+    expect(getByLabelText('project name')).toHaveValue(project.projectName)
+    expect(getByLabelText('project type')).toHaveValue(project.projectType)
+    expect(
+      getByLabelText('confidence').parentElement?.querySelector('input'),
+    ).toHaveValue(String(project.confidence))
+    expect(getByLabelText('project priority')).toHaveValue(project.priority)
   })
 })
