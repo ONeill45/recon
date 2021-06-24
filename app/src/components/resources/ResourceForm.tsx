@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 import { useMutation, useQuery } from '@apollo/client'
 import styled from '@emotion/styled'
 import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 
 import { Resource, Department } from 'interfaces'
 import { validateMutationParams } from 'utils/functions'
