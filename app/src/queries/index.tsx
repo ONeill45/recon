@@ -30,6 +30,7 @@ export const GET_PROJECTS = gql`
     $confidence: String
     $startDate: DateInput
     $endDate: DateInput
+    $pagination: PaginationInput
   ) {
     projects(
       searchItem: $searchItem
@@ -39,17 +40,21 @@ export const GET_PROJECTS = gql`
       confidence: $confidence
       startDate: $startDate
       endDate: $endDate
+      pagination: $pagination
     ) {
-      id
-      projectName
-      startDate
-      endDate
-      projectType
-      priority
-      confidence
-      client {
-        clientName
+      projects {
+        id
+        projectName
+        startDate
+        endDate
+        projectType
+        priority
+        confidence
+        client {
+          clientName
+        }
       }
+      count
     }
   }
 `
