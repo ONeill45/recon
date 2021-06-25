@@ -3,6 +3,9 @@ import { DateInput } from '../inputs/Date'
 
 @ArgsType()
 export class GetProjectsWithFilter {
+  @Field({ nullable: true })
+  searchItem: string | null
+
   @Field(() => [String], { nullable: true })
   projectTypes: Array<string | null>
 
