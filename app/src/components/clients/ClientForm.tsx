@@ -42,7 +42,7 @@ const validationSchema = yup
     clientName: yup.string().required('Client Name is required'),
     description: yup.string().required('Description is required'),
     logoUrl: yup.string().optional(),
-    startDate: yup.date().required('Start date is required'),
+    startDate: yup.date().required('Start Date is required'),
     endDate: yup.date().optional(),
   })
 
