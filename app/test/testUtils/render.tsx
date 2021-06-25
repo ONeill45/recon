@@ -1,6 +1,10 @@
 import { MockedProvider } from '@apollo/client/testing'
 import { ThemeProvider } from '@emotion/react'
-import { render as rtlRender, waitFor } from '@testing-library/react'
+import {
+  render as rtlRender,
+  RenderResult,
+  waitFor,
+} from '@testing-library/react'
 import { mockTheme } from './mockTheme'
 
 export const render = async (
@@ -9,7 +13,7 @@ export const render = async (
   props: any = {},
   mocks: any = undefined,
   waitForRender = true,
-) => {
+): Promise<RenderResult> => {
   const container = rtlRender(
     mocks === undefined ? (
       <ThemeProvider theme={mockTheme}>

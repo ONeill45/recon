@@ -6,7 +6,7 @@ import { AuditableEntityFactory } from './AuditableEntity'
 export const ClientFactory = () =>
   Factory.define<Client>('Client')
     .extend(AuditableEntityFactory)
-    .attr('id', () => faker.random.uuid())
+    .attr('id', () => faker.datatype.uuid())
     .attr('clientName', () => faker.company.companyName())
     .attr('description', () => faker.lorem.sentence())
     .attr('logoUrl', () => faker.image.business())

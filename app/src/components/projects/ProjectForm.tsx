@@ -1,46 +1,30 @@
 import { useRouter } from 'next/router'
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import React from 'react'
 import { gql, useMutation, useQuery } from '@apollo/client'
-import styled from '@emotion/styled'
-import DatePicker from 'react-datepicker'
-import { validateMutationParams } from 'utils/functions'
+import { useFormik } from 'formik'
+import * as yup from 'yup'
+import {
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  Input,
+  Select,
+  Slider,
+  SliderFilledTrack,
+  SliderThumb,
+  SliderTrack,
+} from '@chakra-ui/react'
+
 import { useMsAccount } from 'utils/hooks'
 import { Client, ProjectType, Project } from 'interfaces'
 import { Priority } from 'interfaces/Enum'
-import { Toast } from 'components/common/Toast'
-import { useToast } from 'utils/hooks'
 import { CREATE_PROJECT, UPDATE_PROJECT } from 'queries'
+import { displayToast } from '../../utils/toast'
+import { DatePicker } from '../common/forms/Datepicker'
+import { FormContainer } from '../common/forms/FormContainer'
 
 const ProjectTypeValues = Object.entries(ProjectType).map((a) => a[1])
 const PriorityValues = Object.entries(Priority).map((a) => a[1])
-
-const CreateProjectForm = styled.form`
-  margin: 1rem 0;
-  padding-left: 35%;
-`
-const CreateProjectFormLabel = styled.label`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0.6rem 0;
-`
-
-const CreateProjectFormInput = styled.input`
-  width: 50%;
-  padding: 5px 10px;
-  margin: 8px 0;
-`
-
-const CreateProjectFormInputSelect = styled.select`
-  width: 50%;
-  padding: 5px 10px;
-  margin: 8px 0;
-`
-
-const SubmitButton = styled.button`
-  display: block;
-  margin-top: 1rem;
-`
 
 export const GET_ALL_CLIENTS = gql`
   query {
@@ -55,25 +39,67 @@ type ProjectProps = {
   project?: Project
 }
 
+type ProjectFormValues = {
+  endDate: Date | undefined
+  clientId: string
+} & Omit<
+  Project,
+  | 'id'
+  | 'endDate'
+  | 'createdBy'
+  | 'createdDate'
+  | 'updatedBy'
+  | 'updatedDate'
+  | 'deletedBy'
+  | 'deletedDate'
+  | 'client'
+  | 'resourceAllocations'
+>
+
+const validationSchema = yup
+  .object()
+  .shape<Record<keyof ProjectFormValues, yup.AnySchema>>({
+    projectName: yup.string().required('Project Name is required'),
+    clientId: yup.string().required('Description is required'),
+    projectType: yup.string().required('Project Type is required'),
+    priority: yup.string().required('Priority is required'),
+    confidence: yup.number().required('Project Type is required'),
+    startDate: yup.date().required('Start date is required'),
+    endDate: yup.date().optional(),
+  })
+
 export const ProjectForm: React.FC<ProjectProps> = ({ project }) => {
-  const [projectName, setProjectName] = useState(project?.projectName || '')
-  const [client, setClient] = useState(project?.client || undefined)
-  const [projectType, setProjectType] = useState<string>(
-    project?.projectType || ProjectTypeValues[0],
-  )
-  const [priority, setPriority] = useState<string>(
-    project?.priority || PriorityValues[0],
-  )
-  const [confidence, setConfidence] = useState(
-    Number(project?.confidence || 50),
-  )
-  const [startDate, setStartDate] = useState(
-    project?.startDate ? new Date(project.startDate) : new Date(),
-  )
-  const [endDate, setEndDate] = useState<Date | null>(
-    project?.endDate ? new Date(project.endDate) : null,
-  )
-  const [hasMadeChanges, setHasFormChanged] = useState(false)
+  const {
+    values,
+    setFieldValue,
+    handleSubmit,
+    handleChange,
+    errors,
+    touched,
+    dirty,
+    isSubmitting,
+    setSubmitting,
+    resetForm,
+  } = useFormik<ProjectFormValues>({
+    initialValues: {
+      projectName: project?.projectName ?? '',
+      clientId: project?.client?.id ?? '',
+      projectType: project?.projectType ?? ProjectTypeValues[0],
+      priority: project?.priority ?? PriorityValues[0],
+      confidence: project?.confidence ?? 0,
+      startDate: project?.startDate ? new Date(project.startDate) : new Date(),
+      endDate: project?.endDate ? new Date(project.endDate) : undefined,
+    },
+    validationSchema,
+    onSubmit: (values) => {
+      if (project?.id) {
+        updateExistingProject(values)
+      } else {
+        createNewProject(values)
+      }
+      setSubmitting(false)
+    },
+  })
 
   const router = useRouter()
   const account = useMsAccount()
@@ -81,32 +107,18 @@ export const ProjectForm: React.FC<ProjectProps> = ({ project }) => {
   const [createProject] = useMutation(CREATE_PROJECT)
   const [updateProject] = useMutation(UPDATE_PROJECT)
 
-  const {
-    setDisplayToast,
-    setToastHeader,
-    setUpdateSuccess,
-    displayToast,
-    toastHeader,
-    updateSuccess,
-    toastFields,
-    setToastFields,
-  } = useToast()
-
-  const handleClientInput = (e: ChangeEvent<HTMLSelectElement>) => {
-    setClient(clients.find((client: Client) => e.target.value === client.id))
-  }
-
-  const createNewProject = async (e: FormEvent) => {
-    e.preventDefault()
-
-    if (!client) {
-      alert('Client cannot be empty')
-      return
-    }
-
+  const createNewProject = async ({
+    projectName,
+    clientId,
+    projectType,
+    priority,
+    confidence,
+    startDate,
+    endDate,
+  }: ProjectFormValues) => {
     const mutationVariables = {
       projectName,
-      clientId: client.id,
+      clientId,
       startDate,
       endDate,
       projectType,
@@ -116,77 +128,41 @@ export const ProjectForm: React.FC<ProjectProps> = ({ project }) => {
       updatedBy: account?.username,
     }
 
-    const mutationParams = [
-      {
-        projectName: projectName,
-        displayText: 'Project name',
-      },
-      {
-        clientId: client.id,
-        displayText: 'Client name',
-      },
-      {
-        startDate: startDate,
-        displayText: 'Start date',
-      },
-      {
-        projectType: projectType,
-        displayText: 'Project type',
-      },
-      {
-        priority: priority,
-        displayText: 'Priority',
-      },
-      {
-        confidence: confidence,
-        displayText: 'Confidence',
-      },
-    ]
+    try {
+      const { data } = await createProject({
+        variables: {
+          data: mutationVariables,
+        },
+      })
 
-    const toastFuncs = {
-      setDisplayToast,
-      setToastHeader,
-      setUpdateSuccess,
-      setToastFields,
-    }
-
-    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
-
-    if (!isMutationVarNull) {
-      try {
-        const { data } = await createProject({
-          variables: {
-            data: mutationVariables,
-          },
+      if (data) {
+        displayToast({
+          title: 'Project Created!',
         })
-
-        if (data) {
-          setToastHeader('Successfully created Project!')
-          setToastFields([])
-          setUpdateSuccess(true)
-          setDisplayToast(true)
-          setTimeout(() => {
-            router.push('/projects')
-          }, 3000)
-        }
-      } catch {
-        setToastHeader('Oops! Something went wrong.')
-        setToastFields([])
-        setUpdateSuccess(false)
-        setDisplayToast(true)
+        setTimeout(() => {
+          router.push('/projects')
+        }, 3000)
       }
+    } catch {
+      displayToast({
+        title: 'Oops! Something went wrong.',
+        status: 'error',
+      })
     }
   }
 
-  const updateExistingProject = async (e: FormEvent) => {
-    e.preventDefault()
-    if (!client) {
-      alert('Client cannot be empty')
-      return
-    }
+  const updateExistingProject = async ({
+    projectName,
+    clientId,
+    projectType,
+    priority,
+    confidence,
+    startDate,
+    endDate,
+  }: ProjectFormValues) => {
     const mutationVariables = {
       projectName,
-      clientId: client.id,
+      clientId,
       startDate,
       endDate,
       projectType,
@@ -195,63 +171,27 @@ export const ProjectForm: React.FC<ProjectProps> = ({ project }) => {
       updatedBy: account?.username,
     }
 
-    const mutationParams = [
-      {
-        projectName: projectName,
-        displayText: 'Project name',
-      },
-      {
-        clientId: client.id,
-        displayText: 'Client name',
-      },
-      {
-        startDate: startDate,
-        displayText: 'Start date',
-      },
-      {
-        projectType: projectType,
-        displayText: 'Project type',
-      },
-      {
-        priority: priority,
-        displayText: 'Priority',
-      },
-      {
-        confidence: confidence,
-        displayText: 'Confidence',
-      },
-    ]
+    try {
+      const { data } = await updateProject({
+        variables: {
+          id: project?.id,
+          data: mutationVariables,
+        },
+      })
 
-    const toastFuncs = {
-      setDisplayToast,
-      setToastHeader,
-      setUpdateSuccess,
-      setToastFields,
-    }
-
-    const isMutationVarNull = validateMutationParams(mutationParams, toastFuncs)
-
-    if (!isMutationVarNull) {
-      try {
-        const { data } = await updateProject({
-          variables: {
-            id: project?.id,
-            data: mutationVariables,
-          },
+      if (data) {
+        displayToast({
+          title: 'Project Updated!',
         })
-
-        if (data) {
-          setToastHeader('Successfully updated Project!')
-          setToastFields([])
-          setUpdateSuccess(true)
-          setDisplayToast(true)
-        }
-      } catch {
-        setToastHeader('Oops! Something went wrong.')
-        setToastFields([])
-        setUpdateSuccess(false)
-        setDisplayToast(true)
+        resetForm({
+          values: values,
+        })
       }
+    } catch {
+      displayToast({
+        title: 'Oops! Something went wrong.',
+        status: 'error',
+      })
     }
   }
 
@@ -261,150 +201,145 @@ export const ProjectForm: React.FC<ProjectProps> = ({ project }) => {
 
   const { clients = [] } = data || {}
 
-  useEffect(() => {
-    if (clients.length) {
-      if (project) {
-        const client = clients.find((c: Client) => c.id === project.client.id)
-        setClient(client)
-      } else {
-        setClient(clients[0])
-      }
-    }
-  }, [clients])
-
-  // Added these effects for detecting changes on the date
-  // pickers since they do not trigger a change event on the
-  // <CreateProjectForm> component when they are modified
-  useEffect(() => {
-    setHasFormChanged(true)
-  }, [startDate, endDate])
-
-  useEffect(() => {
-    setHasFormChanged(false)
-  }, [])
-
-  const formChange = () => {
-    setHasFormChanged(true)
-  }
-
   if (error) return <p>Error: {error.message}</p>
 
   return (
-    <>
-      <Toast
-        headerText={toastHeader}
-        fields={toastFields}
-        success={updateSuccess}
-        display={displayToast}
-        setDisplayToast={setDisplayToast}
-      />
-      <CreateProjectForm onChange={formChange}>
-        <CreateProjectFormLabel>
-          Name
-          <CreateProjectFormInput
-            type="text"
-            aria-label="project-name"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setProjectName(e.currentTarget.value)
-            }
-            value={projectName}
-          />
-        </CreateProjectFormLabel>
-        <CreateProjectFormLabel>
-          Start Date
-          <DatePicker
-            selected={startDate}
-            onChange={(date: Date) => setStartDate(date)}
-          />
-        </CreateProjectFormLabel>
-        <CreateProjectFormLabel>
-          End Date (Optional)
-          <DatePicker
-            selected={endDate}
-            onChange={(date: Date) => setEndDate(date)}
-          />
-        </CreateProjectFormLabel>
-        <CreateProjectFormLabel>
-          Client
-          <CreateProjectFormInputSelect
-            value={client?.id}
-            aria-label="client"
-            onChange={(event: ChangeEvent<HTMLSelectElement>) =>
-              handleClientInput(event)
-            }
-          >
-            {clients.map((client: Client) => {
-              return (
-                <option key={client.id} value={client.id}>
-                  {client.clientName}
-                </option>
-              )
-            })}
-          </CreateProjectFormInputSelect>
-        </CreateProjectFormLabel>
-        <CreateProjectFormLabel>
-          Project Type
-          <CreateProjectFormInputSelect
-            value={projectType}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setProjectType(e.target.value)
-            }
-            aria-label="project-type"
-          >
-            {ProjectTypeValues.map((projectType: ProjectType) => {
-              return (
-                <option key={projectType} value={projectType}>
-                  {projectType}
-                </option>
-              )
-            })}
-          </CreateProjectFormInputSelect>
-        </CreateProjectFormLabel>
-        <CreateProjectFormLabel>
-          Priority
-          <CreateProjectFormInputSelect
-            value={priority}
-            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-              setPriority(e.target.value)
-            }
-            aria-label="priority"
-          >
-            {PriorityValues.map((priorityValue: Priority) => {
-              return (
-                <option key={priorityValue} value={priorityValue}>
-                  {priorityValue}
-                </option>
-              )
-            })}
-          </CreateProjectFormInputSelect>
-        </CreateProjectFormLabel>
-        <CreateProjectFormLabel>
-          Confidence - {confidence}%
-          <CreateProjectFormInput
-            aria-label="confidence"
-            type="range"
-            value={confidence}
-            min="0"
-            max="100"
-            onChange={(e: FormEvent<HTMLInputElement>) =>
-              setConfidence(Number(e.currentTarget.value))
-            }
-          />
-        </CreateProjectFormLabel>
-        {project ? (
-          <SubmitButton
-            name="Submit"
-            onClick={updateExistingProject}
-            disabled={!hasMadeChanges}
-          >
-            Update
-          </SubmitButton>
-        ) : (
-          <SubmitButton name="Submit" onClick={createNewProject}>
-            Submit
-          </SubmitButton>
-        )}
-      </CreateProjectForm>
-    </>
+    <FormContainer
+      submitButtonLabel={project ? 'Update' : 'Create'}
+      disableSubmit={!dirty}
+      isLoading={isSubmitting}
+      onSubmit={handleSubmit}
+    >
+      <FormControl
+        id="projectName"
+        isRequired
+        isInvalid={Boolean(errors.projectName && touched.projectName)}
+      >
+        <FormLabel>Project Name</FormLabel>
+        <Input
+          type="text"
+          placeholder="e.g Ascendum"
+          value={values.projectName}
+          name="projectName"
+          aria-label="project name"
+          onChange={handleChange}
+        />
+        <FormErrorMessage>{errors.projectName}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="startDate"
+        isRequired
+        isInvalid={Boolean(errors.startDate && touched.startDate)}
+      >
+        <FormLabel>Start Date</FormLabel>
+        <DatePicker
+          name="startDate"
+          selected={values.startDate}
+          onChange={(date: Date) => setFieldValue('startDate', date)}
+        />
+
+        <FormErrorMessage>{errors.startDate}</FormErrorMessage>
+      </FormControl>
+
+      <FormControl
+        id="endDate"
+        isInvalid={Boolean(errors.endDate && touched.endDate)}
+      >
+        <FormLabel>End Date (Optional)</FormLabel>
+        <DatePicker
+          name="endDate"
+          selected={values.endDate}
+          onChange={(date: Date) => setFieldValue('endDate', date)}
+        />
+
+        <FormErrorMessage>{errors.endDate}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="clientId"
+        isRequired
+        isInvalid={Boolean(errors.clientId && touched.clientId)}
+      >
+        <FormLabel>Client</FormLabel>
+        <Select
+          name="clientId"
+          value={values.clientId}
+          aria-label="client"
+          onChange={handleChange}
+        >
+          {clients.map((client: Client) => {
+            return (
+              <option key={client.id} value={client.id}>
+                {client.clientName}
+              </option>
+            )
+          })}
+        </Select>
+        <FormErrorMessage>{errors.clientId}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="projectType"
+        isRequired
+        isInvalid={Boolean(errors.projectType && touched.projectType)}
+      >
+        <FormLabel>Project Type</FormLabel>
+        <Select
+          name="projectType"
+          value={values.projectType}
+          aria-label="project type"
+          onChange={handleChange}
+        >
+          {ProjectTypeValues.map((projectType: ProjectType) => {
+            return (
+              <option key={projectType} value={projectType}>
+                {projectType}
+              </option>
+            )
+          })}
+        </Select>
+        <FormErrorMessage>{errors.projectType}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="priority"
+        isRequired
+        isInvalid={Boolean(errors.priority && touched.priority)}
+      >
+        <FormLabel>Project Priority</FormLabel>
+        <Select
+          name="priority"
+          value={values.priority}
+          aria-label="project priority"
+          onChange={handleChange}
+        >
+          {PriorityValues.map((priorityValue: Priority) => {
+            return (
+              <option key={priorityValue} value={priorityValue}>
+                {priorityValue}
+              </option>
+            )
+          })}
+        </Select>
+        <FormErrorMessage>{errors.priority}</FormErrorMessage>
+      </FormControl>
+      <FormControl
+        id="confidence"
+        isRequired
+        isInvalid={Boolean(errors.confidence && touched.confidence)}
+      >
+        <FormLabel>Confidence - {values.confidence}%</FormLabel>
+        <Slider
+          aria-label="confidence"
+          inputMode="numeric"
+          colorScheme="primary"
+          value={values.confidence}
+          onChange={(value) => setFieldValue('confidence', value)}
+        >
+          <SliderTrack>
+            <SliderFilledTrack />
+          </SliderTrack>
+          <SliderThumb bg="secondary.500" />
+        </Slider>
+        <FormErrorMessage>{errors.confidence}</FormErrorMessage>
+      </FormControl>
+    </FormContainer>
   )
 }
