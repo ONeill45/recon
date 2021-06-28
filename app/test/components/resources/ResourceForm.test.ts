@@ -24,7 +24,7 @@ describe('<ResourceForm />', () => {
         },
         result: {
           data: {
-            id: faker.random.uuid,
+            id: faker.datatype.uuid,
           },
         },
       },

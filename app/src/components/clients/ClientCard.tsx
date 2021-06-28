@@ -15,7 +15,7 @@ export const ClientCard: React.FC<ClientCardProps> = ({ client }) => {
   const duration = getRelativeTime(startDate, endDate)
 
   return (
-    <Card link={`/clients/client/${id}`}>
+    <Card link={`/clients/${id}`}>
       <LogoDiv>
         <LogoImg src={logoUrl} />
       </LogoDiv>

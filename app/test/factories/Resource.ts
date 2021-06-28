@@ -12,7 +12,7 @@ interface ProjectAllocationsInput {
 export const ResourceFactory = (allocations: ProjectAllocationsInput[] = []) =>
   Factory.define<Resource>('Resource')
     .extend(AuditableEntityFactory)
-    .attr('id', () => faker.random.uuid())
+    .attr('id', () => faker.datatype.uuid())
     .attr('firstName', () => faker.name.firstName())
     .attr('lastName', () => faker.name.lastName())
     .attr('preferredName', null)

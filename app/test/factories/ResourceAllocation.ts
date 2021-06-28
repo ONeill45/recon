@@ -7,7 +7,7 @@ export const ResourceAllocationFactory = () =>
   Factory.define<ResourceAllocation>('ResourceAllocation')
     .option('isCurrent', true)
     .extend(AuditableEntityFactory)
-    .attr('id', () => faker.random.uuid())
+    .attr('id', () => faker.datatype.uuid())
     .attr('resource', null)
     .attr('project', null)
     .attr('startDate', () => new Date(faker.date.past()).toISOString())
@@ -17,4 +17,4 @@ export const ResourceAllocationFactory = () =>
     .attr('endReason', ['isCurrent'], (isCurrent) =>
       isCurrent ? null : faker.random.words(),
     )
-    .attr('percentage', () => faker.random.number(100))
+    .attr('percentage', () => faker.datatype.number(100))

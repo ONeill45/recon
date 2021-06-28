@@ -2,7 +2,7 @@ import { Arg, Query, Mutation, Resolver, Args } from 'type-graphql'
 import { Client, Project } from '../models'
 import { GetProjectsWithFilter } from '../filters'
 import { CreateProjectInput, UpdateProjectInput } from '../inputs/Project'
-import { LessThan, MoreThan, Equal, In } from 'typeorm'
+import { LessThan, MoreThan, Equal, In, ILike } from 'typeorm'
 import { format } from 'date-fns'
 
 @Resolver()
@@ -22,6 +22,11 @@ export class ProjectResolver {
     @Args() filter: GetProjectsWithFilter,
   ): Promise<Project[] | null> {
     const where: { [key: string]: any } = {}
+    let textSearchWhere: Array<{ [key: string]: any }> = [
+      {
+        projectName: ILike(`${filter.searchItem}%`),
+      },
+    ]
 
     if (filter?.projectTypes) {
       where.projectType = In(filter.projectTypes)
@@ -81,8 +86,19 @@ export class ProjectResolver {
       where.confidence = filter.confidence
     }
 
+    let updatedWhere = []
+    if (Object.keys(where).length > 0) {
+      updatedWhere = textSearchWhere.map((field: any) => {
+        Object.entries(where).map((item: any) => {
+          field[item[0]] = item[1]
+        })
+        return field
+      })
+      textSearchWhere = textSearchWhere.concat(updatedWhere)
+    }
+
     const foundProject = await Project.find({
-      where: where,
+      where: textSearchWhere,
       relations: ['resourceAllocations'],
     })
 
