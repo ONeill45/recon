@@ -50,6 +50,7 @@ export const GET_PROJECT = gql`
 
 export const GET_PROJECTS = gql`
   query GetAllProjects(
+    $searchItem: String
     $projectTypes: [String!]
     $clientNames: [String!]
     $priorities: [String!]
@@ -58,6 +59,7 @@ export const GET_PROJECTS = gql`
     $endDate: DateInput
   ) {
     projects(
+      searchItem: $searchItem
       projectTypes: $projectTypes
       clientNames: $clientNames
       priorities: $priorities

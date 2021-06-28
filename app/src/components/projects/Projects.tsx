@@ -15,23 +15,21 @@ export const Projects: React.FC = () => {
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
   )
-
+  const [searchText, setSearchText] = useState('')
   const [clientNames, setClientNames] = useState<Array<string>>([])
   const [projectPriorities, setProjectPriorities] = useState<Array<string>>([])
   const [projectTypes, setProjectTypes] = useState<Array<string>>([])
   const projectConfidence: Array<string> = ['0', '100']
 
-  const [data, setData] = useState<{ [key: string]: any }>({})
-
-  const [getAllProjects, { loading }] = useLazyQuery(GET_PROJECTS, {
-    fetchPolicy: 'network-only',
-    onCompleted: (res: Array<{ [key: string]: any }>) => {
-      setData(res)
+  const [getAllProjects, { loading = true, data }] = useLazyQuery(
+    GET_PROJECTS,
+    {
+      fetchPolicy: 'network-only',
+      onError: (err: any) => {
+        setError(err)
+      },
     },
-    onError: (err: any) => {
-      setError(err)
-    },
-  })
+  )
 
   const [getClientNames] = useLazyQuery(GET_ALL_CLIENTS_NAME, {
     fetchPolicy: 'network-only',
@@ -67,19 +65,46 @@ export const Projects: React.FC = () => {
   const page = 'Projects'
 
   useEffect(() => {
-    setData({})
-    setError(undefined)
+    handleOnFilter({ searchItem: searchText })
+  }, [searchText])
+
+  useEffect(() => {
     getAllProjects({ variables: filter })
   }, [filter, getAllProjects])
 
-  if (loading) return <p>Loading...</p>
-  if (error) return <p>Error: {error.message}</p>
-
-  const handleOnFilter = (queryFilter: any) => {
-    setFilter(queryFilter)
+  const handleOnFilter = (queryFilter: Record<string, any>) => {
+    if (!queryFilter['searchItem']) {
+      queryFilter['searchItem'] = searchText
+    }
+    setFilter((prev: any) => {
+      if (prev.searchItem !== queryFilter.searchItem) {
+        return { ...prev, ...queryFilter }
+      } else {
+        return { ...queryFilter }
+      }
+    })
   }
 
-  const { projects } = data
+  const projects = data?.projects
+
+  const renderContent = () => {
+    if (loading || (!data && !error)) {
+      return <p>Loading...</p>
+    } else if (data) {
+      return (
+        <CardsContainer>
+          {projects &&
+            projects.map((project: Project) => {
+              return <ProjectCard project={project} key={project.id} />
+            })}
+        </CardsContainer>
+      )
+    } else if (error) {
+      return <p>Error: {error.message}</p>
+    }
+
+    return <p></p>
+  }
 
   return (
     <>
@@ -88,6 +113,7 @@ export const Projects: React.FC = () => {
           Create
         </LinkButton>
         <FilterPanel
+          setSearchText={setSearchText}
           page={page}
           onFilter={handleOnFilter}
           filterItems={{
@@ -98,14 +124,7 @@ export const Projects: React.FC = () => {
           }}
         />
       </PageHeader>
-      <div className={styles.container}>
-        <CardsContainer>
-          {projects &&
-            projects.map((project: Project) => {
-              return <ProjectCard project={project} key={project.id} />
-            })}
-        </CardsContainer>
-      </div>
+      <div className={styles.container}>{renderContent()}</div>
     </>
   )
 }

@@ -13,12 +13,12 @@ interface ResourceAllocationsInput {
 export const ProjectFactory = (allocations: ResourceAllocationsInput[] = []) =>
   Factory.define<Project>('Project')
     .extend(AuditableEntityFactory)
-    .attr('id', () => faker.random.uuid())
+    .attr('id', () => faker.datatype.uuid())
     .attr('projectName', () => faker.company.companyName())
     .attr('startDate', () => new Date(faker.date.past()).toISOString())
     .attr('endDate', null)
     .attr('priority', () => faker.random.objectElement<Priority>(Priority))
-    .attr('confidence', () => faker.random.number({ min: 1, max: 100 }))
+    .attr('confidence', () => faker.datatype.number({ min: 1, max: 100 }))
     .attr('client', () => ClientFactory().build())
     .attr('projectType', () =>
       faker.random.objectElement<ProjectType>(ProjectType),
