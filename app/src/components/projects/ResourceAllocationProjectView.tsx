@@ -106,9 +106,8 @@ const ResourceTile = styled.div<ResourceTileProps>`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  border: 1px solid #999;
+  border: 1px solid #808080;
   padding: 0.3rem;
-  background: white;
 `
 
 const ResourceTileTitle = styled.div`
@@ -116,7 +115,7 @@ const ResourceTileTitle = styled.div`
 `
 
 const ResourceSubtitle = styled.div<ResourceSubtitleProps>`
-  color: ${(props) => (props.isRoleSubtitle ? '#000000' : '#808080')};
+  color: #808080;
   font-size: 0.8rem;
   font-weight: 400;
 `
@@ -153,252 +152,256 @@ type ResourceAllocationProjectViewProps = {
   project: Project
 }
 
-export const ResourceAllocationProjectView = ({
-  project,
-}: ResourceAllocationProjectViewProps) => {
-  const { resourceAllocations } = project
-  const [activeDate, setActiveDate] = useState<Date>(new Date())
-  const [activeDay, setActiveDay] = useState<number>(1)
-  const [activeMonth, setActiveMonth] = useState<number>(1)
-  const [activeYear, setActiveYear] = useState<number>(2000)
-  const [daysArray, setDaysArray] = useState<Array<number> | undefined>(
-    undefined,
-  )
-
-  const [startOfCurrentWeek, setStartOfCurrentWeek] = useState<Date>(
-    new Date(2000, 1, 1),
-  )
-  const [endOfCurrentWeek, setEndOfCurrentWeek] = useState<Date>(
-    new Date(2000, 1, 8),
-  )
-
-  const getDayMonthYear = (date: Date) => {
-    const currentDate = date
-    const currentDay = currentDate.getDate()
-    const currentMonth = currentDate.getMonth()
-    const currentYear = currentDate.getFullYear()
-
-    return {
-      day: currentDay,
-      month: currentMonth,
-      year: currentYear,
-    }
-  }
-
-  const updateDateVariables = (date: Date) => {
-    const { day, month, year } = getDayMonthYear(date)
-    const startWeek = startOfWeek(new Date(year, month, day))
-    const endWeek = endOfWeek(new Date(year, month, day))
-
-    setActiveDay(day)
-    setActiveMonth(month)
-    setActiveYear(year)
-
-    setStartOfCurrentWeek(startWeek)
-    setEndOfCurrentWeek(endWeek)
-  }
-
-  useEffect(() => {
-    updateDateVariables(activeDate)
-  }, [activeDate])
-
-  useEffect(() => {
-    let tempArray = []
-    const startWeek = getDate(startOfCurrentWeek)
-    const endWeek = getDate(endOfCurrentWeek)
-    let lastDayInMonth = lastDayOfMonth(new Date(startOfCurrentWeek))
-    const dayDiffTillEndOfMonth = differenceInDays(
-      lastDayInMonth,
-      new Date(startOfCurrentWeek),
+export const ResourceAllocationProjectView: React.FC<ResourceAllocationProjectViewProps> =
+  ({ project }) => {
+    const { resourceAllocations } = project
+    const [activeDate, setActiveDate] = useState<Date>(new Date())
+    const [activeDay, setActiveDay] = useState<number>(1)
+    const [activeMonth, setActiveMonth] = useState<number>(1)
+    const [activeYear, setActiveYear] = useState<number>(2000)
+    const [daysArray, setDaysArray] = useState<Array<number> | undefined>(
+      undefined,
     )
-    const lastDayInMonthNumber = getDate(lastDayInMonth)
-    const dayRemainder = 7 - dayDiffTillEndOfMonth
-    if (dayDiffTillEndOfMonth < 7) {
-      for (let i = startWeek; i <= lastDayInMonthNumber; i++) {
-        tempArray.push(i)
-      }
-      for (let i = 1; i < dayRemainder; i++) {
-        tempArray.push(i)
-      }
-    } else {
-      for (let i = startWeek; i <= endWeek; i++) {
-        tempArray.push(i)
+
+    const [startOfCurrentWeek, setStartOfCurrentWeek] = useState<Date>(
+      new Date(2000, 1, 1),
+    )
+    const [endOfCurrentWeek, setEndOfCurrentWeek] = useState<Date>(
+      new Date(2000, 1, 8),
+    )
+
+    const getDayMonthYear = (date: Date) => {
+      const currentDate = date
+      const currentDay = currentDate.getDate()
+      const currentMonth = currentDate.getMonth()
+      const currentYear = currentDate.getFullYear()
+
+      return {
+        day: currentDay,
+        month: currentMonth,
+        year: currentYear,
       }
     }
-    setDaysArray(tempArray)
-  }, [startOfCurrentWeek, endOfCurrentWeek])
 
-  const decrementTimeInterval = () => {
-    const startWeek = subWeeks(new Date(activeYear, activeMonth, activeDay), 1)
-    setActiveDate(startWeek)
-  }
+    const updateDateVariables = (date: Date) => {
+      const { day, month, year } = getDayMonthYear(date)
+      const startWeek = startOfWeek(new Date(year, month, day))
+      const endWeek = endOfWeek(new Date(year, month, day))
 
-  const incrementTimeInterval = () => {
-    const endWeek = addWeeks(new Date(activeYear, activeMonth, activeDay), 1)
-    setActiveDate(endWeek)
-  }
+      setActiveDay(day)
+      setActiveMonth(month)
+      setActiveYear(year)
 
-  const formatDate = (date: Date, formatString: string) => {
-    return date ? format(new Date(date), formatString) : ''
-  }
+      setStartOfCurrentWeek(startWeek)
+      setEndOfCurrentWeek(endWeek)
+    }
 
-  const isInDateRange = (
-    dateToCompare: Date,
-    lowBoundDate: Date,
-    highBoundDate: Date,
-  ) => {
-    return (
-      compareAsc(new Date(dateToCompare), new Date(lowBoundDate)) >= 0 &&
-      compareAsc(new Date(dateToCompare), new Date(highBoundDate)) <= 0
-    )
-  }
+    useEffect(() => {
+      updateDateVariables(activeDate)
+    }, [activeDate])
 
-  const getRowWidthPercentage = (date: Date, isEndDate: boolean) => {
-    let percent = 100
-    const dateInRangeCheck = isInDateRange(
-      date,
-      startOfCurrentWeek,
-      endOfCurrentWeek,
-    )
-    if (dateInRangeCheck) {
-      let dayDiff = differenceInDays(
-        new Date(date),
+    useEffect(() => {
+      const tempArray = []
+      const startWeek = getDate(startOfCurrentWeek)
+      const endWeek = getDate(endOfCurrentWeek)
+      const lastDayInMonth = lastDayOfMonth(new Date(startOfCurrentWeek))
+      const dayDiffTillEndOfMonth = differenceInDays(
+        lastDayInMonth,
         new Date(startOfCurrentWeek),
       )
-      isEndDate ? dayDiff++ : dayDiff
-      percent = (dayDiff / 7) * 100
-    }
-    return percent
-  }
-
-  const getResourceTileMargin = (startDate: Date, endDate: Date) => {
-    const startDateRowWidth = getRowWidthPercentage(startDate, false)
-    const endDateRowWidth = getRowWidthPercentage(endDate, true)
-    return startDateRowWidth < 100 && endDateRowWidth === 100
-      ? getRowWidthPercentage(startDate, false)
-      : 0
-  }
-
-  const getResourceTileWidth = (startDate: Date, endDate: Date) => {
-    let percent = 100
-    if (endDate) {
-      const width = getRowWidthPercentage(endDate, true)
-      if (width < 100) {
-        percent = width
+      const lastDayInMonthNumber = getDate(lastDayInMonth)
+      const dayRemainder = 7 - dayDiffTillEndOfMonth
+      if (dayDiffTillEndOfMonth < 7) {
+        for (let i = startWeek; i <= lastDayInMonthNumber; i++) {
+          tempArray.push(i)
+        }
+        for (let i = 1; i < dayRemainder; i++) {
+          tempArray.push(i)
+        }
+      } else {
+        for (let i = startWeek; i <= endWeek; i++) {
+          tempArray.push(i)
+        }
       }
+      setDaysArray(tempArray)
+    }, [startOfCurrentWeek, endOfCurrentWeek])
+
+    const decrementTimeInterval = () => {
+      const startWeek = subWeeks(
+        new Date(activeYear, activeMonth, activeDay),
+        1,
+      )
+      setActiveDate(startWeek)
     }
 
-    if (startDate) {
-      const width = getRowWidthPercentage(startDate, false)
-      if (width < 100) {
-        percent = 100 - width
-      }
+    const incrementTimeInterval = () => {
+      const endWeek = addWeeks(new Date(activeYear, activeMonth, activeDay), 1)
+      setActiveDate(endWeek)
     }
 
-    return percent
-  }
+    const formatDate = (date: Date, formatString: string) => {
+      return date ? format(new Date(date), formatString) : ''
+    }
 
-  const displayResourceAllocation = (assignment: ResourceAssignment) => {
-    return (
-      isInDateRange(activeDate, assignment.startDate, assignment.endDate) ||
-      isInDateRange(
-        assignment.startDate,
+    const isInDateRange = (
+      dateToCompare: Date,
+      lowBoundDate: Date,
+      highBoundDate: Date,
+    ) => {
+      return (
+        compareAsc(new Date(dateToCompare), new Date(lowBoundDate)) >= 0 &&
+        compareAsc(new Date(dateToCompare), new Date(highBoundDate)) <= 0
+      )
+    }
+
+    const getRowWidthPercentage = (date: Date, isEndDate: boolean) => {
+      let percent = 100
+      const dateInRangeCheck = isInDateRange(
+        date,
         startOfCurrentWeek,
         endOfCurrentWeek,
-      ) ||
-      isInDateRange(assignment.endDate, startOfCurrentWeek, endOfCurrentWeek)
+      )
+      if (dateInRangeCheck) {
+        let dayDiff = differenceInDays(
+          new Date(date),
+          new Date(startOfCurrentWeek),
+        )
+        isEndDate ? dayDiff++ : dayDiff
+        percent = (dayDiff / 7) * 100
+      }
+      return percent
+    }
+
+    const getResourceTileMargin = (startDate: Date, endDate: Date) => {
+      const startDateRowWidth = getRowWidthPercentage(startDate, false)
+      const endDateRowWidth = getRowWidthPercentage(endDate, true)
+      return startDateRowWidth < 100 && endDateRowWidth === 100
+        ? getRowWidthPercentage(startDate, false)
+        : 0
+    }
+
+    const getResourceTileWidth = (startDate: Date, endDate: Date) => {
+      let percent = 100
+      if (endDate) {
+        const width = getRowWidthPercentage(endDate, true)
+        if (width < 100) {
+          percent = width
+        }
+      }
+
+      if (startDate) {
+        const width = getRowWidthPercentage(startDate, false)
+        if (width < 100) {
+          percent = 100 - width
+        }
+      }
+
+      return percent
+    }
+
+    const displayResourceAllocation = (assignment: ResourceAssignment) => {
+      return (
+        isInDateRange(activeDate, assignment.startDate, assignment.endDate) ||
+        isInDateRange(
+          assignment.startDate,
+          startOfCurrentWeek,
+          endOfCurrentWeek,
+        ) ||
+        isInDateRange(assignment.endDate, startOfCurrentWeek, endOfCurrentWeek)
+      )
+    }
+
+    const displayResourceAllocationRow = (
+      assignments: ResourceAssignment[],
+    ) => {
+      let display = false
+      assignments?.map((assignment: ResourceAssignment) => {
+        if (displayResourceAllocation(assignment)) {
+          display = true
+          return
+        }
+      })
+
+      return display
+    }
+
+    return (
+      <Container display={resourceAllocations?.length > 0}>
+        <WeekContainer>
+          <ArrowButton onClick={() => decrementTimeInterval()}>
+            <RiArrowLeftSLine size={24} />
+          </ArrowButton>
+          <DateContainer>
+            {formatDate(startOfCurrentWeek, 'MM/dd/yyyy')} -{' '}
+          </DateContainer>
+          <DateContainer>
+            {formatDate(endOfCurrentWeek, 'MM/dd/yyyy')}
+          </DateContainer>
+          <ArrowButton onClick={() => incrementTimeInterval()}>
+            <RiArrowRightSLine size={24} />
+          </ArrowButton>
+        </WeekContainer>
+        <RAProjectViewContainer>
+          <BackgroundGrid>
+            {daysArray?.map(() => (
+              <BackgroundGridColumn />
+            ))}
+          </BackgroundGrid>
+          <ResourceTitleColumn />
+          {daysArray?.map((day: number) => (
+            <WeekDayColumn>
+              <WeekDayTileContainer>
+                <WeekDayTile>{day}</WeekDayTile>
+              </WeekDayTileContainer>
+            </WeekDayColumn>
+          ))}
+          {resourceAllocations.map(
+            (r: ResourceAllocation) =>
+              displayResourceAllocationRow(r.assignments) && (
+                <>
+                  <ResourceTitleColumn>
+                    <ResourceTileTitle>{r.role}</ResourceTileTitle>
+                    <ResourceSubtitle isRoleSubtitle={true}>
+                      {formatDate(r.startDate, 'MM/dd/yyyy')} -{' '}
+                      {r.endDate ? formatDate(r.endDate, 'MM/dd/yyyy') : 'N/A'}
+                    </ResourceSubtitle>
+                  </ResourceTitleColumn>
+                  <ResourceAllocationRow>
+                    {r.assignments.map(
+                      (assignment: ResourceAssignment) =>
+                        displayResourceAllocation(assignment) && (
+                          <ResourceTile
+                            margin={getResourceTileMargin(
+                              assignment.startDate,
+                              assignment.endDate,
+                            )}
+                            width={getResourceTileWidth(
+                              assignment.startDate,
+                              assignment.endDate,
+                            )}
+                          >
+                            <ResourceTileTitle>
+                              {assignment.resource.preferredName ||
+                                assignment.resource.firstName}{' '}
+                              {assignment.resource.lastName}
+                            </ResourceTileTitle>
+                            <ResourceSubtitle isRoleSubtitle={false}>
+                              {assignment.percentage + '% allocated'}
+                            </ResourceSubtitle>
+                            <ResourceSubtitle isRoleSubtitle={false}>
+                              {formatDate(assignment.startDate, 'MM/dd/yyyy')} -{' '}
+                              {r.endDate
+                                ? formatDate(assignment.endDate, 'MM/dd/yyyy')
+                                : 'No scheduled end date'}
+                            </ResourceSubtitle>
+                          </ResourceTile>
+                        ),
+                    )}
+                  </ResourceAllocationRow>
+                </>
+              ),
+          )}
+        </RAProjectViewContainer>
+      </Container>
     )
   }
-
-  const displayResourceAllocationRow = (assignments: ResourceAssignment[]) => {
-    let display = false
-    assignments?.map((assignment: ResourceAssignment) => {
-      if (displayResourceAllocation(assignment)) {
-        display = true
-        return
-      }
-    })
-
-    return display
-  }
-
-  return (
-    <Container display={resourceAllocations?.length > 0}>
-      <WeekContainer>
-        <ArrowButton onClick={() => decrementTimeInterval()}>
-          <RiArrowLeftSLine size={24} />
-        </ArrowButton>
-        <DateContainer>
-          {formatDate(startOfCurrentWeek, 'MM/dd/yyyy')} -{' '}
-        </DateContainer>
-        <DateContainer>
-          {formatDate(endOfCurrentWeek, 'MM/dd/yyyy')}
-        </DateContainer>
-        <ArrowButton onClick={() => incrementTimeInterval()}>
-          <RiArrowRightSLine size={24} />
-        </ArrowButton>
-      </WeekContainer>
-      <RAProjectViewContainer>
-        <BackgroundGrid>
-          {daysArray?.map(() => (
-            <BackgroundGridColumn />
-          ))}
-        </BackgroundGrid>
-        <ResourceTitleColumn />
-        {daysArray?.map((day: number) => (
-          <WeekDayColumn>
-            <WeekDayTileContainer>
-              <WeekDayTile>{day}</WeekDayTile>
-            </WeekDayTileContainer>
-          </WeekDayColumn>
-        ))}
-        {resourceAllocations.map(
-          (r: ResourceAllocation) =>
-            displayResourceAllocationRow(r.assignments) && (
-              <>
-                <ResourceTitleColumn>
-                  <ResourceTileTitle>{r.role}</ResourceTileTitle>
-                  <ResourceSubtitle isRoleSubtitle={true}>
-                    {formatDate(r.startDate, 'MM/dd/yyyy')} -{' '}
-                    {r.endDate ? formatDate(r.endDate, 'MM/dd/yyyy') : 'N/A'}
-                  </ResourceSubtitle>
-                </ResourceTitleColumn>
-                <ResourceAllocationRow>
-                  {r.assignments.map(
-                    (assignment: ResourceAssignment) =>
-                      displayResourceAllocation(assignment) && (
-                        <ResourceTile
-                          margin={getResourceTileMargin(
-                            assignment.startDate,
-                            assignment.endDate,
-                          )}
-                          width={getResourceTileWidth(
-                            assignment.startDate,
-                            assignment.endDate,
-                          )}
-                        >
-                          <ResourceTileTitle>
-                            {assignment.resource.preferredName ||
-                              assignment.resource.firstName}{' '}
-                            {assignment.resource.lastName}
-                          </ResourceTileTitle>
-                          <ResourceSubtitle isRoleSubtitle={false}>
-                            {assignment.percentage + '% allocated'}
-                          </ResourceSubtitle>
-                          <ResourceSubtitle isRoleSubtitle={false}>
-                            {formatDate(assignment.startDate, 'MM/dd/yyyy')} -{' '}
-                            {r.endDate
-                              ? formatDate(assignment.endDate, 'MM/dd/yyyy')
-                              : 'No scheduled end date'}
-                          </ResourceSubtitle>
-                        </ResourceTile>
-                      ),
-                  )}
-                </ResourceAllocationRow>
-              </>
-            ),
-        )}
-      </RAProjectViewContainer>
-    </Container>
-  )
-}
