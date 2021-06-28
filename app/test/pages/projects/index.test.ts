@@ -48,12 +48,12 @@ const errorMocks = [
 ]
 
 describe('Projects page test', () => {
-  // it('should render projects page and display Loading...', async () => {
-  //   const { getByText, container } = await render(Projects, {}, mocks)
-  //   waitFor(() => expect(getByText('Loading...')).toBeVisible(), {
-  //     container: container,
-  //   })
-  // })
+  it('should render projects page and display Loading...', async () => {
+    const { getByText, container } = await render(Projects, {}, mocks)
+    waitFor(() => expect(getByText('Loading...')).toBeVisible(), {
+      container: container,
+    })
+  })
   it('should fetch all projects and display their cards', async () => {
     const { getByText, getByTestId } = await render(Projects, {}, mocks)
 
@@ -69,6 +69,8 @@ describe('Projects page test', () => {
   })
   it('should show error message when an error occurs', async () => {
     const { getByText } = await render(Projects, {}, errorMocks)
+
+    await new Promise((resolve) => setTimeout(resolve, 0))
 
     expect(getByText('Error: An error occurred')).toBeVisible()
   })

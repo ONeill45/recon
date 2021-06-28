@@ -105,8 +105,10 @@ export const Projects: React.FC = () => {
   const { projects, count } = data
 
   const renderContent = () => {
-    if (loading || (!data && !error)) {
+    if (loading) {
       return <p>Loading...</p>
+    } else if (error) {
+      return <p>Error: {error?.message}</p>
     } else if (data) {
       return (
         <CardsContainer>
@@ -116,8 +118,6 @@ export const Projects: React.FC = () => {
             })}
         </CardsContainer>
       )
-    } else if (error) {
-      return <p>Error: {error.message}</p>
     }
 
     return <p></p>
