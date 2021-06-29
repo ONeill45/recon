@@ -9,9 +9,7 @@ const mocks = [
   {
     request: {
       query: GET_ALL_CLIENTS,
-      variables: {
-        searchItem: '',
-      },
+      variables: { searchItem: '' },
     },
     result: {
       data: {
@@ -25,9 +23,7 @@ const errorMocks = [
   {
     request: {
       query: GET_ALL_CLIENTS,
-      variables: {
-        searchItem: '',
-      },
+      variables: { searchItem: '' },
     },
     error: new Error('An error occurred'),
   },
@@ -35,8 +31,10 @@ const errorMocks = [
 
 describe('Clients page test', () => {
   it('should render clients page and display Loading...', async () => {
-    const { getByText } = await render(Clients, {}, mocks, false)
-    expect(getByText('Loading...')).toBeVisible()
+    // const { getByText } = await render(Clients, {}, mocks, false)
+    const { container } = await render(Clients, {}, mocks, false)
+    container.querySelector('#loading')
+    expect(container.querySelector('#loading')).toBeDefined()
   })
   it('should fetch all clients and display their cards', async () => {
     const { getByText } = await render(Clients, {}, mocks)

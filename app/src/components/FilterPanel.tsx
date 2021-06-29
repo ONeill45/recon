@@ -21,6 +21,10 @@ import { Button } from 'components/common/Button'
 const filterCategoryProperties = [
   {
     title: 'Clients',
+    children: [
+      { field: 'startDate', type: 'date', label: 'Start Date' },
+      { field: 'terminationDate', type: 'date', label: 'Termination Date' },
+    ],
   },
   {
     title: 'Projects',
@@ -40,6 +44,7 @@ const filterCategoryProperties = [
       { field: 'departmentName', type: 'checkbox', label: 'Department Name' },
       { field: 'project', type: 'checkbox', label: 'Project' },
       { field: 'clients', type: 'checkbox', label: 'Client' },
+      { field: 'skills', type: 'checkbox', label: 'Skill' },
       { field: 'startDate', type: 'date', label: 'Start Date' },
       { field: 'endDate', type: 'date', label: 'Termination Date' },
     ],
@@ -51,6 +56,7 @@ type FilterPanelProps = {
   filterItems?: { [key: string]: any } | undefined
   onFilter: (queryData: { [key: string]: any }, filterClicked: boolean) => void
   setSearchText?: (s: string) => void
+  searchText?: string
 }
 
 export const FilterPanel: React.FC<FilterPanelProps> = ({

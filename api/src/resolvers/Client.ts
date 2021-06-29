@@ -1,27 +1,26 @@
-import { Query, Resolver, Mutation, Arg } from 'type-graphql'
+import { Query, Resolver, Mutation, Arg, Args } from 'type-graphql'
+import { ILike } from 'typeorm'
 import { Client } from '../models'
 import { CreateClientInput, UpdateClientInput } from '../inputs'
-import { ILike } from 'typeorm'
+import { GetClientsWithFilter } from '../filters'
 
 @Resolver()
 export class ClientResolver {
   @Query(() => [Client])
-  async clients(@Arg('searchItem', { nullable: true }) searchItem: string) {
-    if (!searchItem) {
-      return Client.find()
-    } else {
-      const foundClient = await Client.find({
-        where: [
-          {
-            clientName: ILike(`${searchItem}%`),
-          },
-          {
-            description: ILike(`${searchItem}%`),
-          },
-        ],
-      })
-      return foundClient
+  clients(@Args() filter: GetClientsWithFilter) {
+    const where = []
+
+    // if (filter?.startDate) {
+    //   where.startDate = LessThan(new Date(filter.startDate))
+    // }
+    // if (filter?.terminationDate) {
+    //   where.startDate = MoreThan(new Date(filter.terminationDate))
+    // }
+    if (filter?.searchItem) {
+      where.push({ clientName: ILike(`${filter.searchItem}%`) })
+      where.push({ description: ILike(`${filter.searchItem}%`) })
     }
+    return Client.find({ where })
   }
 
   @Query(() => Client, { nullable: true })

@@ -26,5 +26,8 @@ export class GetResourcesWithFilter {
   endDate: DateInput
 
   @Field({ nullable: true })
+  skills: string
+
+  @Field({ nullable: true })
   pagination: PaginationInput
 }
