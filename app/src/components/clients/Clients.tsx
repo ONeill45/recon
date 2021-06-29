@@ -14,16 +14,18 @@ import { GET_ALL_CLIENTS } from 'queries'
 
 export const Clients: React.FC = () => {
   const [searchText, setSearchText] = useState('')
-  const [searchClients, setSearchClients] = useState<{ [key: string]: any }>([])
+  // const [searchClients, setSearchClients] = useState<{ [key: string]: any }>([])
+  const [filter, setFilter] = useState({})
+  const [data, setData] = useState<{ [key: string]: any }>({})
   const [error, setError] = useState<{ [key: string]: any } | undefined>(
     undefined,
   )
+  const page = 'Clients'
 
-  const [searchWithText, { loading }] = useLazyQuery(GET_ALL_CLIENTS, {
+  const [getAllClients, { loading }] = useLazyQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
     onCompleted: (res: { [key: string]: any }) => {
-      const resValues = res && Object.values(res)[0]
-      setSearchClients(resValues)
+      setData(res)
     },
     onError: (err: any) => {
       setError(err)
@@ -31,41 +33,61 @@ export const Clients: React.FC = () => {
   })
 
   useEffect(() => {
-    searchWithText({
-      variables: {
-        searchItem: searchText,
-      },
-    })
-  }, [searchText, searchWithText])
+    handleOnFilter({ searchItem: searchText }, false)
+  }, [searchText])
 
-  if (error) {
-    return <p>Error: {error.message}</p>
-  } else if (searchClients) {
-    return (
-      <>
-        <PageHeader headerText="Clients">
-          <LinkButton href="/clients/client" rightIcon={<FaPlus />}>
-            Create
-          </LinkButton>
-          <FilterPanel
-            onFilter={() => {}}
-            searchText={searchText}
-            setSearchText={setSearchText}
-          />
-        </PageHeader>
-        <div className={styles.container}>
-          <CardsContainer>
-            {searchClients &&
-              searchClients.map((client: Client) => {
-                return <ClientCard key={client.id} client={client} />
-              })}
-          </CardsContainer>
-        </div>
-      </>
-    )
-  } else if (loading) {
-    return <p id="loading">Loading...</p>
-  } else {
-    return <></>
+  useEffect(() => {
+    setData({})
+    setError(undefined)
+    getAllClients({ variables: filter })
+  }, [filter, getAllClients])
+
+  const handleOnFilter = (
+    queryFilter: Record<string, any>,
+    filterClicked = false,
+  ) => {
+    if (!queryFilter['searchItem']) {
+      queryFilter['searchItem'] = searchText
+    }
+    setFilter((prev: any) => {
+      return filterClicked ? { ...queryFilter } : { ...prev, ...queryFilter }
+    })
   }
+
+  const { clients } = data
+
+  const renderContent = () => {
+    if (loading) {
+      return <p>Loading...</p>
+    } else if (error) {
+      return <p>Error: {error.message}</p>
+    } else if (data) {
+      return (
+        <CardsContainer>
+          {clients &&
+            clients.map((client: Client) => {
+              return <ClientCard key={client.id} client={client} />
+            })}
+        </CardsContainer>
+      )
+    }
+
+    return <p></p>
+  }
+
+  return (
+    <>
+      <PageHeader headerText="Clients">
+        <LinkButton href="/clients/client" rightIcon={<FaPlus />}>
+          Create
+        </LinkButton>
+        <FilterPanel
+          setSearchText={setSearchText}
+          page={page}
+          onFilter={handleOnFilter}
+        />
+      </PageHeader>
+      <div className={styles.container}>{renderContent()}</div>
+    </>
+  )
 }

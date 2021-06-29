@@ -23,7 +23,7 @@ const filterCategoryProperties = [
     title: 'Clients',
     children: [
       { field: 'startDate', type: 'date', label: 'Start Date' },
-      { field: 'terminationDate', type: 'date', label: 'Termination Date' },
+      { field: 'endDate', type: 'date', label: 'End Date' },
     ],
   },
   {
