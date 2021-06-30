@@ -27,13 +27,6 @@ export class AddSkillsTables1617639815498 implements MigrationInterface {
       'COMMENT ON COLUMN "public"."resource"."email" IS NULL',
     )
     await queryRunner.query(
-      'ALTER TABLE "public"."project" DROP COLUMN "priority"',
-    )
-    await queryRunner.query('DROP TYPE "public"."project_priority_enum"')
-    await queryRunner.query(
-      'ALTER TABLE "public"."project" ADD "priority" integer NOT NULL',
-    )
-    await queryRunner.query(
       'ALTER TABLE "public"."skill" ADD CONSTRAINT "FK_f1490cf530c0fc410b08660380f" FOREIGN KEY ("category_id") REFERENCES "public"."skill_category"("id") ON DELETE NO ACTION ON UPDATE NO ACTION',
     )
     await queryRunner.query(
@@ -68,13 +61,6 @@ export class AddSkillsTables1617639815498 implements MigrationInterface {
     )
     await queryRunner.query(
       'ALTER TABLE "public"."project" DROP COLUMN "priority"',
-    )
-    await queryRunner.query(
-      // eslint-disable-next-line quotes
-      "CREATE TYPE \"public\".\"project_priority_enum\" AS ENUM('High', 'Medium', 'Low')",
-    )
-    await queryRunner.query(
-      'ALTER TABLE "public"."project" ADD "priority" "public"."project_priority_enum" NOT NULL DEFAULT \'High\'',
     )
     await queryRunner.query(
       'COMMENT ON COLUMN "public"."resource"."email" IS NULL',

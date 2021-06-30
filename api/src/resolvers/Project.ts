@@ -1,26 +1,41 @@
-import { Arg, Query, Mutation, Resolver, Args } from 'type-graphql'
+import {
+  Arg,
+  Query,
+  Mutation,
+  Resolver,
+  Args,
+  ObjectType,
+  Field,
+} from 'type-graphql'
 import { Client, Project } from '../models'
 import { GetProjectsWithFilter } from '../filters'
 import { CreateProjectInput, UpdateProjectInput } from '../inputs/Project'
 import { LessThan, MoreThan, Equal, In, ILike } from 'typeorm'
 import { format } from 'date-fns'
 
+@ObjectType()
+export class ProjectQuery {
+  @Field(() => [Project])
+  projects: Project[]
+
+  @Field(() => Number)
+  count: Number
+}
+
 @Resolver()
 export class ProjectResolver {
-  // @Query(() => [Project])
-  // async projects() {
-  //   return Project.find()
-  // }
-
   @Query(() => Project, { nullable: true })
   async project(@Arg('id') id: string): Promise<Project | null> {
     return Project.findOne(id, { relations: ['resourceAllocations'] })
   }
 
-  @Query(() => [Project])
+  @Query(() => ProjectQuery)
   async projects(
     @Args() filter: GetProjectsWithFilter,
-  ): Promise<Project[] | null> {
+  ): Promise<ProjectQuery | null> {
+    const skip =
+      (filter?.pagination?.page - 1) * filter?.pagination?.itemsPerPage || 0
+    const take = filter?.pagination?.itemsPerPage || 1000
     const where: { [key: string]: any } = {}
     let textSearchWhere: Array<{ [key: string]: any }> = [
       {
@@ -97,12 +112,25 @@ export class ProjectResolver {
       textSearchWhere = textSearchWhere.concat(updatedWhere)
     }
 
-    const foundProject = await Project.find({
-      where: textSearchWhere,
+    const query: any = {
+      order: {
+        projectName: 'ASC',
+      },
+      skip: skip,
+      take: take,
       relations: ['resourceAllocations'],
-    })
+    }
 
-    return foundProject
+    if (Object.keys(filter).length !== 0) {
+      query.where = textSearchWhere
+    }
+
+    const [projects, count] = await Project.findAndCount(query)
+
+    return {
+      projects,
+      count,
+    }
   }
 
   @Mutation(() => Project)

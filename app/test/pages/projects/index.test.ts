@@ -6,17 +6,26 @@ import { render } from '../../testUtils/render'
 
 const projects = ProjectFactory().buildList(5)
 
+const count = 5
+
 const mocks = [
   {
     request: {
       query: GET_PROJECTS,
       variables: {
         searchItem: '',
+        pagination: {
+          page: 1,
+          itemsPerPage: 10,
+        },
       },
     },
     result: {
       data: {
-        projects,
+        projects: {
+          projects: projects,
+          count,
+        },
       },
     },
   },
@@ -28,6 +37,10 @@ const errorMocks = [
       query: GET_PROJECTS,
       variables: {
         searchItem: '',
+        pagination: {
+          page: 1,
+          itemsPerPage: 10,
+        },
       },
     },
     error: new Error('An error occurred'),

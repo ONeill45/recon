@@ -114,12 +114,15 @@ export const Resources: React.FC = () => {
     getAllResources({ variables: filter })
   }, [filter, getAllResources])
 
-  const handleOnFilter = (queryFilter: any, filterClicked: boolean) => {
+  const handleOnFilter = (
+    queryFilter: Record<string, any>,
+    filterClicked: boolean,
+  ) => {
     setIsFilterClicked(filterClicked)
-    if (!queryFilter.hasOwnProperty('searchItem')) {
+    if (!queryFilter['searchItem']) {
       queryFilter['searchItem'] = searchText
     }
-    if (!queryFilter.hasOwnProperty('pagination')) {
+    if (!queryFilter['pagination']) {
       queryFilter['pagination'] = paginationInputs
     }
     setFilter((prev: any) => {
