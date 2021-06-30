@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
-import { useQuery } from '@apollo/client'
+import { useLazyQuery } from '@apollo/client'
 
 import styles from 'styles/Home.module.css'
 import { Client } from 'interfaces'
@@ -14,26 +14,44 @@ import { GET_ALL_CLIENTS } from 'queries'
 
 export const Clients: React.FC = () => {
   const [searchText, setSearchText] = useState('')
+  const [searchClients, setSearchClients] = useState<{ [key: string]: any }>([])
+  const [error, setError] = useState<{ [key: string]: any } | undefined>(
+    undefined,
+  )
 
-  const { data, loading, error } = useQuery(GET_ALL_CLIENTS, {
+  const [searchWithText, { loading }] = useLazyQuery(GET_ALL_CLIENTS, {
     fetchPolicy: 'network-only',
-    variables: {
-      searchItem: searchText,
+    onCompleted: (res: { [key: string]: any }) => {
+      const resValues = res && Object.values(res)[0]
+      setSearchClients(resValues)
+    },
+    onError: (err: any) => {
+      setError(err)
     },
   })
 
-  const searchClients = data?.clients
+  useEffect(() => {
+    searchWithText({
+      variables: {
+        searchItem: searchText,
+      },
+    })
+  }, [searchText, searchWithText])
 
   if (error) {
     return <p>Error: {error.message}</p>
-  } else if (data) {
+  } else if (searchClients) {
     return (
       <>
         <PageHeader headerText="Clients">
           <LinkButton href="/clients/client" rightIcon={<FaPlus />}>
             Create
           </LinkButton>
-          <FilterPanel onFilter={() => {}} setSearchText={setSearchText} />
+          <FilterPanel
+            onFilter={() => {}}
+            searchText={searchText}
+            setSearchText={setSearchText}
+          />
         </PageHeader>
         <div className={styles.container}>
           <CardsContainer>
@@ -46,7 +64,7 @@ export const Clients: React.FC = () => {
       </>
     )
   } else if (loading) {
-    return <p>Loading...</p>
+    return <p id="loading">Loading...</p>
   } else {
     return <></>
   }

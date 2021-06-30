@@ -29,6 +29,7 @@ type filterCategoryProps = {
     queryData: { [key: string]: string },
     filterClicked: boolean,
   ) => void
+  key?: string | number | undefined
 }
 
 export const FilterCategory: React.FC<filterCategoryProps> = ({

@@ -6,8 +6,8 @@ export interface ResourceAssignment {
   resourceAllocation: ResourceAllocation
   startDate: Date
   endDate: Date
-  endReason: String
-  percentage: Number
+  endReason: string
+  percentage: number
   createdBy: string
   createdDate: Date
   updatedBy: string
