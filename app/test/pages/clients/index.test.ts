@@ -31,20 +31,19 @@ const errorMocks = [
 
 describe('Clients page test', () => {
   it('should render clients page and display Loading...', async () => {
-    // const { getByText } = await render(Clients, {}, mocks, false)
     const { container } = await render(Clients, {}, mocks, false)
     container.querySelector('#loading')
     expect(container.querySelector('#loading')).toBeDefined()
   })
-  // it('should fetch all clients and display their cards', async () => {
-  //   const { getByText } = await render(Clients, {}, mocks)
+  it('should fetch all clients and display their cards', async () => {
+    const { getByText } = await render(Clients, {}, mocks)
 
-  //   expect(getByText(`${clients[0].clientName}`)).toBeVisible()
-  //   expect(getByText(`${clients[1].clientName}`)).toBeVisible()
-  //   expect(getByText(`${clients[2].clientName}`)).toBeVisible()
-  //   expect(getByText(`${clients[3].clientName}`)).toBeVisible()
-  //   expect(getByText(`${clients[4].clientName}`)).toBeVisible()
-  // })
+    expect(getByText(`${clients[0].clientName}`)).toBeVisible()
+    expect(getByText(`${clients[1].clientName}`)).toBeVisible()
+    expect(getByText(`${clients[2].clientName}`)).toBeVisible()
+    expect(getByText(`${clients[3].clientName}`)).toBeVisible()
+    expect(getByText(`${clients[4].clientName}`)).toBeVisible()
+  })
   it('should show error message when an error occurs', async () => {
     const { getByText } = await render(Clients, {}, errorMocks)
 

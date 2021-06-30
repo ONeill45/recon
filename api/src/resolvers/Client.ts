@@ -8,7 +8,7 @@ import { format } from 'date-fns'
 @Resolver()
 export class ClientResolver {
   @Query(() => [Client])
-  clients(@Args() filter: GetClientsWithFilter) {
+  clients(@Args() filter: GetClientsWithFilter): Promise<Client[] | null> {
     const where: { [key: string]: any } = {}
     let textSearchWhere: Array<{ [key: string]: any }> = [
       {
@@ -50,10 +50,6 @@ export class ClientResolver {
         )
       }
     }
-    // if (filter?.searchItem) {
-    //   where.push({ clientName: ILike(`${filter.searchItem}%`) })
-    //   where.push({ description: ILike(`${filter.searchItem}%`) })
-    // }
 
     let updatedWhere = []
     if (Object.keys(where).length > 0) {
