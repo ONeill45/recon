@@ -1,16 +1,9 @@
 import Project from 'pages/projects/[id]'
 import { GET_PROJECT } from 'queries'
-import { ProjectFactory, ResourceFactory } from '../../factories'
+import { ProjectFactory } from '../../factories'
 import { applyMockUseRouter, render } from '../../testUtils'
 
-const resources = ResourceFactory().buildList(5)
-const project = ProjectFactory([
-  { resource: resources[0], isCurrent: true },
-  { resource: resources[1], isCurrent: true },
-  { resource: resources[2], isCurrent: true },
-  { resource: resources[3], isCurrent: true },
-  { resource: resources[4], isCurrent: false },
-]).build()
+const project = ProjectFactory().build()
 
 applyMockUseRouter({ query: { id: project.id } })
 

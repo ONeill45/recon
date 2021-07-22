@@ -27,9 +27,6 @@ export class UpdatePriorityColumn1615572495425 implements MigrationInterface {
       'ALTER TABLE "public"."project" DROP COLUMN "priority"',
     )
     await queryRunner.query('DROP TYPE "public"."project_priority_enum"')
-    // await queryRunner.query(
-    //   'ALTER TABLE "public"."project" ADD "priority" integer NOT NULL DEFAULT 0',
-    // )
     await queryRunner.query(
       'COMMENT ON COLUMN "public"."resource"."email" IS NULL',
     )

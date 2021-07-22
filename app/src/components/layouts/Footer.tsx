@@ -16,7 +16,6 @@ const StyledFooter = styled.footer<EmotionComponentProps>`
     height: 1em;
     color: ${({ theme }) => theme.text};
   }
-
   a {
     display: flex;
     justify-content: center;

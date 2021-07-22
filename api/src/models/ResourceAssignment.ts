@@ -8,43 +8,27 @@ import {
   CreateDateColumn,
   JoinColumn,
   ManyToOne,
-  OneToMany,
 } from 'typeorm'
 import { ObjectType, Field, ID } from 'type-graphql'
 import { AuditableEntity } from './AuditableEntity'
-import { Project, Resource, ResourceAssignment } from './'
+import { Resource, ResourceAllocation } from './'
 
 @Entity()
 @ObjectType()
-export class ResourceAllocation extends BaseEntity implements AuditableEntity {
+export class ResourceAssignment extends BaseEntity implements AuditableEntity {
   @Field(() => ID)
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Field(() => String, { nullable: true })
-  @Column({ name: 'role', nullable: true })
-  role: string | null
-
-  @Field(() => String, { nullable: true })
-  @Column({ name: 'role_id', nullable: true })
-  roleId: string
-
-  @Field(() => [ResourceAssignment], { nullable: true })
-  @OneToMany(() => ResourceAssignment, (ra) => ra.resourceAllocation, {
-    nullable: true,
-    eager: true,
-  })
-  assignments: ResourceAssignment[] | null
+  @Field(() => ResourceAllocation)
+  @ManyToOne(() => ResourceAllocation)
+  @JoinColumn({ name: 'resource_allocation_id' })
+  resourceAllocation: ResourceAllocation
 
   @Field(() => Resource)
   @ManyToOne(() => Resource, { eager: true })
   @JoinColumn({ name: 'resource_id' })
   resource: Resource
-
-  @Field(() => Project)
-  @ManyToOne(() => Project, { eager: true })
-  @JoinColumn({ name: 'project_id' })
-  project: Project
 
   @Field(() => Date)
   @Column({ name: 'start_date' })
