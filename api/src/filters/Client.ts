@@ -1,12 +1,13 @@
 import { ArgsType, Field } from 'type-graphql'
+import { DateInput } from '../inputs/Date'
 
 @ArgsType()
 export class GetClientsWithFilter {
   @Field({ nullable: true })
-  startDate: string
+  startDate: DateInput
 
   @Field({ nullable: true })
-  terminationDate: string
+  endDate: DateInput
 
   @Field({ nullable: true })
   searchItem: string

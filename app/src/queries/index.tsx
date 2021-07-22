@@ -147,8 +147,12 @@ export const GET_CLIENT_FROM_ID = gql`
   }
 `
 export const GET_ALL_CLIENTS = gql`
-  query clients($searchItem: String) {
-    clients(searchItem: $searchItem) {
+  query clients(
+    $searchItem: String
+    $startDate: DateInput
+    $endDate: DateInput
+  ) {
+    clients(searchItem: $searchItem, startDate: $startDate, endDate: $endDate) {
       id
       clientName
       description

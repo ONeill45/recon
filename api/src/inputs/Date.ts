@@ -7,4 +7,7 @@ export class DateInput {
 
   @Field({ nullable: true })
   beforeAfter?: string
+
+  @Field({ nullable: true })
+  jsDate: string
 }
