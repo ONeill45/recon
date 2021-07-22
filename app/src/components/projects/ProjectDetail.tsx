@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { GET_PROJECT } from 'queries'
 import { ProjectHeader } from 'components/projects/ProjectHeader'
 import { ProjectDetailCards } from 'components/projects/ProjectDetailCards'
+import { ResourceAllocationProjectView } from 'components/projects/ResourceAllocationProjectView'
 
 export const ProjectDetail: React.FC = () => {
   const router = useRouter()
@@ -24,6 +25,7 @@ export const ProjectDetail: React.FC = () => {
     <>
       <ProjectHeader project={project} />
       <ProjectDetailCards project={project} />
+      <ResourceAllocationProjectView project={project} />
     </>
   )
 }

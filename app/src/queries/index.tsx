@@ -17,6 +17,33 @@ export const GET_PROJECT = gql`
         id
         clientName
       }
+      resourceAllocations {
+        id
+        role
+        roleId
+        startDate
+        endDate
+        endReason
+        percentage
+        resource {
+          firstName
+          lastName
+          preferredName
+          title
+        }
+        assignments {
+          id
+          startDate
+          endDate
+          endReason
+          percentage
+          resource {
+            firstName
+            lastName
+            preferredName
+          }
+        }
+      }
     }
   }
 `
